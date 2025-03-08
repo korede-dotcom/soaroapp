@@ -654,7 +654,9 @@ caption {
   padding-bottom: 0.5rem;
   color: var(--bs-secondary-color);
   text-align: left; }
-
+.marginleft{
+  margin-left: 30px;
+}
 th {
   text-align: inherit;
   text-align: -webkit-match-parent; }

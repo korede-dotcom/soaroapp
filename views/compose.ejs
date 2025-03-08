@@ -3,7 +3,7 @@
 
 <head>
     <!-- Title -->
-	<title>Omah - Real Estate Admin Dashboard Template</title>
+	<title>Compose SMS</title>
  
 	<!-- Meta -->
 	<meta charset="utf-8">
@@ -63,7 +63,7 @@
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
                 <img class="logo-abbr" src="images/logo.png" alt="/">
-                <img class="logo-compact" src="images/logo-text.png" alt="/">
+                <h6 class="logo-compact">Soaro</h6>
                 <img class="brand-title" src="images/logo-text.png" alt="/">
             </a>
 
@@ -825,6 +825,49 @@
 										<div class="email-left-box generic-width">
 												<div class="p-0">
 													<a href="email-compose.html" class="btn btn-primary btn-block">Compose</a>
+
+													<div class="col-xl-12 col-lg-12">
+														<% if (lands && lands.lawyer) { %>
+															<div class="card text-center">
+																<div class="card-body">
+																	<div class="position-relative mb-3 d-inline-block">
+																		<% if (lands.lawyer.imageUrl && lands.lawyer.imageUrl.trim() !== "") { %>
+																			<img src="<%= lands.lawyer.imageUrl %>" alt="Lawyer Image" class="rounded" width="140">
+																		<% } else { %>
+																			<img src="/path-to-placeholder-image.jpg" alt="No Image Available" class="rounded" width="140">
+																		<% } %>
+																		<a href="app-profile.html" class="profile-icon"><i class="las la-cog"></i></a>
+																	</div>
+																	<h2 class="text-black fs-20 font-w600">
+																		<%= lands.lawyer.firstname ? lands.lawyer.firstname : "N/A" %> 
+																		<%= lands.lawyer.lastname ? lands.lawyer.lastname : "" %>
+																	</h2>
+																	<span class="mb-3 text-black d-block">
+																		Company Name: <%= lands.lawyer.companyName ? lands.lawyer.companyName : "Not Provided" %>
+																	</span>
+																	<p>Office Address: <%= lands.lawyer.officeAddress ? lands.lawyer.officeAddress : "Not Available" %></p>
+																	<p>Home Address: <%= lands.lawyer.address ? lands.lawyer.address : "Not Available" %></p>
+																	<ul class="property-social">
+																		<li><a href="javascript:void(0);"><i class="lab la-instagram"></i></a></li>
+																		<li><a href="javascript:void(0);"><i class="lab la-facebook-f"></i></a></li>
+																		<li><a href="javascript:void(0);"><i class="lab la-twitter"></i></a></li>
+																	</ul>
+																</div>
+																<div class="card-footer border-0 pt-0">
+																	<a href="javascript:void(0);" class="btn btn-outline-primary d-block rounded">
+																		<i class="las la-phone scale5 me-2"></i>
+																		<%= lands.lawyer.phonenumber ? lands.lawyer.phonenumber : "No Phone Number" %>
+																	</a>
+																</div>
+															</div>
+														<% } else { %>
+															<!-- Display a message if no lawyer information is available -->
+															<div class="alert alert-warning text-center">
+																<p>No lawyer information available for this property.</p>
+															</div>
+														<% } %>
+													</div>
+
 												</div>
 												<div class="mail-list mt-4">
 													<a href="email-inbox.html" class="list-group-item active"><i

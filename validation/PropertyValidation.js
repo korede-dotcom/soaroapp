@@ -24,7 +24,20 @@ const propertySchema = Joi.object({
   amount: Joi.number().integer().min(1).required(),
   description: Joi.string().trim().required(),
   start: Joi.date().iso().required(),
-  end: Joi.date().iso().greater(Joi.ref('start')).required(),
+  // end: Joi.date().iso().greater(Joi.ref('start')).required().optional(),
+  // end: Joi.date().allow(null).optional(),
+  end: Joi.alternatives().conditional('start', {
+    is: Joi.exist(),
+    then: Joi.alternatives().try(
+      Joi.date().iso().greater(Joi.ref('start')).raw(),
+      Joi.valid(null, '') // Explicitly allow null and empty string
+    ).required(),
+    otherwise: Joi.alternatives().try(
+      Joi.date().iso().raw(),
+      Joi.valid(null, '')
+    )
+  }).default(null), 
+  
   prevOwnerName: Joi.string().trim().required(),
   prevOwnerPhone: Joi.string().trim().required(),
   prevOwnerEmail: Joi.string().trim().email().required(),
@@ -48,6 +61,7 @@ const propertySchema = Joi.object({
 const validateProperty = (req, res, next) => {
   const { error } = propertySchema.validate(req.body, { abortEarly: false });
 
+  console.log("🚀 ~ validateProperty ~ eq.body:", req.body)
   if (error) {
     return res.status(400).json({
       status: false,

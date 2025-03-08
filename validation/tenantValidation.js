@@ -14,6 +14,7 @@ const tenantValidationSchema = Joi.object({
       id: Joi.string().required(),
       url: Joi.string().uri().required(),
     })).optional(),
+    NextPaymentYear: Joi.string().optional(),
 
   roomId: Joi.number()
     .integer()

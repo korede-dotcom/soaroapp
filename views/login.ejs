@@ -34,6 +34,9 @@
 </head>
 
 <body>
+    <div id="loaderOverlay">
+        <div class="spinner"></div>
+    </div>
     <div class="fix-wrapper">
         <div class="container">
             <div class="row justify-content-center">
@@ -44,15 +47,15 @@
                                 <a href="index.html"><img class="logo-auth" src="images/logo-full.png" alt=""></a>
                             </div>
                             <h4 class="text-center mb-4">Sign in your account</h4>
-                            <form action="index.html">
+                            <form id="loginForm">
                                 <div class="form-group mb-4">
-                                    <label class="form-label" for="username">Username</label>
-                                    <input type="text" class="form-control" placeholder="Enter username" id="username">
+                                    <label class="form-label" for="username">Email</label>
+                                    <input type="text" name="email" class="form-control" placeholder="Enter your Email" id="username">
                                 </div>
                                <div class="form-group mb-3 mb-sm-4">
 									<label class="form-label">Password</label>
 									<div class="position-relative">
-										<input type="password" id="dz-password" class="form-control" value="Password">
+										<input name="password" type="password" id="dz-password" class="form-control" ">
 										<span class="show-pass eye">
 											<i class="fa fa-eye-slash"></i>
 											<i class="fa fa-eye"></i>
@@ -73,7 +76,7 @@
                                     </div>
                                 </div>
                                 <div class="text-center">
-                                    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                                    <button id="submitBtn" type="submit" class="btn btn-primary btn-block">Sign In</button>
                                 </div>
                             </form>
                             <div class="new-account mt-3">
@@ -95,6 +98,61 @@
 	<script src="vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
     <script src="js/custom.min.js"></script>
     <script src="js/deznav-init.js"></script>
+    <script src="vendor/toastr/js/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+           document.querySelector('#submitBtn').addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    this.disabled = true;
+            this.innerText = "Processing...";
+            document.getElementById('loaderOverlay').style.display = 'flex';
+            const form = document.getElementById('loginForm');
+            const formData = new FormData(form);
+           
+        const jsonObject = {};
+            formData.forEach((value, key) => {
+            	jsonObject[key] = value;
+            });
+
+
+            // Send final data to the backend
+            try {
+            const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonObject)
+            });
+            const result = await response.json();
+            console.log('Property added successfully:', result);
+            this.innerText = "Login";
+            this.disabled = false;
+            document.getElementById('loaderOverlay').style.display = 'none';
+                if (!result.status) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: result.message,
+                    });
+                }else{
+                    window.location.assign("/dashboard")
+                    Swal.fire({
+                            icon: "success",
+                            title: "created",
+                            text: result.message,
+                        });
+                }
+            } catch (error) {
+                Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: error.toString(),
+                    });
+                }
+            })
+    </script>
 
 </body>
 

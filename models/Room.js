@@ -2,6 +2,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../models');  // Import the Sequelize instance
 const Property = require('./Property');  // Import the Property model
+const Tenants = require("./Tenants")
 
 const Room = sequelize.define('Room', {
   // id field (Primary Key, Auto-Incremented)
@@ -31,7 +32,7 @@ const Room = sequelize.define('Room', {
     allowNull:false,
   },
   roomType:{
-    type:DataTypes.ENUM("1bedroom","2bedroom","3bedroom"),
+    type:DataTypes.ENUM("1bedroom","2bedroom","3bedroom","shop","4bedroom"),
     defaultValue:"1bedroom",
   },
   yearlyAmount:{
@@ -63,9 +64,24 @@ const Room = sequelize.define('Room', {
     },
   },
 }, {
-  // Optional: Table name (defaults to plural form of model name, 'Rooms')
   tableName: 'rooms',
-  timestamps: true,  // If you don't need `createdAt` and `updatedAt` columns
+  timestamps: true,
+  hooks: {
+    afterFind: (rooms) => {
+      if (!rooms) return;
+      if (Array.isArray(rooms)) {
+        rooms.forEach(room => {
+          if (room.yearlyAmount !== null) {
+            room.yearlyAmount = `₦${Number(room.yearlyAmount).toLocaleString('en-NG', { minimumFractionDigits: 2 })}`;
+          }
+        });
+      } else {
+        if (rooms.yearlyAmount !== null) {
+          rooms.yearlyAmount = `₦${Number(rooms.yearlyAmount).toLocaleString('en-NG', { minimumFractionDigits: 2 })}`;
+        }
+      }
+    }
+  }
 });
 
 // Define the relationship (many rooms belong to one property)
@@ -74,5 +90,14 @@ Room.belongsTo(Property, {
   targetKey: 'id',  // Corresponds to the 'id' field in the Property model
   as: 'property',  // Alias for the association
 });
+
+Room.belongsTo(Tenants, {
+  foreignKey: 'tenantId',
+  targetKey: 'id',
+  as: 'tenant',
+});
+
+
+
 
 module.exports = Room;

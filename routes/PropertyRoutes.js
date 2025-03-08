@@ -33,7 +33,7 @@ router.post('/',validateProperty, async (req, res) => {
                 type: data.type,
                 created_by_name: data.created_by_name,
                 start: data.start,
-                end: data.end,
+                end: data.end.length > 1 ? data.end : null,
                 prevOwnerAddress: data.prevOwnerAddress,
                 prevOwnerName: data.prevOwnerName,
                 prevOwnerPhone: data.prevOwnerPhone,
@@ -41,14 +41,13 @@ router.post('/',validateProperty, async (req, res) => {
             },
             { transaction } // ✅ Ensure transaction is passed correctly
         );
-        console.log("✅ Land created:", land);
 
         if (!land) {
             throw new Error("Land creation failed!");
         }
 
         // Extract room data
-        const { totalroom, bedcount1, bedcount2, bedcount3, bedcount4, bedamount1, bedamount2, bedamount3, bedamount4 } = data;
+        const { totalroom, bedcount1, bedcount2, bedcount3, bedcount4, bedamount1, bedamount2, bedamount3, bedamount4,shopcount,shopamount } = data;
 
         let roomIndex = 1;
         let roomsToCreate = [];
@@ -74,8 +73,10 @@ router.post('/',validateProperty, async (req, res) => {
         addRooms(bedcount2, "2bedroom", bedamount2);
         addRooms(bedcount3, "3bedroom", bedamount3);
         addRooms(bedcount4, "4bedroom", bedamount4);
+        addRooms(shopcount, "shop", shopamount);
 
         // Validate total rooms
+        console.log("🚀 ~ router.post ~ roomsToCreate.length > totalroom:", roomsToCreate.length , totalroom)
         if (roomsToCreate.length > totalroom) {
             throw new Error("Total rooms exceed allowed limit!");
         }
@@ -162,7 +163,7 @@ router.get('/', async (req, res) => {
     }
     if (req.query.type === "details" && req.query.id ) {
           const lands = await LandService.getLandsById(req.query.id);
-          const tenantCount = await Tenants.count({where:{propertyId:req.query.id}})
+          const tenantCount = await Tenants.count({where:{propertyId:req.query.id,isPrevious:false}})
           const roomCount = await Room.count({where:{propertyId:req.query.id}})
         //   console.log("🚀 ~ router.get ~ lands:", lands.dataValues)
         return res.render("propertydetail",{lands,tenantCount,roomCount})

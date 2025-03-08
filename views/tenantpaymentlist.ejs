@@ -62,7 +62,7 @@
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
                 <img class="logo-abbr" src="images/logo.png" alt="/">
-                <img class="logo-compact" src="images/logo-text.png" alt="/">
+                <h6 class="logo-compact">Soaro</h6>
                 <img class="brand-title" src="images/logo-text.png" alt="/">
             </a>
 
@@ -818,19 +818,7 @@
 					
 				</div>
 				<div id="lightgallery" class="front-view-slider mb-sm-5 mb-3 owl-carousel">
-					<!-- <% tenants.imageUrl.forEach((image) => { %>
-						<div class="items">
-							<div class="front-view">
-								<img src="<%=image.url%>" alt="/">
-								<div id="lightgallery" class="row mt-4 sp4">
-									<a href="<%=image.url%>" data-src="<%=image.url%>"" class="lg-item mb-1 col-lg-4 col-xl-4 col-sm-4 col-6">
-										<img class="img-fluid rounded" src="<%=image.url%>" style="width:100%;" alt="/">
-									</a>
-									
-								</div>
-							</div>
-						</div>
-					  <% }); %> -->
+					
 					
 					
 				</div>
@@ -898,28 +886,19 @@
 						<div class="card house-bx">
 							<div class="card-body d-flex">
 								<div class="media align-items-center">
-									<a href="<%=tenants.imageUrl[0].url%>" data-src="<%=tenants.imageUrl[0].url%>" class=" lg-item col-lg-3 col-md-6 mb-4">
-										<img class="rounded" src="<%=tenants.imageUrl[0].url%>" style="width:100%;" alt="/">
-									</a>
-									<!-- <svg width="55" height="55" viewBox="0 0 88 85" fill="none" xmlns="http://www.w3.org/2000/svg">	
-										<path d="M77.25 	30.8725V76.25H10.75V30.8725L44 8.70001L77.25 30.8725Z" fill="url(#paint0_linear)"></path>
-										<path d="M2 76.25H86V85H2V76.25Z" fill="url(#paint1_linear)"></path>
-										<path d="M21.25 39.5H42.25V76.25H21.25V39.5Z" fill="url(#paint2_linear)"></path>
-										<path d="M52.75 39.5H66.75V64H52.75V39.5Z" fill="url(#paint3_linear)"></path>
-										<path d="M87.9424 29.595L84.0574 35.405L43.9999 8.70005L3.94237 35.405L0.057373 29.595L43.9999 0.300049L87.9424 29.595Z" fill="url(#paint4_linear)"></path><path d="M49.25 62.25H70.25V65.75H49.25V62.25Z" fill="url(#paint5_linear)"></path>
-										<path d="M52.75 50H66.75V53.5H52.75V50Z" fill="url(#paint6_linear)"></path>
-										<path d="M28.25 57C28.25 57.4642 28.0656 57.9093 27.7374 58.2375C27.4092 58.5657 26.9641 58.75 26.5 58.75C26.0359 58.75 25.5908 58.5657 25.2626 58.2375C24.9344 57.9093 24.75 57.4642 24.75 57C24.75 56.5359 24.9344 56.0908 25.2626 55.7626C25.5908 55.4344 26.0359 55.25 26.5 55.25C26.9641 55.25 27.4092 55.4344 27.7374 55.7626C28.0656 56.0908 28.25 56.5359 28.25 57Z" fill="url(#paint7_linear)"></path>
-										<defs>
-											<linearGradient id="paint0_linear" x1="19.255" y1="28.8075" x2="64.1075" y2="73.6775" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#F9F9DF"></stop><stop offset="1" stop-color="#B6BDC6"></stop></linearGradient>
-											<linearGradient id="paint1_linear" x1="2" y1="80.625" x2="86" y2="80.625" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#3C6DB0"></stop><stop offset="1" stop-color="#291F51"></stop></linearGradient>
-											<linearGradient id="paint2_linear" x1="22.9825" y1="40.6025" x2="37.8575" y2="69.915" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#F0CB49"></stop><stop offset="1" stop-color="#E17E43"></stop></linearGradient>
-											<linearGradient id="paint3_linear" x1="52.75" y1="51.75" x2="66.75" y2="51.75" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7BC7E9"></stop><stop offset="1" stop-color="#3C6DB0"></stop></linearGradient>
-											<linearGradient id="paint4_linear" x1="0.057373" y1="17.8525" x2="87.9424" y2="17.8525" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#E17E43"></stop><stop offset="1" stop-color="#85152E"></stop></linearGradient>
-											<linearGradient id="paint5_linear" x1="784.25" y1="216.25" x2="1036.25" y2="216.25" gradientUnits="userSpaceOnUse"><stop offset="0"  stop-color="#3C6DB0"></stop><stop offset="1" stop-color="#291F51"></stop></linearGradient>
-											<linearGradient id="paint6_linear" x1="570.75" y1="179.5" x2="682.75" y2="179.5" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#3C6DB0"></stop><stop offset="1" stop-color="#291F51"></stop></linearGradient>
-											<linearGradient id="paint7_linear" x1="98.25" y1="195.25" x2="105.25" y2="195.25" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#E17E43"></stop><stop offset="1" stop-color="#85152E"></stop></linearGradient>
-										</defs>
-									</svg> -->
+									<% if (tenants && Array.isArray(tenants.imageUrl) && tenants.imageUrl.length > 0 && tenants.imageUrl[0].url) { %>
+										<a href="<%= tenants.imageUrl[0].url %>" data-src="<%= tenants.imageUrl[0].url %>" class="lg-item col-lg-3 col-md-6 mb-4">
+											<img class="rounded" src="<%= tenants.imageUrl[0].url %>" style="width:100%;" alt="/">
+										</a>
+									<% } else { %>
+										<div class="dz-media me-3">
+											<span class="icon-placeholder bg-primary text-white">
+												<%= tenants.firstname.charAt(0).toUpperCase() + tenants.lastname.charAt(0).toUpperCase() %>
+											</span>
+										</div>
+									<% } %>
+									
+									
 								</div>
 								<div class="media-body">
 									<h4 class="fs-22 text-white"><%=tenants.firstname%></h4>
@@ -945,443 +924,51 @@
 										<th>Property</th>
 										<th>Location</th>
 										<th>Price</th>
-										<th>Type</th>
-										<th>Agent</th>
+										<!-- <th>Type</th>
+										<th>Agent</th> -->
 										<th>Status</th>
-										<th class="text-end">Action</th>
+										<!-- <th class="text-end">Action</th> -->
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="customCheckBox5" required="">
-												<label class="form-check-label" for="customCheckBox5"></label>
-											</div>
-										</td>
-										<td>#0001234</td>
-										<td>26/04/2020, 12:42 AM</td>
-										<td>James WItcwicky</td>
-										<td class="text-ov">TY35 Avenue <br>GGLondon Center</td>
-										<td class="text-ov">Flat 2551 Center<br> London 287223</td>
-										<td>$521k</td>
-										<td>ABC356</td>
-										<td>Kevin Jr.</td>
-										<td><span class="text-warning">Pending</span></td>
-										<td class="text-end">
-											<div class="dropdown ms-auto">
-												<div class="btn-link" data-bs-toggle="dropdown" >
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-													</svg>
+									<% paymentLogs.forEach(log => { %>
+										
+										<tr>
+											<td>
+												<div class="form-check custom-checkbox ms-2">
+													<input type="checkbox" class="form-check-input" id="customCheckBox5" required="">
+													<label class="form-check-label" for="customCheckBox5"></label>
 												</div>
-												<div class="dropdown-menu dropdown-menu-end">
-													<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
+											</td>
+											<td><%=log.id%></td>
+											<td><%=log.createdAt%></td>
+											<td><%=tenants.firstname%></td>
+											<td class="text-ov"><%=tenants.property.name%></td>
+											<td class="text-ov"><%=tenants.property.address%></td>
+											<td><%=tenants.Room.yearlyAmount%></td>
+											<!-- <td>ABC356</td>
+											<td>Kevin Jr.</td> -->
+											<td><span class="text-warning">Success</span></td>
+											<!-- <td class="text-end">
+												<div class="dropdown ms-auto">
+													<div class="btn-link" data-bs-toggle="dropdown" >
+														<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+															<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+															<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+															<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+														</svg>
+													</div>
+													<div class="dropdown-menu dropdown-menu-end">
+														<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
+														<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
+														<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
+													</div>
 												</div>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="customCheckBox51" required="">
-												<label class="form-check-label" for="customCheckBox51"></label>
-											</div>
-										</td>
-										<td>#0001234</td>
-										<td>26/04/2020, 12:42 AM</td>
-										<td>Stephani</td>
-										<td class="text-ov">TY35 Avenue <br>GGLondon Center</td>
-										<td class="text-ov">Straight 22th London<br> 51256</td>
-										<td>$235k</td>
-										<td>TY1255</td>
-										<td>Louis</td>
-										<td><span class="text-primary">Negotiation</span></td>
-										<td class="text-end">
-											<div class="dropdown ms-auto">
-												<div class="btn-link" data-bs-toggle="dropdown" >
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-													</svg>
-												</div>
-												<div class="dropdown-menu dropdown-menu-end">
-													<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
-												</div>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="customCheckBox52" required="">
-												<label class="form-check-label" for="customCheckBox52"></label>
-											</div>
-										</td>
-										<td>#0001234</td>
-										<td>26/04/2020, 12:42 AM</td>
-										<td>Smantha Jr.</td>
-										<td class="text-ov">65SM Alexander<br> Court,New York</td>
-										<td class="text-ov">Corner Street 5th<br> London 126623 </td>
-										<td>$116k</td>
-										<td>UJ2356</td>
-										<td>Melinda S.</td>
-										<td><span class="text-warning">Pending</span></td>
-										<td class="text-end"> 
-											<div class="dropdown ms-auto">
-												<div class="btn-link" data-bs-toggle="dropdown" >
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-													</svg>
-												</div>
-												<div class="dropdown-menu dropdown-menu-end">
-													<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
-												</div>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="customCheckBox53" required="">
-												<label class="form-check-label" for="customCheckBox53"></label>
-											</div>
-										</td>
-										<td>#0001234</td>
-										<td>26/04/2020, 12:42 AM</td>
-										<td>Hawkins</td>
-										<td class="text-ov">TY35 Avenue <br>GGLondon Center</td>
-										<td class="text-ov">Waves Street 1st<br> London 2441</td>
-										<td>$763k</td>
-										<td>RE5135</td>
-										<td>Peter P.</td>
-										<td><span class="text-primary">Negotiation</span></td>
-										<td class="text-end">
-											<div class="dropdown ms-auto">
-												<div class="btn-link" data-bs-toggle="dropdown" >
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-													</svg>
-												</div>
-												<div class="dropdown-menu dropdown-menu-end">
-													<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
-												</div>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="customCheckBox54" required="">
-												<label class="form-check-label" for="customCheckBox54"></label>
-											</div>
-										</td>
-										<td>#0001234</td>
-										<td>26/04/2020, 12:42 AM</td>
-										<td>Sanji Fujiwara</td>
-										<td class="text-ov">5122 Franklin <br>Court,New York</td>
-										<td class="text-ov">Flat 2551 Center<br> London 287223</td>
-										<td>$245k</td>
-										<td>POT434</td>
-										<td>Robinson</td>
-										<td><span class="text-success">Approved</span></td>
-										<td class="text-end">
-											<div class="dropdown ms-auto">
-												<div class="btn-link" data-bs-toggle="dropdown" >
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-													</svg>
-												</div>
-												<div class="dropdown-menu dropdown-menu-end">
-													<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
-												</div>
-											</div>
-										</td>
-									</tr>
+											</td> -->
+										</tr>
+									<% }); %>
 									
-									<tr>
-										<td>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="customCheckBox55" required="">
-												<label class="form-check-label" for="customCheckBox55"></label>
-											</div>
-										</td>
-										<td>#0001234</td>
-										<td>26/04/2020, 12:42 AM</td>
-										<td>Ilham Supriadi</td>
-										<td class="text-ov">TY35 Avenue <br>GGLondon Center</td>
-										<td class="text-ov">Waves Street 1st<br> London 2441</td>
-										<td>$765k</td>
-										<td>VBDF42</td>
-										<td>Rendy</td>
-										<td><span class="text-warning">Pending</span></td>
-										<td class="text-end">
-											<div class="dropdown ms-auto">
-												<div class="btn-link" data-bs-toggle="dropdown" >
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-													</svg>
-												</div>
-												<div class="dropdown-menu dropdown-menu-end">
-													<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
-												</div>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="customCheckBox56" required="">
-												<label class="form-check-label" for="customCheckBox56"></label>
-											</div>
-										</td>
-										<td>#0001234</td>
-										<td>26/04/2020, 12:42 AM</td>
-										<td>Yun-Yun</td>
-										<td class="text-ov">5122 Franklin<br> Court,New York</td>
-										<td class="text-ov">Corner Street 5th<br> London 126623 </td>
-										<td>$521k</td>
-										<td>QWR55</td>
-										<td>Thomas</td>
-										<td><span class="text-primary">Negotiation</span></td>
-										<td class="text-end">
-											<div class="dropdown ms-auto">
-												<div class="btn-link" data-bs-toggle="dropdown" >
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-													</svg>
-												</div>
-												<div class="dropdown-menu dropdown-menu-end">
-													<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
-												</div>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="customCheckBox5" required="">
-												<label class="form-check-label" for="customCheckBox5"></label>
-											</div>
-										</td>
-										<td>#0001234</td>
-										<td>26/04/2020, 12:42 AM</td>
-										<td>James WItcwicky</td>
-										<td class="text-ov">TY35 Avenue <br>GGLondon Center</td>
-										<td class="text-ov">Flat 2551 Center<br> London 287223</td>
-										<td>$521k</td>
-										<td>ABC356</td>
-										<td>Kevin Jr.</td>
-										<td><span class="text-warning">Pending</span></td>
-										<td class="text-end">
-											<div class="dropdown ms-auto">
-												<div class="btn-link" data-bs-toggle="dropdown" >
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-													</svg>
-												</div>
-												<div class="dropdown-menu dropdown-menu-end">
-													<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
-												</div>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="customCheckBox51" required="">
-												<label class="form-check-label" for="customCheckBox51"></label>
-											</div>
-										</td>
-										<td>#0001234</td>
-										<td>26/04/2020, 12:42 AM</td>
-										<td>Stephani</td>
-										<td class="text-ov">TY35 Avenue <br>GGLondon Center</td>
-										<td class="text-ov">Straight 22th London<br> 51256</td>
-										<td>$235k</td>
-										<td>TY1255</td>
-										<td>Louis</td>
-										<td><span class="text-primary">Negotiation</span></td>
-										<td class="text-end">
-											<div class="dropdown ms-auto">
-												<div class="btn-link" data-bs-toggle="dropdown" >
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-													</svg>
-												</div>
-												<div class="dropdown-menu dropdown-menu-end">
-													<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
-												</div>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="customCheckBox52" required="">
-												<label class="form-check-label" for="customCheckBox52"></label>
-											</div>
-										</td>
-										<td>#0001234</td>
-										<td>26/04/2020, 12:42 AM</td>
-										<td>Smantha Jr.</td>
-										<td class="text-ov">65SM Alexander<br> Court,New York</td>
-										<td class="text-ov">Corner Street 5th<br> London 126623 </td>
-										<td>$116k</td>
-										<td>UJ2356</td>
-										<td>Melinda S.</td>
-										<td><span class="text-warning">Pending</span></td>
-										<td class="text-end"> 
-											<div class="dropdown ms-auto">
-												<div class="btn-link" data-bs-toggle="dropdown" >
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-													</svg>
-												</div>
-												<div class="dropdown-menu dropdown-menu-end">
-													<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
-												</div>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="customCheckBox53" required="">
-												<label class="form-check-label" for="customCheckBox53"></label>
-											</div>
-										</td>
-										<td>#0001234</td>
-										<td>26/04/2020, 12:42 AM</td>
-										<td>Hawkins</td>
-										<td class="text-ov">TY35 Avenue <br>GGLondon Center</td>
-										<td class="text-ov">Waves Street 1st<br> London 2441</td>
-										<td>$763k</td>
-										<td>RE5135</td>
-										<td>Peter P.</td>
-										<td><span class="text-primary">Negotiation</span></td>
-										<td class="text-end">
-											<div class="dropdown ms-auto">
-												<div class="btn-link" data-bs-toggle="dropdown" >
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-													</svg>
-												</div>
-												<div class="dropdown-menu dropdown-menu-end">
-													<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
-												</div>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="customCheckBox54" required="">
-												<label class="form-check-label" for="customCheckBox54"></label>
-											</div>
-										</td>
-										<td>#0001234</td>
-										<td>26/04/2020, 12:42 AM</td>
-										<td>Sanji Fujiwara</td>
-										<td class="text-ov">5122 Franklin <br>Court,New York</td>
-										<td class="text-ov">Flat 2551 Center<br> London 287223</td>
-										<td>$245k</td>
-										<td>POT434</td>
-										<td>Robinson</td>
-										<td><span class="text-success">Approved</span></td>
-										<td class="text-end">
-											<div class="dropdown ms-auto">
-												<div class="btn-link" data-bs-toggle="dropdown" >
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-													</svg>
-												</div>
-												<div class="dropdown-menu dropdown-menu-end">
-													<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
-												</div>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="customCheckBox5" required="">
-												<label class="form-check-label" for="customCheckBox5"></label>
-											</div>
-										</td>
-										<td>#0001234</td>
-										<td>26/04/2020, 12:42 AM</td>
-										<td>James WItcwicky</td>
-										<td class="text-ov">TY35 Avenue <br>GGLondon Center</td>
-										<td class="text-ov">Flat 2551 Center<br> London 287223</td>
-										<td>$521k</td>
-										<td>ABC356</td>
-										<td>Kevin Jr.</td>
-										<td><span class="text-warning">Pending</span></td>
-										<td class="text-end">
-											<div class="dropdown ms-auto">
-												<div class="btn-link" data-bs-toggle="dropdown" >
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-													</svg>
-												</div>
-												<div class="dropdown-menu dropdown-menu-end">
-													<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-													<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
-												</div>
-											</div>
-										</td>
-									</tr>
+									
 								</tbody>
 							</table>
 						</div>

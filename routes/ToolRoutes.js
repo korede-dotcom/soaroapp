@@ -3,6 +3,12 @@ const router = express.Router();
 const Joi = require('joi');
 const  Property = require('../models/Property');  // Import necessary models
 const  Expenses  = require('../models/Expenses');  
+const Tenant = require("../models/Tenants")
+const Room = require("../models/Room")
+Tenant.belongsTo(Property,{foreignKey:"propertyId"})
+Tenant.belongsTo(Room,{foreignKey:"roomId"})
+
+
 
 
 
@@ -11,10 +17,16 @@ router.get('/', async (req, res) => {
     //   const tenants = await Tenants.findAll({include:[{model:Room},{model:Property}]});
       
     //   console.log("🚀 ~ router.get ~ formattedTenants:", tenants)
+    if (req.query.type === "compose" && req.query.id) {
+      const tenant = await Tenant.findOne({where:{id:req.query.id}},{include:[{model:Room},{model:Property}]});
+      console.log("🚀 ~ router.get ~ tenant:", tenant)
+      return res.render("composeone",{tenant})
+  }
       if (req.query.type === "compose") {
          
           return res.render("compose")
       }
+    
       if (req.query.type === "deliveries") {
          
           return res.render("addtenant",{tenants,allLands})

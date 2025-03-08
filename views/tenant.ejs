@@ -34,7 +34,7 @@
 	<link href="vendor/bootstrap-datepicker-master/css/bootstrap-datepicker.min.css" rel="stylesheet">
 	<link href="vendor/dropzone/dist/dropzone.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -49,6 +49,8 @@
             <div class="sk-child sk-bounce3"></div>
         </div>
     </div>
+
+	
     <!--*******************
         Preloader end
     ********************-->
@@ -58,14 +60,16 @@
         Main wrapper start
     ***********************************-->
     <div id="main-wrapper">
-
+		<div id="loaderOverlay">
+            <div class="spinner"></div>
+        </div>
         <!--**********************************
             Nav header start
         ***********************************-->
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
                 <img class="logo-abbr" src="images/logo.png" alt="/">
-                <img class="logo-compact" src="images/logo-text.png" alt="/">
+                <h6 class="logo-compact">Soaro</h6>
                 <img class="brand-title" src="images/logo-text.png" alt="/">
             </a>
 
@@ -891,14 +895,67 @@
 											<span class="mb-0 title">property type</span> :
 											<span class="text-black desc-text ms-2"><%=item.property.type%></span>
 										</li>
+										<%if(item.NextPaymentYear !== null) {%>
+										<li class="list-group-item">
+											<span class="mb-0 title">Next Payment</span> :
+												<span class="text-black desc-text ms-2"><%=item.NextPaymentYear%></span>
+											</li>
+
+											<% } %>
 									</ul>
 								</div>
 								<div class="card-footer">
 									<li class="list-group-item">
-										<a href="javascript:void(0);" class="btn btn-warning btn-xs">Write Message</a>
-										<a href="/tenant?type=detail&id=<%=item.id%>" class="btn btn-info btn-xs">View More</a>
-										<a href="/tenant?type=detail&id=<%=item.id%>" class="btn btn-success btn-xs">Has Paid</a>
-										<a href="/tenant?type=detail&id=<%=item.id%>" class="btn btn-danger btn-xs">Has'nt Paid</a>
+										<a href="/tool?type=compose&id=<%=item.id%>" class="btn btn-warning btn-xs">Write Message</a>
+										<a href="/tenant?type=detail&id=<%=item.id%>" class="btn btn-info btn-xs">View More Payment Record</a>
+										<% 
+    const currentYear = new Date().getFullYear();
+    const nextPaymentYear = item.NextPaymentYear; // Keep it as is
+
+    if (nextPaymentYear === null || nextPaymentYear === undefined || parseInt(nextPaymentYear, 10) === currentYear) { 
+%>
+
+									
+
+									
+										<a
+										data-bs-toggle="modal" 
+										data-bs-target="#editTenant"
+										data-room-id="<%= item.Room.id %>"
+										data-property-id="<%= item.property.id %>"
+										data-tenant-id="<%= item.id %>"
+										 href="/tenant?type=detail&id=<%=item.id%>" class="btn btn-success btn-xs fordata"> Pay Now</a>
+													 <div class="modal fade" id="editTenant">
+														 <div class="modal-dialog modal-dialog-centered" role="document">
+															 <div class="modal-content">
+																 <div class="modal-header">
+																	 <h5 class="modal-title">Pay Rent for Tenant</h5>
+																	 <button type="button" class="btn-close" data-bs-dismiss="modal">
+																	 </button>
+																 </div>
+																 <div class="modal-body">
+																	 <!-- <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p> -->
+																		 <!-- <input type="number"> -->
+																		 <form id="payForm">
+																		 <div class="form-group mb-4">
+																			 <!-- <label class="form-label" for="username">New Amount</label>
+																			 <input type="number" name="amount" class="form-control" placeholder="Enter Amount" id="username">
+																		 </div> -->
+																		 <div class="form-group mb-4">
+																			 <label class="form-label" for="end">input next due date</label>
+																			 <input type="date" name="end" class="form-control" placeholder="Enter Amount" id="end">
+																		 </div>
+																	 </form>
+																 </div>
+																 <div class="modal-footer">
+																	 <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+																	 <button id="saveChanges" type="button" class="btn btn-primary">Save changes</button>
+																 </div>
+															 </div>
+														 </div>
+													 </div>
+													 <% } %>
+										
 										
 									</li>
 								</div>
@@ -970,6 +1027,63 @@
 	<script src="vendor/dropzone/dist/dropzone.js"></script>
     <script src="js/custom.min.js"></script>
 	<script src="js/deznav-init.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+		const btn = document.querySelector("#saveChanges")
+		btn.addEventListener("click",async (e) => {
+		// form.addEventListener("submit", async (e) => {
+				e.preventDefault();
+				this.innerText = "Processing...";
+				document.getElementById('loaderOverlay').style.display = 'flex';
+				const form = document.querySelector("#payForm")
+				const fordata = document.querySelector(".fordata")
+				const formData = new FormData(form);
+				const formObject = {};
+	
+				formData.forEach((value, key) => {
+					formObject[key] = value;
+				});
+				console.log("🚀 ~ //form.addEventListener ~ formObject:", formObject)
+				const end = document.querySelector("#end").value
+				try {
+					const id = "<%=tenants.id%>"
+					const response = await fetch(`/tenant?type=pay`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({end,roomId:fordata.getAttribute("data-room-id"),propertyId:fordata.getAttribute("data-property-id"),tenantId:fordata.getAttribute("data-tenant-id")}),
+					});
+					const data =  await response.json();
+					console.log("🚀 ~ form.addEventListener ~ data:", data)
+	
+					if (data.status) {
+						document.getElementById('loaderOverlay').style.display = 'none';
+						Swal.fire({
+							icon: "success",
+							title: "Success!",
+							text: data.message,
+						});
+						form.reset();
+					} else {
+						document.getElementById('loaderOverlay').style.display = 'none';
+						Swal.fire({
+							icon: "error",
+							title: "Submission Failed",
+							text: data.message,
+						});
+					}
+				} catch (error) {
+					document.getElementById('loaderOverlay').style.display = 'none';
+					console.error("Form submission error:", error);
+					Swal.fire({
+						icon: "error",
+						title: "Error",
+						text: error.toString(),
+					});
+				}
+		})
+	</script>
 	
 </body>
 

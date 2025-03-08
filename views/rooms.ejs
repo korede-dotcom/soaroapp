@@ -65,7 +65,7 @@
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
                 <img class="logo-abbr" src="images/logo.png" alt="/">
-                <img class="logo-compact" src="images/logo-text.png" alt="/">
+                <h6 class="logo-compact">Soaro</h6>
                 <img class="brand-title" src="images/logo-text.png" alt="/">
             </a>
 
@@ -852,29 +852,71 @@
 									<div class="d-flex mb-3 align-items-center">
 										
 										
-										<div class="dz-media me-3">
+										<!-- <div class="dz-media me-3"> -->
+											<div class="dz-media me-3">
+												<span class="icon-placeholder bg-primary text-white">
+													<%= item.roomType.charAt(0).toUpperCase() + item.roomType.charAt(-1).toUpperCase() %>
+												</span>
+											</div>
 											
-											
-										</div>
+										<!-- </div> -->
 										<div>
 											<h5 class="title mb-0"><a href="Tenant-profile.html"></a><%=item.roomType%> <%=item.lastname%></h5>
 											<span class="text-primary"><%=item.number%></span>
 										</div>
 									</div>
-									<p class="fs-12">Answering guest inquiries, directing phone calls, coordinating travel plans, and more.</p>
+									<!-- <p class="fs-12">Answering guest inquiries, directing phone calls, coordinating travel plans, and more.</p> -->
 									<ul class="list-group list-group-flush">
 										<li class="list-group-item">
-											<span class="mb-0 title">Gender</span> :
+											<span class="mb-0 title">Name</span> :
 											<span class="text-black ms-2"><%=item.name%></span>
 										</li>
 										<li class="list-group-item">
-											<span class="mb-0 title">Phone</span> :
-											<span class="text-black ms-2"><%=item.phonenumber%></span>
+											<span class="mb-0 title">TenantName</span> :
+											<% if (item.Tenant) { %>
+												<span class="text-black ms-2"><%= item.Tenant.firstname %></span>
+																					
+											  <% } else { %>
+												<span class="text-black ms-2">No Tenant</span>
+											  <% } %>
+											  
 										</li>
 										<li class="list-group-item">
-											<span class="mb-0 title">Room</span> :
+											<span class="mb-0 title">yearlyAmount</span> :
 											<span class="text-black desc-text ms-2"><%=item.yearlyAmount%></span>
+											<!-- <a type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Modal centered</a> -->
+											<!-- data-bs-toggle="modal" data-bs-target="#exampleModalCenter" -->
+											<i class="fa fa-pencil marginleft edit-amount" 
+   data-bs-toggle="modal" 
+   data-bs-target="#exampleModalCenter"
+   data-room-id="<%= item.id %>"></i>
+											<div class="modal fade" id="exampleModalCenter">
+												<div class="modal-dialog modal-dialog-centered" role="document">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title">Edit Room Price</h5>
+															<button type="button" class="btn-close" data-bs-dismiss="modal">
+															</button>
+														</div>
+														<div class="modal-body">
+															<!-- <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p> -->
+															 <!-- <input type="number"> -->
+															 <form id="loginForm">
+																<div class="form-group mb-4">
+																	<label class="form-label" for="username">New Amount</label>
+																	<input type="number" name="amount" class="form-control" placeholder="Enter Amount" id="username">
+																</div>
+															</form>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+															<button id="saveChanges" type="button" class="btn btn-primary">Save changes</button>
+														</div>
+													</div>
+												</div>
+											</div>
 										</li>
+										
 										<li class="list-group-item">
 											<span class="mb-0 title">property</span> :
 											<span class="text-black desc-text ms-2"><%=item.property.name%></span>
@@ -883,14 +925,24 @@
 											<span class="mb-0 title">property type</span> :
 											<span class="text-black desc-text ms-2"><%=item.property.type%></span>
 										</li>
+										<li class="list-group-item">
+											<span class="mb-0 title">Status</span> :
+											<span class="text-black desc-text ms-2"><%=item.status%></span>
+										</li>
 									</ul>
 								</div>
 								<div class="card-footer">
 									<li class="list-group-item">
-										<a href="javascript:void(0);" class="btn btn-warning btn-xs">Write Message</a>
-										<a href="/tenant?type=detail&id=<%=item.id%>" class="btn btn-info btn-xs">View More</a>
-										<a href="/tenant?type=detail&id=<%=item.id%>" class="btn btn-success btn-xs">Has Paid</a>
-										<a href="/tenant?type=detail&id=<%=item.id%>" class="btn btn-danger btn-xs">Has'nt Paid</a>
+										<!-- <a href="/tool?type=compose&id=<%=item.id%>" class="btn btn-warning btn-xs">Write Message</a> -->
+										<% if (item.status === "not-vacant") { %>
+										<a href="/tenant?type=pasttenant&roomId=<%=item.id%>" class="btn btn-info btn-xs">View Past Tenant</a>
+										<a href="/tenant?type=edit&id=<%=item.tenantId%>" class="btn btn-success btn-xs">Change Tenant</a>
+										<% } else { %>
+											<a href="/tenant?type=addfromroom&id=<%=item.id%>" class="btn btn-primary btn-xs">Add new Tenant</a>
+											<% } %>	
+
+											
+
 										
 									</li>
 								</div>
@@ -962,6 +1014,71 @@
 	<script src="vendor/dropzone/dist/dropzone.js"></script>
     <script src="js/custom.min.js"></script>
 	<script src="js/deznav-init.js"></script>
+	<script src="vendor/toastr/js/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<script>
+		
+		
+			// When edit button is clicked, store the room ID
+			document.querySelectorAll(".edit-amount").forEach(button => {
+				button.addEventListener("click", function () {
+					selectedRoomId = this.getAttribute("data-room-id");
+				});
+			});
+		
+			// Handle save button click
+			document.getElementById("saveChanges").addEventListener("click", function (e) {
+				e.preventDefault();
+				const newAmount = document.getElementById("username").value;
+		
+				if (!newAmount || isNaN(newAmount)) {
+					Swal.fire({
+						icon: "error",
+						title: "Invalid Input",
+						text: "Please enter a valid amount!"
+					});
+					return;
+				}
+		
+				// Send data to backend
+				fetch(`/room/${selectedRoomId}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ yearlyAmount: newAmount })
+				})
+				.then(response => response.json())
+				.then(data => {
+				console.log("🚀 ~ data:", data)
+
+					if (data.status) {
+						Swal.fire({
+							icon: "success",
+							title: "Success",
+							text:  data.message || "Yearly amount updated successfully!"
+						}).then(() => {
+							location.reload(); // Reload to reflect changes
+						});
+					} else {
+						Swal.fire({
+							icon: "error",
+							title: "Error",
+							text: data.message || "Something went wrong!"
+						});
+					}
+				})
+				.catch(() => {
+					Swal.fire({
+						icon: "error",
+						title: "Error",
+						text: "Failed to update yearly amount."
+					});
+				});
+			});
+	
+		</script>
+		
+	
 	
 </body>
 

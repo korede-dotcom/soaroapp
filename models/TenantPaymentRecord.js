@@ -11,7 +11,7 @@ const PaymentRecord = sequelize.define('paymentrecord', {
     },
     end:{
         type:DataTypes.DATEONLY,
-        allowNull:false,
+        allowNull:true,
     },
     propertyId:{
         type: DataTypes.INTEGER,
@@ -30,6 +30,26 @@ const PaymentRecord = sequelize.define('paymentrecord', {
 },{
     tableName: 'paymentrecord',
     timestamps: true, 
+    hooks: {
+        afterFind: (records) => {
+            if (!records) return;
+            
+            // Ensure it works for both single and multiple records
+            const formatDate = (record) => {
+                if (record.createdAt) {
+                    record.dataValues.createdAt = new Date(record.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric'
+                    });
+                }
+            };
+
+            if (Array.isArray(records)) {
+                records.forEach(formatDate);
+            } else {
+                formatDate(records);
+            }
+        }
+    }
 })
 
 // Many-to-One relationship: Tenants belong to one Property

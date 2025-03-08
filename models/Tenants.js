@@ -43,6 +43,10 @@ const Tenants = sequelize.define('Tenants', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  NextPaymentYear:{
+    type: DataTypes.DATEONLY,
+    // allowNull: false,
+  },
   lastname: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -73,6 +77,14 @@ const Tenants = sequelize.define('Tenants', {
   gender:{
     type:DataTypes.ENUM("male","female"),
     defaultValue:"male"
+  },
+  isPrevious:{
+    type: DataTypes.BOOLEAN,
+    defaultValue:false
+  },
+  lastUsed:{
+    type: DataTypes.DATEONLY,
+    allowNull:true
   },
   phonenumber:{
     type: DataTypes.STRING,
@@ -114,10 +126,6 @@ Tenants.belongsTo(Property, {
 });
 
 // One-to-One relationship: Tenants belong to one Room
-Tenants.belongsTo(Room, {
-  foreignKey: 'roomId',  // Foreign key in the Tenants table
-  targetKey: 'id',  // Corresponds to the 'id' field in the Room model
-  as: 'room',  // Alias for the association
-});
+
 
 module.exports = Tenants;

@@ -7,7 +7,7 @@ const Property = require('../models/Property');
 const Tenant = require('../models/Tenants');
 
 Room.belongsTo(Property,{foreignKey:"propertyId"})  // Sequelize model for Room
-Room.belongsTo(Tenant,{foreignKey:"propertyId"})  // Sequelize model for Room
+Room.belongsTo(Tenant,{foreignKey:"tenantId"})  // Sequelize model for Room
 
 // Create a new room
 router.post('/rooms', async (req, res) => {
@@ -29,18 +29,23 @@ router.post('/rooms', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     // const rooms = await Room.findAll();
-    const rooms = await Room.findAll({where:{},include:[{model:Property},{model:Tenant}]});
     const property = await Property.findAll({})
+  
+    // console.log("🚀 ~ router.get ~ rooms:", rooms)
     if (req.query.type === "detail" && req.query.propertyId) {
       const rooms = await Room.findAll({where:{propertyId:req.query.propertyId},include:[{model:Property},{model:Tenant}]});
+      
       res.render("rooms",{rooms})
     }
+
     if (req.query.type === "filter" && req.query.propertyId) {
       const rooms = await Room.findAll({where:{propertyId:req.query.propertyId},include:[{model:Property},{model:Tenant}]});
       return res.render("rooms",{rooms,property})
     }
 
-    console.log("🚀 ~ router.get ~ rooms:", rooms)
+    const rooms = await Room.findAll({include:[{model:Tenant},{model:Property}]});
+    
+    console.log("🚀 ~ router.get ~ rooms:", rooms[0])
     return res.render("rooms",{rooms,property})
     // return res.status(200).json(rooms);
   } catch (err) {
@@ -80,23 +85,23 @@ router.get('/rooms/:id', async (req, res) => {
 });
 
 // Update a room by ID
-router.put('/rooms/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   const roomId = req.params.id;
-  const { error, value } = roomValidationSchema.validate(req.body);
-  if (error) {
-    return res.status(400).json({ message: error.details[0].message });
-  }
+  // const { error, value } = roomValidationSchema.validate(req.body);
+  // if (error) {
+  //   return res.status(400).json({ message: error.details[0].message });
+  // }
 
   try {
     const room = await Room.findByPk(roomId);
     if (!room) {
       return res.status(404).json({ message: 'Room not found' });
     }
-    const updatedRoom = await room.update(value);
-    return res.status(200).json({ message: 'Room updated successfully', room: updatedRoom });
+    const updatedRoom = await room.update({yearlyAmount:req.body.yearlyAmount});
+    return res.status(200).json({ status:true,message: 'Room updated successfully', room: updatedRoom });
   } catch (err) {
     console.error('Error updating room:', err);
-    return res.status(500).json({ message: 'Internal Server Error', error: err.message });
+    return res.status(500).json({ status:false,message: 'Internal Server Error', error: err.message });
   }
 });
 

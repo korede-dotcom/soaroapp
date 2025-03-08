@@ -74,7 +74,7 @@
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
                 <img class="logo-abbr" src="images/logo.png" alt="/">
-                <img class="logo-compact" src="images/logo-text.png" alt="/">
+                <h6 class="logo-compact">Soaro</h6>
                 <img class="brand-title" src="images/logo-text.png" alt="/">
             </a>
 
@@ -1182,8 +1182,8 @@
             });
 
             // Append uploaded image URLs
+			if (files.length > 0) {
             jsonObject['images'] = uploadedImages;
-
             if (!jsonObject['images']) {
                 Swal.fire({
                         icon: "error",
@@ -1192,6 +1192,8 @@
                     });
                 return
             }
+			}
+
 
             // Send final data to the backend
             try {
@@ -1203,6 +1205,7 @@
             body: JSON.stringify(jsonObject)
             });
             const result = await response.json();
+			this.disabled = false;
             console.log('Property added successfully:', result);
                 if (!result.status) {
                     Swal.fire({
@@ -1210,18 +1213,22 @@
                         title: "Validation Error",
                         text: result.errors.toString(),
                     });
-                }
-                Swal.fire({
-                        icon: "success",
-                        title: "created",
-                        text: result.message,
-                    });
-                    window.location.href = "/property"
+					document.getElementById('loaderOverlay').style.display = 'none';
+                }else{
+					Swal.fire({
+							icon: "success",
+							title: "created",
+							text: result.message,
+						});
+						window.location.href = "/property"
+
+				}
             } catch (error) {
+				document.getElementById('loaderOverlay').style.display = 'none';
                 Swal.fire({
                         icon: "error",
                         title: "Validation Error",
-                        text: error.toString(),
+                        text: error.message,
                     });
         //         Swal.fire({
         //   icon: "error",
@@ -1229,6 +1236,7 @@
         //   text: "Sum of all room types should not be greater than total rooms!",
         // });
         return;
+		document.getElementById('loaderOverlay').style.display = 'none';
             console.error('Error submitting form:', error);
             }
             });

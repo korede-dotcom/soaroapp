@@ -27,7 +27,26 @@ const AuthUser = (req, res, next) => {
 }
 
 
+const authenticateUser = (req, res, next) => {
+    const token = req.cookies.authToken; // Get token from cookies
+    if (!token) {
+        return res.redirect("/");
+    }
+    
+    // Verify token (assuming it's a JWT)
+    try {
+        const jwt = require("jsonwebtoken");
+        const decoded = jwt.verify(token, "your-secret-key"); // Replace with your actual secret key
+        req.user = decoded; // Store user info in request
+        next();
+    } catch (error) {
+        return res.redirect("/");
+        return res.status(403).json({ message: "Invalid token" });
+    }
+};
 
 
 
-module.exports = AuthUser;
+
+
+module.exports = authenticateUser;

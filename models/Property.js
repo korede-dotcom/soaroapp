@@ -91,6 +91,22 @@ const Land = sequelize.define('property', {
   // Additional model options
   tableName: 'property', // optional, but you can define the table name explicitly
   timestamps: true,  // Disable automatic timestamp columns (`createdAt`, `updatedAt`) if not needed
+  hooks: {
+    afterFind: (prop) => {
+      if (!prop) return;
+      if (Array.isArray(prop)) {
+        prop.forEach(prop => {
+          if (prop.amount !== null) {
+            prop.amount = `₦${Number(prop.amount).toLocaleString('en-NG', { minimumFractionDigits: 2 })}`;
+          }
+        });
+      } else {
+        if (prop.amount !== null) {
+          prop.amount = `₦${Number(prop.amount).toLocaleString('en-NG', { minimumFractionDigits: 2 })}`;
+        }
+      }
+    }
+  }
 });
 
 module.exports = Land;
