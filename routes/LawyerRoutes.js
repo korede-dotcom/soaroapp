@@ -15,6 +15,10 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: error.details[0].message });  // Send validation error message
     }
 
+    if (req.user.user.roleId === 1) {
+      const newLawyer = await Lawyers.create({...value,createdBy:req.user.user.roleId});
+      return res.status(201).json({ message: 'Lawyer created successfully', lawyer: newLawyer ,status:true});
+    }
     // If data is valid, create the new lawyer
     const newLawyer = await Lawyers.create(value);
     return res.status(201).json({ message: 'Lawyer created successfully', lawyer: newLawyer ,status:true});
@@ -26,19 +30,33 @@ router.post('/', async (req, res) => {
 
 // Get all lawyers
 router.get('/', async (req, res) => {
+  console.log("🚀 ~ router.get ~ req:", req.user.id)
   Lawyers.belongsTo(Land,{foreignKey:"propertyId"})
   try {
     const lawyers = await Lawyers.findAll({include:[{model:Land}]});
     const allLands = await Land.findAll();
     if (req.query.type === "add") {
+        if (req.user.user.roleId === 1) {
+          const allLands = await Land.findAll({where:{createdBy:req.user.user.roleId}});
+          return res.render("addlawyer",{allLands}) 
+        }
         return res.render("addlawyer",{allLands})    
     }
     if (req.query.type === "details" && req.query.id ) {
+
+        if (req.user.user.roleId === 1) {
+          const lawyers = await Lawyers.findAll({where:{createdBy:req.user.user.roleId},include:[{model:Land}]});
+          return res.render("lawyerprofile",{lawyers})
+          
+        }
          
         return res.render("lawyerprofile",{lawyers})
     }
+    if (req.user.user.roleId === 1) {
+      const lawyers = await Lawyers.findAll({where:{createdBy:req.user.user.roleId},include:[{model:Land}]});
+      return res.render("lawyers",{lawyers})
 
-    console.log("🚀 ~ router.get ~ lawyers:", lawyers)
+    }
     return res.render("lawyers",{lawyers})
     return res.status(200).json(lawyers);
   } catch (err) {

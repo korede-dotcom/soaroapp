@@ -12,6 +12,10 @@ const Lawyers = sequelize.define('lawyer', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    createdBy:{
+        type: DataTypes.INTEGER,
+        allowNull:true,
+    },
     lastname: {
         type: DataTypes.STRING,
         allowNull: false,

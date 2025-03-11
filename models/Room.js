@@ -15,6 +15,10 @@ const Room = sequelize.define('Room', {
     type: DataTypes.STRING,
     allowNull: false,  // Name of the room is required
   },
+  createdBy:{
+    type: DataTypes.INTEGER,
+    allowNull:true,
+},
   floor: {
     type: DataTypes.STRING,
     allowNull: true,  // Optional: If floor is not required, set to allowNull: true

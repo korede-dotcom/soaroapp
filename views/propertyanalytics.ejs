@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <!-- Title -->
+	<!-- Title -->
 	<title>Omah - Real Estate Admin Dashboard Template</title>
  
 	<!-- Meta -->
@@ -26,17 +26,15 @@
 
 	<!-- MOBILE SPECIFIC -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-   
+	
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
-    <!-- Custom Stylesheet -->
+    <link href="vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+	<link href="vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
-	<link href="vendor/bootstrap-datepicker-master/css/bootstrap-datepicker.min.css" rel="stylesheet">
-	<link href="vendor/dropzone/dist/dropzone.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 
 </head>
-
 <body>
 
     <!--*******************
@@ -53,9 +51,6 @@
         Preloader end
     ********************-->
 
-	<div id="loaderOverlay">
-		<div class="spinner"></div>
-	</div>
     <!--**********************************
         Main wrapper start
     ***********************************-->
@@ -89,13 +84,13 @@
 			<div class="custom-tab-1">
 				<ul class="nav nav-tabs">
 					<li class="nav-item">
-						<a class="nav-link" data-bs-toggle="tab" href="add-Tenant.html#notes">Notes</a>
+						<a class="nav-link" data-bs-toggle="tab" href="order-list.html#notes">Notes</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" data-bs-toggle="tab" href="add-Tenant.html#alerts">Alerts</a>
+						<a class="nav-link" data-bs-toggle="tab" href="order-list.html#alerts">Alerts</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link active" data-bs-toggle="tab" href="add-Tenant.html#chat">Chat</a>
+						<a class="nav-link active" data-bs-toggle="tab" href="order-list.html#chat">Chat</a>
 					</li>
 				</ul>
 				<div class="tab-content">
@@ -582,14 +577,11 @@
 		<!--**********************************
             Chat box End
         ***********************************-->
-
-
 		
-		
-        <!--**********************************
+		<!--**********************************
             Header start
         ***********************************-->
-		<%- include('partial/header') %>
+        <%- include('partial/header') %>
         <!--**********************************
             Header end ti-comment-alt
         ***********************************-->
@@ -601,151 +593,211 @@
         <!--**********************************
             Sidebar end
         ***********************************-->
-
-        <!--**********************************
+		
+		<!--**********************************
             Content body start
         ***********************************-->
         <div class="content-body">
-            <div class="container-fluid">
-                <div class="page-titles">
-					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a href="javascript:void(0)">Tenants</a></li>
-						<li class="breadcrumb-item active"><a href="javascript:void(0)">Add Tenant</a></li>
-					</ol>
-                </div>
-                <!-- row -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                
-                            </div>
-							<!-- <h4 class="card-title"> </h4> -->
-                            <div class="card-body">
-								<form action="/tenants"  id="tenantform">
-                                    <div class="row">
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">First Name</label>
-                                            <input type="text" class="form-control" name="firstname" required>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Last Name</label>
-                                            <input type="text" class="form-control" name="lastname" required>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Property</label>
-                                            <select aria-valuemax="<%= tenants.property.name %>" id="propertySelect" class="default-select form-control wide" name="propertyId" required>
-                                                <!-- <option value="select">Select Property</option> -->
-                                              
-                                                    <option value="<%= tenants.property.id %>"><%= tenants.property.name %></option>
-                                               
-                                            </select>
-                                        </div>
-                                       
-                                        <div class="mb-3 col-lg-4 col-md-6 room-container">
-                                            <label class="form-label">Room</label> 
-											<select aria-valuemax="<%= tenants.name %>" id="roomSelect" class="default-select form-control wide" name="roomId" required>
-                                                <!-- <option value="select">Select Property</option> -->
-                                              
-                                                    <option value="<%= tenants.id %>"><%= tenants.name %></option>
-                                               
-                                            </select>
-                                        </div>
-                                        
-                                        
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">State</label>
-                                            <input type="text" class="form-control" name="state" required>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">LCG</label>
-                                            <input type="text" class="form-control" name="lcg" required>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Country</label>
-                                            <input type="text" class="form-control" name="country" required>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Previous Address</label>
-                                            <input type="text" class="form-control" name="previousAddress" required>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Previous Landlord</label>
-                                            <input type="text" class="form-control" name="previousLandlord" required>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Guarantor</label>
-                                            <input type="text" class="form-control" name="guarantor" required>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Guarantor Phone Number</label>
-                                            <input type="text" class="form-control" name="guarantorPhonenumber" required>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Guarantor Address</label>
-                                            <input type="text" class="form-control" name="guarantorAddress" required>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Occupation</label>
-                                            <input type="text" class="form-control" name="occupation" required>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Marital Status</label>
-                                            <select class="default-select form-control wide" name="maritalStatus">
-                                                <option value="single">Single</option>
-                                                <option value="married" selected>Married</option>
-                                                <option value="divorced">Divorced</option>
-                                                <option value="widow">Widow</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Spouse Name</label>
-                                            <input type="text" class="form-control" name="spouseName">
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Gender</label>
-                                            <select class="default-select form-control wide" name="gender">
-                                                <option value="male" selected>Male</option>
-                                                <option value="female">Female</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Phone Number</label>
-                                            <input type="text" class="form-control" name="phonenumber" required>
-                                        </div>
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label class="form-label">Family Count</label>
-                                            <input type="number" class="form-control" name="familycount" required>
-                                        </div>
-                                        <!-- <div class="mb-3 col-12">
-                                            <button type="submit" class="btn btn-primary">Submit</button>
-                                        </div> -->
-                                        <div class="mb-3 col-lg-4 col-md-6">
-                                            <label for="fileInput" class="form-label">Multiple files input example</label>
-                                            <input class="form-control"  type="file" id="fileInput" multiple>
-                                         
-                                        </div>
-                                    </div>
-                                    <div class="	pt-3">
-                                        <button type="submit" class="btn btn-sm btn-primary me-2">Submit</button>
-                                        <button type="button" class="btn btn-sm btn-danger light">Cancel</button>
-                                    </div>
-                                </form>
-                                
-								<!-- <div class="dropzone-admin mb-3">
-									<label class="form-label">Media</label>
-									<form class="dropzone" id="multiFileUpload" action="https://omah.dexignzone.com/upload.php">
-										<div class="dz-message needsclick"><i class="fas fa-cloud-upload-alt"></i>
-										<h6>Drop files here or click to upload.</h6>
-										</div>
-									</form>
-								</div>  
-								<div class="	pt-3">
-									<button type="button" class="btn btn-sm btn-primary me-2">Submit</button>
-									<button type="button" class="btn btn-sm btn-danger light">Cancel</button>
-								</div> -->
+            <!-- row -->
+			<div class="container-fluid">
+                <div class="form-head page-titles d-flex  align-items-center">
+					<div class="me-auto  d-lg-block d-block">
+						<h4 class="mb-1"><%=propertyDetails.name.toUpperCase()%></h4>
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item active"><a href="javascript:void(0)"><%=propertyDetails.type %></a></li>
+							<li class="breadcrumb-item active"><a href="javascript:void(0)"><%=propertyDetails.start %></a></li>
+							<li class="breadcrumb-item active"><a href="javascript:void(0)"><%=propertyDetails.end %></a></li>
+						</ol>
+					</div>
+					<a href="javascript:void(0);" class="btn btn-primary rounded light">Refresh</a>
+					
+				</div>
+				<div id="lightgallery" class="front-view-slider mb-sm-5 mb-3 owl-carousel">
+					
+					
+					
+				</div>
+				<div class="media align-items-center">
+					
+				<div class="row">
+					
+					
+					<div class="col-xl-3  col-md-6">
+						<div class="card">
+							<div class="card-body">
+								<div class="media align-items-center">
+									<div class="media-body">
+										<h3><%=getValues.totalTenants%></h3>
+										<span class="fs-14 text-black">Total totalTenants count</span>
+									</div>
+									<span class="bg-primary rounded p-3">
+										<svg width="28" height="28" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M15.1208 37.6042H1.97909C1.10825 37.6042 0.395752 36.8917 0.395752 36.0208V14.1708C0.395752 13.775 0.554085 13.3 0.870752 13.0625L14.0124 0.791659C14.4874 0.395825 15.1208 0.237492 15.6749 0.474992C16.3083 0.791659 16.6249 1.34583 16.6249 1.97916V36.1C16.6249 36.8917 15.9124 37.6042 15.1208 37.6042ZM3.48325 34.5167H13.5374V5.54166L3.48325 14.8833V34.5167Z" fill="white"></path>
+											<path d="M36.0208 37.6042H15.0416C14.1708 37.6042 13.4583 36.8917 13.4583 36.0208V17.4167C13.4583 16.5458 14.1708 15.8333 15.0416 15.8333H36.0208C36.8916 15.8333 37.6041 16.5458 37.6041 17.4167V36.1C37.6041 36.8917 36.8916 37.6042 36.0208 37.6042ZM16.6249 34.5167H34.5166V18.9208H16.6249V34.5167Z" fill="white"></path>
+											<path d="M28.5791 37.6042H22.4832C21.6124 37.6042 20.8999 36.8917 20.8999 36.0208V26.3625C20.8999 25.4917 21.6124 24.7792 22.4832 24.7792H28.5791C29.4499 24.7792 30.1624 25.4917 30.1624 26.3625V36.0208C30.1624 36.8917 29.4499 37.6042 28.5791 37.6042ZM24.0666 34.5167H27.0749V27.9458H24.0666V34.5167Z" fill="white"></path>
+										</svg>
+									</span>
+								</div>
 							</div>
-                        </div>
+						</div>
+					</div>
+					<div class="col-xl-3  col-md-6">
+						<div class="card">
+							<div class="card-body">
+								<div class="media align-items-center">
+									<div class="media-body">
+										<h3><%=getValues.totalRooms%></h3>
+										<span class="fs-14 text-black">Total Room count</span>
+									</div>
+									<span class="bg-primary rounded p-3">
+										<svg width="28" height="28" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M15.1208 37.6042H1.97909C1.10825 37.6042 0.395752 36.8917 0.395752 36.0208V14.1708C0.395752 13.775 0.554085 13.3 0.870752 13.0625L14.0124 0.791659C14.4874 0.395825 15.1208 0.237492 15.6749 0.474992C16.3083 0.791659 16.6249 1.34583 16.6249 1.97916V36.1C16.6249 36.8917 15.9124 37.6042 15.1208 37.6042ZM3.48325 34.5167H13.5374V5.54166L3.48325 14.8833V34.5167Z" fill="white"></path>
+											<path d="M36.0208 37.6042H15.0416C14.1708 37.6042 13.4583 36.8917 13.4583 36.0208V17.4167C13.4583 16.5458 14.1708 15.8333 15.0416 15.8333H36.0208C36.8916 15.8333 37.6041 16.5458 37.6041 17.4167V36.1C37.6041 36.8917 36.8916 37.6042 36.0208 37.6042ZM16.6249 34.5167H34.5166V18.9208H16.6249V34.5167Z" fill="white"></path>
+											<path d="M28.5791 37.6042H22.4832C21.6124 37.6042 20.8999 36.8917 20.8999 36.0208V26.3625C20.8999 25.4917 21.6124 24.7792 22.4832 24.7792H28.5791C29.4499 24.7792 30.1624 25.4917 30.1624 26.3625V36.0208C30.1624 36.8917 29.4499 37.6042 28.5791 37.6042ZM24.0666 34.5167H27.0749V27.9458H24.0666V34.5167Z" fill="white"></path>
+										</svg>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-3  col-md-6">
+						<div class="card">
+							<div class="card-body">
+								<div class="media align-items-center">
+									<div class="media-body">
+									
+										<h3>₦<%= getValues.totalExpenses ? getValues.totalExpenses.toLocaleString('en-NG') : '0' %></h3>
+
+									
+										<span class="fs-14 text-black">Total Expenses </span>
+									</div>
+									<span class="bg-primary rounded p-3">
+										<svg width="28" height="28" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M15.1208 37.6042H1.97909C1.10825 37.6042 0.395752 36.8917 0.395752 36.0208V14.1708C0.395752 13.775 0.554085 13.3 0.870752 13.0625L14.0124 0.791659C14.4874 0.395825 15.1208 0.237492 15.6749 0.474992C16.3083 0.791659 16.6249 1.34583 16.6249 1.97916V36.1C16.6249 36.8917 15.9124 37.6042 15.1208 37.6042ZM3.48325 34.5167H13.5374V5.54166L3.48325 14.8833V34.5167Z" fill="white"></path>
+											<path d="M36.0208 37.6042H15.0416C14.1708 37.6042 13.4583 36.8917 13.4583 36.0208V17.4167C13.4583 16.5458 14.1708 15.8333 15.0416 15.8333H36.0208C36.8916 15.8333 37.6041 16.5458 37.6041 17.4167V36.1C37.6041 36.8917 36.8916 37.6042 36.0208 37.6042ZM16.6249 34.5167H34.5166V18.9208H16.6249V34.5167Z" fill="white"></path>
+											<path d="M28.5791 37.6042H22.4832C21.6124 37.6042 20.8999 36.8917 20.8999 36.0208V26.3625C20.8999 25.4917 21.6124 24.7792 22.4832 24.7792H28.5791C29.4499 24.7792 30.1624 25.4917 30.1624 26.3625V36.0208C30.1624 36.8917 29.4499 37.6042 28.5791 37.6042ZM24.0666 34.5167H27.0749V27.9458H24.0666V34.5167Z" fill="white"></path>
+										</svg>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-3  col-md-6">
+						<div class="card">
+							<div class="card-body">
+								<div class="media align-items-center">
+									<div class="media-body">
+									
+										<h3>₦<%= getValues.totalRent ? getValues.totalRent.toLocaleString('en-NG') : '0' %></h3>
+
+									
+										<span class="fs-14 text-black">Total Rent Paid </span>
+									</div>
+									<span class="bg-primary rounded p-3">
+										<svg width="28" height="28" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M15.1208 37.6042H1.97909C1.10825 37.6042 0.395752 36.8917 0.395752 36.0208V14.1708C0.395752 13.775 0.554085 13.3 0.870752 13.0625L14.0124 0.791659C14.4874 0.395825 15.1208 0.237492 15.6749 0.474992C16.3083 0.791659 16.6249 1.34583 16.6249 1.97916V36.1C16.6249 36.8917 15.9124 37.6042 15.1208 37.6042ZM3.48325 34.5167H13.5374V5.54166L3.48325 14.8833V34.5167Z" fill="white"></path>
+											<path d="M36.0208 37.6042H15.0416C14.1708 37.6042 13.4583 36.8917 13.4583 36.0208V17.4167C13.4583 16.5458 14.1708 15.8333 15.0416 15.8333H36.0208C36.8916 15.8333 37.6041 16.5458 37.6041 17.4167V36.1C37.6041 36.8917 36.8916 37.6042 36.0208 37.6042ZM16.6249 34.5167H34.5166V18.9208H16.6249V34.5167Z" fill="white"></path>
+											<path d="M28.5791 37.6042H22.4832C21.6124 37.6042 20.8999 36.8917 20.8999 36.0208V26.3625C20.8999 25.4917 21.6124 24.7792 22.4832 24.7792H28.5791C29.4499 24.7792 30.1624 25.4917 30.1624 26.3625V36.0208C30.1624 36.8917 29.4499 37.6042 28.5791 37.6042ZM24.0666 34.5167H27.0749V27.9458H24.0666V34.5167Z" fill="white"></path>
+										</svg>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-3  col-md-6">
+						<div class="card">
+							<div class="card-body">
+								<div class="media align-items-center">
+									<div class="media-body">
+									
+										<h3>₦<%= expectedYearlyAmount ? expectedYearlyAmount.toLocaleString('en-NG') : '0' %></h3>
+
+									
+										<span class="fs-14 text-black">Expected Income till end of Property </span>
+									</div>
+									<span class="bg-primary rounded p-3">
+										<svg width="28" height="28" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M15.1208 37.6042H1.97909C1.10825 37.6042 0.395752 36.8917 0.395752 36.0208V14.1708C0.395752 13.775 0.554085 13.3 0.870752 13.0625L14.0124 0.791659C14.4874 0.395825 15.1208 0.237492 15.6749 0.474992C16.3083 0.791659 16.6249 1.34583 16.6249 1.97916V36.1C16.6249 36.8917 15.9124 37.6042 15.1208 37.6042ZM3.48325 34.5167H13.5374V5.54166L3.48325 14.8833V34.5167Z" fill="white"></path>
+											<path d="M36.0208 37.6042H15.0416C14.1708 37.6042 13.4583 36.8917 13.4583 36.0208V17.4167C13.4583 16.5458 14.1708 15.8333 15.0416 15.8333H36.0208C36.8916 15.8333 37.6041 16.5458 37.6041 17.4167V36.1C37.6041 36.8917 36.8916 37.6042 36.0208 37.6042ZM16.6249 34.5167H34.5166V18.9208H16.6249V34.5167Z" fill="white"></path>
+											<path d="M28.5791 37.6042H22.4832C21.6124 37.6042 20.8999 36.8917 20.8999 36.0208V26.3625C20.8999 25.4917 21.6124 24.7792 22.4832 24.7792H28.5791C29.4499 24.7792 30.1624 25.4917 30.1624 26.3625V36.0208C30.1624 36.8917 29.4499 37.6042 28.5791 37.6042ZM24.0666 34.5167H27.0749V27.9458H24.0666V34.5167Z" fill="white"></path>
+										</svg>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					
+					<div class="col-xl-12">
+						<div class="table-responsive fs-14">
+							<table class="table display mb-4 dataTablesCard overflow-hidden card-table" id="example5">
+								<h4>Payment Records</h4>
+								<thead>
+									<tr>
+										<th>
+											<div class="form-check custom-checkbox ms-2">
+												<input type="checkbox" class="form-check-input" id="checkAll" required="">
+												<label class="form-check-label" for="checkAll"></label>
+											</div>
+										</th>
+										<th>Order ID</th>
+										<th>Date</th>
+										<th>Customer</th>
+										<th>Property</th>
+										<th>Location</th>
+										<th>Price</th>
+										<th>No.Years</th>
+										<th>Next Payment Date</th>
+										<!-- <th>Type</th>
+										<th>Agent</th> -->
+										<th>Status</th>
+										<!-- <th class="text-end">Action</th> -->
+									</tr>
+								</thead>
+								<tbody>
+									<% paymentLogs.forEach(log => { %>
+										
+										<tr>
+											<td>
+												<div class="form-check custom-checkbox ms-2">
+													<input type="checkbox" class="form-check-input" id="customCheckBox5" required="">
+													<label class="form-check-label" for="customCheckBox5"></label>
+												</div>
+											</td>
+											<td><%=log.id%></td>
+											<td><%=log.createdAt%></td>
+											<td><%=log.Tenant.firstname%></td>
+											<td class="text-ov"><%=log.property.name%></td>
+											<td class="text-ov"><%=log.property.address%></td>
+											<td>₦<%= log.amount.toLocaleString('en-NG') %></td>
+											<td><%=log.numOfYears%> years</td>
+											<td><%=log.Tenant.NextPaymentYear%></td>
+											<!-- <td>ABC356</td>
+											<td>Kevin Jr.</td> -->
+											<td><span class="text-warning">Success</span></td>
+											<!-- <td class="text-end">
+												<div class="dropdown ms-auto">
+													<div class="btn-link" data-bs-toggle="dropdown" >
+														<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+															<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+															<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+															<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+														</svg>
+													</div>
+													<div class="dropdown-menu dropdown-menu-end">
+														<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
+														<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
+														<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
+													</div>
+												</div>
+											</td> -->
+										</tr>
+									<% }); %>
+									
+									
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
             </div>
@@ -753,7 +805,6 @@
         <!--**********************************
             Content body end
         ***********************************-->
-
 
         <!--**********************************
             Footer start
@@ -767,7 +818,7 @@
             Footer end
         ***********************************-->
 
-        <!--**********************************
+		<!--**********************************
            Support ticket button start
         ***********************************-->
 
@@ -775,7 +826,7 @@
            Support ticket button end
         ***********************************-->
 
-        
+
     </div>
     <!--**********************************
         Main wrapper end
@@ -787,271 +838,13 @@
     <!-- Required vendors -->
     <script src="vendor/global/global.min.js"></script>
 	<script src="vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-	<script src="vendor/bootstrap-datepicker-master/js/bootstrap-datepicker.min.js"></script>
-	<script src="vendor/dropzone/dist/dropzone.js"></script>
+
+	<!-- Datatable -->
+	<script src="vendor/datatables/js/jquery.dataTables.min.js"></script>
+	<script src="js/plugins-init/datatables.init.js"></script>
+
     <script src="js/custom.min.js"></script>
 	<script src="js/deznav-init.js"></script>
-	<script src="vendor/toastr/js/toastr.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   
-   
-    
-
-<!-- <script>
-    document.addEventListener("DOMContentLoaded",  async function () {
-        const propertySelect = document.getElementById("propertySelect");
-        const roomContainer = document.querySelector(".room-container");
-        const form = document.getElementById("tenantform");
-        
-    
-        // Function to create the Room Select dropdown dynamically
-        function createRoomSelect() {
-            const selectHTML = `
-                <label class="form-label">Room</label>
-                <select id="roomSelect" class="default-select form-control wide" name="roomId" required>
-                    <option value="">Select Room</option>
-                </select>
-            `;
-            roomContainer.innerHTML = selectHTML;
-        }
-    
-        // Call the function to create the room select dropdown initially
-        createRoomSelect();
-    
-        // Fetch available rooms when property is selected
-        // propertySelect.addEventListener("change", async function () {
-        //     const propertyId = this.value;
-        //     const roomSelect = document.getElementById("roomSelect");
-        //     roomSelect.innerHTML = `<option value="">Loading...</option>`;
-    
-        //     if (!propertyId || propertyId === "select") {
-        //         roomSelect.innerHTML = `<option value="">Select a property first</option>`;
-        //         return;
-        //     }
-    
-        //     try {
-        //         const response = await fetch(`/roomooms?propertyId=${propertyId}`);
-        //         const rooms = await response.json();
-        //         roomSelect.innerHTML = `<option value="">Select Room</option>`;
-    
-        //         rooms.forEach((room) => {
-        //             const option = document.createElement("option");
-        //             option.value = room.id;
-        //             option.textContent = room.name;
-        //             roomSelect.appendChild(option);
-        //         });
-        //     } catch (error) {
-        //         console.error("Error fetching rooms:", error);
-        //         roomSelect.innerHTML = `<option value="">Failed to load rooms</option>`;
-        //     }
-        // });
-    
-        // Handle form submission
-        const formObject = {};
-    formData.forEach((value, key) => {
-        formObject[key] = value;
-    });
-
-    // If a file is selected, upload it to Cloudinary first
-    if (fileInput && fileInput.files.length > 0) {
-        const imageFile = fileInput.files[0];
-        const cloudinaryUrl = "https://api.cloudinary.com/v1_1/YOUR_CLOUDINARY_NAME/upload";
-        const cloudinaryPreset = "YOUR_UPLOAD_PRESET";
-
-        const uploadData = new FormData();
-        uploadData.append("file", imageFile);
-        uploadData.append("upload_preset", cloudinaryPreset);
-
-        try {
-            const uploadResponse = await fetch(cloudinaryUrl, {
-                method: "POST",
-                body: uploadData,
-            });
-
-            const uploadResult = await uploadResponse.json();
-            if (uploadResult.secure_url) {
-                formObject.imageUrl = uploadResult.secure_url; // Add image URL to payload
-            }
-        } catch (error) {
-            console.error("Image upload failed:", error);
-            alert("Image upload failed. Try again.");
-            return;
-        }
-    }
-
-	form.addEventListener("submit",async (e) => {
-		e.preventDefault();
-		alert() 
-		return;
-		try {
-			const response = await fetch("/tenants", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(formObject),
-			});
-	
-			if (response.ok) {
-				alert("Tenant added successfully!");
-				form.reset();
-			} else {
-				alert("Failed to add tenant.");
-			}
-		} catch (error) {
-			console.error("Form submission error:", error);
-		}
-	})
-    // Submit form data as JSON
-        });
-    </script> -->
-    
-	<script>
-		document.addEventListener("DOMContentLoaded", function () {
-			const propertySelect = document.getElementById("propertySelect");
-			const roomContainer = document.querySelector(".room-container");
-			const form = document.getElementById("tenantform");
-			const fileInput = document.getElementById("fileInput"); // Assuming it's a file input
-
-	
-			function createRoomSelect() {
-				roomContainer.innerHTML = `
-					<label class="form-label">Room</label>
-					<select id="roomSelect" class="default-select form-control wide" name="roomId" required>
-						<option value="">Select Room</option>
-					</select>
-				`;
-			}
-	
-			// createRoomSelect();
-	
-			// propertySelect.addEventListener("change", async function () {
-			// 	const propertyId = this.value;
-			// 	const roomSelect = document.getElementById("roomSelect");
-			// 	roomSelect.innerHTML = `<option value="">Loading...</option>`;
-	
-			// 	if (!propertyId) {
-			// 		roomSelect.innerHTML = `<option value="">Select a property first</option>`;
-			// 		return;
-			// 	}
-	
-			// 	try {
-			// 		const response = await fetch(`/rooms?propertyId=${propertyId}`);
-			// 		const rooms = await response.json();
-			// 		roomSelect.innerHTML = `<option value="">Select Room</option>`;
-	
-			// 		rooms.forEach((room) => {
-			// 			const option = document.createElement("option");
-			// 			option.value = room.id;
-			// 			option.textContent = room.name;
-			// 			roomSelect.appendChild(option);
-			// 		});
-			// 	} catch (error) {
-			// 		console.error("Error fetching rooms:", error);
-			// 		Swal.fire({
-			// 			icon: "error",
-			// 			title: "Fetch Error",
-			// 			text: "Failed to load rooms. Please try again.",
-			// 		});
-			// 	}
-			// });
-	
-			form.addEventListener("submit", async (e) => {
-				e.preventDefault();
-				this.innerText = "Processing...";
-				document.getElementById('loaderOverlay').style.display = 'flex';
-	
-				const formData = new FormData(form);
-				const formObject = {};
-	
-				formData.forEach((value, key) => {
-					formObject[key] = value;
-				});
-	
-				formObject.imageUrl = []; // Initialize as an array
-	
-				// Handle multiple file uploads
-				if (fileInput && fileInput.files.length > 0 || fileInput.files.length === 0) {
-					const cloudinaryUrl = "https://api.cloudinary.com/v1_1/bada/image/upload";
-					const cloudinaryPreset = "Ysoaro-realestate";
-	
-					const uploadPromises = Array.from(fileInput.files).map(async (file) => {
-						const uploadData = new FormData();
-					
-						uploadData.append('file', file);
-                uploadData.append('upload_preset', 'soaro-realestate');
-                uploadData.append("folder", "soaro");
-                uploadData.append('api_key', 'Ilo6RYkxvGRix0UvCSGlxQwG8W0--'); 
-	
-						try {
-							const uploadResponse = await fetch(cloudinaryUrl, {
-								method: "POST",
-								body: uploadData,
-							});
-	
-							const uploadResult = await uploadResponse.json();
-							if (uploadResult.secure_url) {
-								formObject.imageUrl.push({url:uploadResult.secure_url,id:uploadResult.public_id});
-							}
-						} catch (error) {
-							console.error("Image upload failed:", error);
-							Swal.fire({
-								icon: "error",
-								title: "Image Upload Error",
-								text: "Failed to upload image(s). Please try again.",
-							});
-						}
-					});
-	
-					await Promise.all(uploadPromises); // Wait for all uploads to finish
-				}
-	
-				try {
-					const id = "<%=tenants.id%>"
-					const response = await fetch(`/tenant`, {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify(formObject),
-					});
-					const data =  await response.json();
-					console.log("🚀 ~ form.addEventListener ~ data:", data)
-	
-					if (response.ok) {
-						document.getElementById('loaderOverlay').style.display = 'none';
-						Swal.fire({
-							icon: "success",
-							title: "Success!",
-							text: data.message,
-						});
-						form.reset();
-					} else {
-						document.getElementById('loaderOverlay').style.display = 'none';
-						Swal.fire({
-							icon: "error",
-							title: "Submission Failed",
-							text: data.message,
-						});
-					}
-				} catch (error) {
-					document.getElementById('loaderOverlay').style.display = 'none';
-					console.error("Form submission error:", error);
-					Swal.fire({
-						icon: "error",
-						title: "Error",
-						text: error.toString(),
-					});
-				}
-			});
-		});
-	</script>
-	
-    
-    
-    
-    
 	
 </body>
-
 </html>

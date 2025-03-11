@@ -25,15 +25,15 @@ app.set('view engine', 'ejs');
 
 // Middleware to serve static files (like CSS, JS, images)
 app.use(express.static(path.join(__dirname, 'views')));
-app.use((req, res, next) => {
-  if (req.path.startsWith('/portal')) {
-    app.use(express.static(path.join(__dirname, 'views/portal')));
-    app.set('views', path.join(__dirname, 'views', 'portal'));
-  } else {
-    app.set('views', path.join(__dirname, 'views'));
-  }
-  next();
-});
+// app.use((req, res, next) => {
+//   if (req.path.startsWith('/portal')) {
+//     app.use(express.static(path.join(__dirname, 'views/portal')));
+//     app.set('views', path.join(__dirname, 'views', 'portal'));
+//   } else {
+//     app.set('views', path.join(__dirname, 'views'));
+//   }
+//   next();
+// });
 
 
 

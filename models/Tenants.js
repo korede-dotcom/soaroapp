@@ -15,6 +15,10 @@ const Tenants = sequelize.define('Tenants', {
     type: DataTypes.INTEGER,
     allowNull:false,
   },
+  createdBy:{
+    type: DataTypes.INTEGER,
+    allowNull:true,
+},
   roomId:{
     type: DataTypes.INTEGER,
     allowNull:false,
@@ -113,7 +117,8 @@ const Tenants = sequelize.define('Tenants', {
 }, {
   // Optional: Table name (defaults to plural form of model name, 'Tenants')
   tableName: 'tenants',
-  timestamps: true,  // If you don't need `createdAt` and `updatedAt`
+  timestamps: true,
+    // If you don't need `createdAt` and `updatedAt`
 });
 
 // Define the relationships

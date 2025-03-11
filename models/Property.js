@@ -63,6 +63,10 @@ const Land = sequelize.define('property', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  createdBy:{
+    type: DataTypes.INTEGER,
+    allowNull:true,
+},
   start: {
     type: DataTypes.DATEONLY,
     allowNull: true,

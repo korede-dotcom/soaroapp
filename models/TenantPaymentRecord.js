@@ -17,6 +17,15 @@ const PaymentRecord = sequelize.define('paymentrecord', {
         type: DataTypes.INTEGER,
         allowNull:false,
     },
+    amount:{
+        type:DataTypes.DOUBLE,
+        defaultValue:"0.0"
+    },
+    numOfYears:{
+        type: DataTypes.INTEGER,
+        allowNull:false,
+        defaultValue:1,
+    },
     roomId:{
         type: DataTypes.INTEGER,
         allowNull:false, 
@@ -24,7 +33,8 @@ const PaymentRecord = sequelize.define('paymentrecord', {
     tenantId:{
         type: DataTypes.INTEGER,
         allowNull:false, 
-    }
+    },
+    
 
 
 },{

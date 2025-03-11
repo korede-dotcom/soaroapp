@@ -9,11 +9,36 @@ const expenseValidationSchema = Joi.object({
   name: Joi.string().required(),
   amount: Joi.number().required(),
   propertyId: Joi.number().integer().required(),
+  occoured: Joi.date().iso().required(),
 });
+
+router.get('/', async (req,res) => {
+    try {
+      Expenses.belongsTo(Property,{foreignKey:"propertyId"})
+      const id = req.query.id;
+      if (req.user.user.roleId === 1) {
+        const property = await Property.findOne({where:{id:id,createdBy:req.user.user.roleId}})
+        const expenses = await Expenses.findAll({where:{propertyId:id,createdBy:req.user.user.roleId}})
+        
+  
+        return res.render("expenses",{expenses,property})
+        
+      }
+      const property = await Property.findOne({where:{id:id}})
+      const expenses = await Expenses.findAll({where:{propertyId:id}})
+      
+
+      return res.render("expenses",{expenses,property})
+      
+    } catch (error) {
+      console.log("🚀 ~ router.get ~ error:", error)
+      
+    }
+})
 
 // Route to Create Expense
 router.post('/', async (req, res) => {
-  const { error } = expenseValidationSchema.validate(req.body);
+  const { error,value } = expenseValidationSchema.validate(req.body);
 
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
@@ -28,8 +53,13 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: 'Property not found with the provided propertyId.' });
     }
 
+    if (req.user.user.roleId === 1) {
+      const newExpense = await Expenses.create({...value,createdBy:req.user.user.roleId});
+      return res.status(201).json({ message: 'Expense created successfully', expense: newExpense });
+    }
+
     // Create the new Expense record
-    const newExpense = await Expenses.create({ name, amount, propertyId });
+    const newExpense = await Expenses.create(value);
     return res.status(201).json({ message: 'Expense created successfully', expense: newExpense });
   } catch (err) {
     console.error('Error creating expense:', err);

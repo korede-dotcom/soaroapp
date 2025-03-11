@@ -14,9 +14,17 @@ const Expenses = sequelize.define('Expenses', {
     type: DataTypes.STRING,
     allowNull: false,  // Name is required
   },
+  occoured:{
+    type: DataTypes.DATEONLY,
+    allowNull: false,
+  },
   amount: {
     type: DataTypes.DOUBLE,
     allowNull: false,  // Amount is required
+  },
+  createdBy:{
+    type: DataTypes.INTEGER,
+    allowNull: true,
   },
   propertyId:{
     type: DataTypes.INTEGER,
@@ -26,6 +34,22 @@ const Expenses = sequelize.define('Expenses', {
   // Optional: Table name (defaults to plural form of model name, 'Expenses')
   tableName: 'expenses',
   timestamps: true,  // If you don't need `createdAt` and `updatedAt`
+  hooks: {
+    afterFind: (prop) => {
+      if (!prop) return;
+      if (Array.isArray(prop)) {
+        prop.forEach(prop => {
+          if (prop.amount !== null) {
+            prop.amount = `₦${Number(prop.amount).toLocaleString('en-NG', { minimumFractionDigits: 2 })}`;
+          }
+        });
+      } else {
+        if (prop.amount !== null) {
+          prop.amount = `₦${Number(prop.amount).toLocaleString('en-NG', { minimumFractionDigits: 2 })}`;
+        }
+      }
+    }
+  }
 });
 
 // Define the relationship (many expenses belong to one property)

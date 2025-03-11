@@ -9,7 +9,9 @@ const Property = require("../models/Property")
 const TenantPaymentRecord = require("../models/TenantPaymentRecord")
 const Lands = require("../services/PropertyService")
 const Sync = require("../models/index")
-const { Op } = require('sequelize');
+// const { Op, where } = require('sequelize');
+// const { Sequelize, Op } = require("sequelize");
+const sequelize  = require("../models/index");
 
 
 Tenants.belongsTo(Room,{foreignKey:"roomId"})
@@ -21,26 +23,77 @@ router.post('/', async (req, res) => {
     try {
 
       if (req.query.type === "pay") {
-          const {end,propertyId,roomId,tenantId} = req.body;
+
+         
+
+          const {end,propertyId,roomId,tenantId,start} = req.body;
           console.log("🚀 ~ router.post ~ req.body:", req.body)
           if (!end || !propertyId || !roomId || !tenantId) {
             return res.json({status:false,message:"please input dates"})
           }
-         
+
+          if (req.user.user.roleId === 1) {
+            const CheckPropertyEndDate = await Property.findOne({
+              where: {
+                id:propertyId,
+                createdBy: req.user.user.roleId
+              },
+            });
+            const inputDate = new Date(end);
+            const getStart = new Date(start);
+
+
+  
+            if (!CheckPropertyEndDate) {
+              return res.json({status:false,message:"Invalid Property"})
+            }
+            if (CheckPropertyEndDate && CheckPropertyEndDate.end) {
+              const checkEndDate = new Date(CheckPropertyEndDate.end);
+              const inputDate = new Date(end);
+              const getStart = new Date();
+              const yearsPaid = inputDate.getFullYear() - getStart.getFullYear()
+            
+              if (inputDate.getFullYear() > checkEndDate.getFullYear()) {
+                console.log("Invalid: The end date's year is greater than the allowed year.");
+                if (CheckPropertyEndDate.type !== "PERSONAL") {
+                  return res.status(400).json({status:false,message:`Error this property is not personal owned it's ${CheckPropertyEndDate.type} tenant payment end date is greater than property end date`})
+                }
+                res.json({status:false,message:`Error Occured`})
+              } else {
+                console.log("🚀 ~ router.post ~ CheckPropertyEndDate:", CheckPropertyEndDate)
+                const roomDetails = await Room.findOne({where:{tenantId:tenantId}})
+              const yearsPaid = inputDate.getFullYear() - getStart.getFullYear()
+              const amount = roomDetails.yearlyAmount.replace(/[^\d.]/g, ""); // Remove non-numeric characters
+              const numericAmount = parseFloat(amount); // Convert to a number
+                
+                const savePayment = await TenantPaymentRecord.create({...req.body,amount:numericAmount * yearsPaid,numOfYears:yearsPaid})
+                console.log("🚀 ~ router.post ~ savePayment:", savePayment)
+                const saveNextPayment = await Tenants.update({NextPaymentYear:end},{where:{id:tenantId}})
+                console.log("🚀 ~ router.post ~ saveNextPayment:", saveNextPayment)
+                return res.json({status:true,message:`Tenant next payment is ${end}`})
+              }
+          }
+        }
 
           const CheckPropertyEndDate = await Property.findOne({
             where: {
               id:propertyId,   
             },
           });
+          console.log("🚀 ~ router.post ~ CheckPropertyEndDate:", CheckPropertyEndDate)
+
 
           if (!CheckPropertyEndDate) {
             return res.json({status:false,message:"Invalid Property"})
           }
+          // const currentYear = new Date().getFullYear(); // Get the current year
+          const inputDate = new Date(end);
+          const getStart = new Date(start);
+
           if (CheckPropertyEndDate && CheckPropertyEndDate.end) {
             const checkEndDate = new Date(CheckPropertyEndDate.end);
             const inputDate = new Date(end);
-            const getStart = new Date();
+            const getStart = new Date(start);
           
             if (inputDate.getFullYear() > checkEndDate.getFullYear()) {
               console.log("Invalid: The end date's year is greater than the allowed year.");
@@ -50,7 +103,17 @@ router.post('/', async (req, res) => {
               res.json({status:false,message:`Error Occured`})
             } else {
               console.log("🚀 ~ router.post ~ CheckPropertyEndDate:", CheckPropertyEndDate)
-              const savePayment = await TenantPaymentRecord.create({...req.body,start:getStart.getFullYear()})
+              const roomDetails = await Room.findOne({where:{tenantId:tenantId}})
+              const yearsPaid = inputDate.getFullYear() - getStart.getFullYear()
+              const amount = roomDetails.yearlyAmount.replace(/[^\d.]/g, ""); // Remove non-numeric characters
+              const numericAmount = parseFloat(amount); // Convert to a number
+
+              console.log("🚀 ~ router.post ~ numericAmount:", numericAmount);
+
+
+           
+             
+              const savePayment = await TenantPaymentRecord.create({...req.body,amount:numericAmount * yearsPaid,numOfYears:yearsPaid})
               console.log("🚀 ~ router.post ~ savePayment:", savePayment)
               const saveNextPayment = await Tenants.update({NextPaymentYear:end},{where:{id:tenantId}})
               console.log("🚀 ~ router.post ~ saveNextPayment:", saveNextPayment)
@@ -58,8 +121,18 @@ router.post('/', async (req, res) => {
             }
             return
           } else {
-            console.log("CheckPropertyEndDate or its end date is missing.");
-            return res.json({status:false,message:`Error Occured`})
+          
+              const roomDetails = await Room.findOne({where:{tenantId:tenantId}})
+              const yearsPaid = inputDate.getFullYear() - getStart.getFullYear()
+              console.log("🚀 ~ router.post ~ yearsPaid:", yearsPaid)
+              const amount = roomDetails.yearlyAmount.replace(/[^\d.]/g, ""); // Remove non-numeric characters
+              const numericAmount = parseFloat(amount); // Convert to a number
+             
+              const savePayment = await TenantPaymentRecord.create({...req.body,amount:numericAmount * yearsPaid,numOfYears:yearsPaid })
+              console.log("🚀 ~ router.post ~ savePayment:", savePayment)
+              const saveNextPayment = await Tenants.update({NextPaymentYear:end},{where:{id:tenantId}})
+              console.log("🚀 ~ router.post ~ saveNextPayment:", saveNextPayment)
+              return res.json({status:true,message:`Tenant next payment is ${end}`})
             
           }
           
@@ -101,12 +174,27 @@ router.get('/', async (req, res) => {
     
     
     if (req.query.type === "add") {
-        
+        if (req.user.user.roleId === 1) {
+          let tenants = await Tenants.findAll({where:{isPrevious:false,createdBy:req.user.user.roleId},include:[{model:Room},{model:Property}]});
+          const allLands = await Property.findAll({where:{createdBy:req.user.user.roleId}});
+          return res.render("addtenant",{tenants,allLands})
+        }
        
         return res.render("addtenant",{tenants,allLands})
     }
     if (req.query.type === "edit" && req.query.id) {
         console.log("🚀 ~ router.get ~ req.query.id:", req.query.id)
+        if (req.user.user.roleId === 1) {
+          tenants  = await Tenants.findOne({
+            where: { id:req.query.id,createdBy:req.user.user.roleId },
+            include: [
+              { model: Room },
+              { model: Property }
+            ]
+          });
+  
+          return res.render("edittenant",{tenants}) 
+        }
         
         tenants  = await Tenants.findOne({
           where: { id:req.query.id },
@@ -115,13 +203,25 @@ router.get('/', async (req, res) => {
             { model: Property }
           ]
         });
-        console.log("🚀 ~ router.get ~ tenants:", tenants)
 
         return res.render("edittenant",{tenants}) 
     }
 
     if (req.query.type === "addfromroom" && req.query.id) {
-        console.log("🚀 ~ router.get ~ req.query.id:", req.query.id)
+        if (req.user.user.roleId === 1) {
+          Room.belongsTo(Property,{foreignKey:"propertyId"})
+          tenants  = await Room.findOne({
+            where: { id:req.query.id,createdBy:req.user.user.roleId },
+            include: [
+              // { model: Room },
+              { model: Property }
+            ]
+          });
+          
+  
+          return res.render("roomaddtenant",{tenants}) 
+          
+        }
         Room.belongsTo(Property,{foreignKey:"propertyId"})
         tenants  = await Room.findOne({
           where: { id:req.query.id },
@@ -130,12 +230,61 @@ router.get('/', async (req, res) => {
             { model: Property }
           ]
         });
-        console.log("🚀 ~ router.get ~ tenants:", tenants)
+        
 
         return res.render("roomaddtenant",{tenants}) 
     }
 
     if (req.query.type === "detail" && req.query.id) {
+
+      const query = `
+      SELECT 
+    pr."tenantId",
+    SUM(pr."amount") AS "totalAmountPaid",
+    COUNT(pr.id) AS "paymentCount"
+  FROM "paymentrecord" AS pr
+  JOIN "rooms" AS r ON pr."roomId" = r.id
+  WHERE pr."tenantId" = :tenantId  -- Filter by specific tenant
+  GROUP BY pr."tenantId";
+    `;
+
+    // Execute raw SQL query
+    let [results, metadata] = await sequelize.query(query, {
+      model: TenantPaymentRecord, // Ensures results map to TenantPaymentRecord
+      replacements: { tenantId:req.query.id },
+      type: sequelize.QueryTypes.SELECT,
+      mapToModel: true, // Maps SQL results to Sequelize model instances
+    });
+    if (!results) {
+      results = {
+        dataValues: { tenantId: req.query.id, totalAmountPaid: 0, paymentCount: '0' },
+      }
+    }
+  
+  
+
+      if (req.user.user.roleId === 1) {
+        tenants  = await Tenants.findOne({
+          where: { id:req.query.id,createdBy:req.user.user.roleId },
+          include: [
+            { model: Room },
+            { model: Property }
+          ]
+        });
+        const paymentLogs =  await TenantPaymentRecord.findAll({where:{tenantId:req.query.id}})
+        console.log("🚀 ~ router.get ~ tenants:", paymentLogs)
+        return res.render("tenantpaymentlist",{tenants,paymentLogs,results:results}) 
+        
+      }
+    //   SELECT 
+    //   pr."tenantId",
+    //   SUM(r."yearlyAmount") AS "totalAmountPaid",
+    //   COUNT(pr.id) AS "paymentCount"
+    // FROM "paymentrecord" AS pr
+    // JOIN "rooms" AS r ON pr."roomId" = r.id
+    // GROUP BY pr."tenantId";
+   
+
         tenants  = await Tenants.findOne({
           where: { id:req.query.id },
           include: [
@@ -144,11 +293,23 @@ router.get('/', async (req, res) => {
           ]
         });
         const paymentLogs =  await TenantPaymentRecord.findAll({where:{tenantId:req.query.id}})
-        console.log("🚀 ~ router.get ~ tenants:", paymentLogs)
-        return res.render("tenantpaymentlist",{tenants,paymentLogs}) 
+        return res.render("tenantpaymentlist",{tenants,paymentLogs,results}) 
     }
 
     if (req.query.type === "filter" && req.query.propertyId) {
+
+        if (req.user.user.roleId === 1) {
+          tenants = await Tenants.findAll({
+           where: { propertyId: req.query.propertyId,isPrevious:false,createdBy:req.user.user.roleId },
+           include: [
+             { model: Room },
+             { model: Property }
+           ]
+         });
+         
+           return res.render("tenant",{tenants,allLands}) 
+          
+        }
        tenants = await Tenants.findAll({
         where: { propertyId: req.query.propertyId,isPrevious:false },
         include: [
@@ -161,6 +322,19 @@ router.get('/', async (req, res) => {
     }
 
     if (req.query.type === "pasttenant" && req.query.roomId) {
+      if (req.user.user.roleId === 1) {
+        tenants = await Tenants.findAll({
+         where: { roomId: req.query.roomId,isPrevious:true,createdBy:req.user.user.roleId },
+         include: [
+           { model: Room },
+           { model: Property }
+         ]
+       });
+       
+         return res.render("pasttenant",{tenants,allLands}) 
+      }
+        
+      
        tenants = await Tenants.findAll({
         where: { roomId: req.query.roomId,isPrevious:true },
         include: [
@@ -170,6 +344,12 @@ router.get('/', async (req, res) => {
       });
       
         return res.render("pasttenant",{tenants,allLands}) 
+    }
+
+    if (req.user.user.roleId === 1) {
+      let tenants = await Tenants.findAll({where:{isPrevious:false,createdBy:req.user.user.roleId},include:[{model:Room},{model:Property}]});
+      const allLands = await Property.findAll({where:{createdBy:req.user.user.roleId}});
+      return res.render("tenant",{tenants,allLands})
     }
  
     return res.render("tenant",{tenants,allLands})

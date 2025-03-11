@@ -18,13 +18,27 @@ router.get('/', async (req, res) => {
       
     //   console.log("🚀 ~ router.get ~ formattedTenants:", tenants)
     if (req.query.type === "compose" && req.query.id) {
+      if (req.user.user.roleId === 1) {
+        const tenant = await Tenant.findOne({where:{id:req.query.id,createdBy:req.user.user.roleId}},{include:[{model:Room},{model:Property}]});
+        console.log("🚀 ~ router.get ~ tenant:", tenant)
+  
+        return res.render("composeone",{tenant})
+        
+      }
       const tenant = await Tenant.findOne({where:{id:req.query.id}},{include:[{model:Room},{model:Property}]});
       console.log("🚀 ~ router.get ~ tenant:", tenant)
+
       return res.render("composeone",{tenant})
   }
       if (req.query.type === "compose") {
-         
-          return res.render("compose")
+        
+          if (req.user.user.roleId === 1) {
+            const lands = await Property.findAll({where:{createdBy:req.user.user.roleId}})
+            return res.render("compose",{lands})
+          }
+          const lands = await Property.findAll({where:{}})
+
+          return res.render("compose",{lands})
       }
     
       if (req.query.type === "deliveries") {
