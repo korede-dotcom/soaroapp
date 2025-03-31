@@ -65,6 +65,10 @@
     ***********************************-->
     <div id="main-wrapper">
 
+		<div id="loaderOverlay">
+            <div class="spinner"></div>
+        </div>
+
         <!--**********************************
             Nav header start
         ***********************************-->
@@ -662,6 +666,7 @@
                                         </div>
                                     </div>
 					<a href="/property?type=past&id=<%=lands.id%>" class="btn btn-primary rounded light">See all past records</a>
+					<button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#uploadmore">Upload images</button>
 				</div>
 				<div class="row">
 					<div class="col-xl-3 col-xxl-4">
@@ -670,7 +675,7 @@
 								<div class="card bg-primary text-center">
 									<div class="card-body card-body-card">
 										<h2 class="fs-30 text-white">Lawyer details</h2>
-										<span class="text-white font-w300">this is the lawyer the secured this project</span>
+										<span class="text-white font-w300">this is the lawyer details</span>
 									</div>
 								</div>
 							</div>
@@ -711,7 +716,56 @@
                                 <% } else { %>
                                     <!-- Display a message if no lawyer information is available -->
                                     <div class="alert alert-warning text-center">
-                                        <p>No lawyer information available for this property.</p>
+                                        <p>Select a lawyer for this property.</p>
+											
+										<select id="lawyerSelect" class="default-select form-control wide" name="lawyerId" required>
+											<option value="select">Select Property</option>
+											<% lawyers.forEach(lawyer => { %>
+												<option value="<%= lawyer.id %>"><%= lawyer.firstname %> <%= lawyer.lastname %></option>
+											<% }) %>
+										</select>
+										
+										<script>
+										document.getElementById("lawyerSelect").addEventListener("change", function() {
+											const lawyerId = this.value;
+											this.innerText = "Processing...";
+											document.getElementById('loaderOverlay').style.display = 'flex';
+											if (lawyerId !== "select") { // Ensure a valid option is selected
+												fetch("/lawyer/add/property", {
+													method: "POST",
+													headers: {
+														"Content-Type": "application/json"
+													},
+													body: JSON.stringify({ lawyerId,propertyId:'<%=lands.id%>' })
+												})
+												.then(response => response.json())
+												.then(data => {
+													document.getElementById('loaderOverlay').style.display = 'none';
+													if (data.status) {
+														Swal.fire({
+															icon: "success",
+															title: "created",
+															text: result.message,
+														});
+														window.location.reload()
+													}
+												})
+												.catch(error => {
+													document.getElementById('loaderOverlay').style.display = 'none';
+													console.error("Error:", error);
+													if (data.status) {
+														Swal.fire({
+														icon: "error",
+														title: "Validation Error",
+														text: result.errors.toString(),
+													});
+													}
+													window.location.reload()
+												});
+											}
+										});
+										</script>
+										
                                     </div>
                                 <% } %>
                             </div>
@@ -794,23 +848,13 @@
                                                             <!-- <h3 class="mb-2 text-white">Front View</h3>
                                                             <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi</p> -->
                                                         </div>
+														
                                                         <div class="buttons">
-                                                            <a href="javascript:void(0);" class="me-4">
-                                                                <svg width="25" height="27" viewBox="0 0 25 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <path d="M19.7501 17.125C18.9899 17.1268 18.2409 17.3083 17.5643 17.6548C16.8877 18.0013 16.3026 18.503 15.8569 19.1188L9.79706 15.0793C10.1789 14.0611 10.1789 12.939 9.79706 11.9207L15.8569 7.88126C16.537 8.80338 17.5237 9.45273 18.6397 9.71264C19.7556 9.97256 20.9277 9.826 21.9453 9.29931C22.9629 8.77261 23.7594 7.9003 24.1915 6.8391C24.6237 5.77789 24.6633 4.59736 24.3032 3.50959C23.943 2.42182 23.2068 1.49812 22.2268 0.904453C21.2467 0.310781 20.0871 0.0860493 18.9562 0.270634C17.8254 0.455218 16.7974 1.03702 16.057 1.91151C15.3166 2.786 14.9123 3.89586 14.9168 5.04168C14.9246 5.21774 14.9424 5.39323 14.9699 5.5673L8.45581 9.91005C7.76161 9.28424 6.90085 8.87314 5.97778 8.72652C5.0547 8.5799 4.10892 8.70406 3.25497 9.08396C2.40102 9.46386 1.67554 10.0832 1.16638 10.867C0.657219 11.6508 0.38623 12.5654 0.38623 13.5C0.38623 14.4347 0.657219 15.3492 1.16638 16.133C1.67554 16.9168 2.40102 17.5362 3.25497 17.9161C4.10892 18.296 5.0547 18.4201 5.97778 18.2735C6.90085 18.1269 7.76161 17.7158 8.45581 17.09L14.9699 21.4327C14.9424 21.6068 14.9246 21.7823 14.9168 21.9583C14.9168 22.9143 15.2002 23.8488 15.7313 24.6436C16.2624 25.4384 17.0173 26.0579 17.9005 26.4238C18.7836 26.7896 19.7555 26.8853 20.693 26.6988C21.6306 26.5123 22.4918 26.052 23.1678 25.376C23.8437 24.7001 24.3041 23.8389 24.4906 22.9013C24.6771 21.9637 24.5813 20.9919 24.2155 20.1087C23.8497 19.2255 23.2302 18.4707 22.4354 17.9396C21.6405 17.4085 20.706 17.125 19.7501 17.125Z" fill="white"/>
-                                                                </svg>
+                                                            <a data-bs-toggle="modal" data-bs-target="#uploadmore" href="javascript:void(0);" class="me-4">
+																<svg fill="#42390b" height="34px" width="64px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 490.955 490.955" xml:space="preserve" stroke="#42390b"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="8.83719"></g><g id="SVGRepo_iconCarrier"> <path id="XMLID_448_" d="M445.767,308.42l-53.374-76.49v-20.656v-11.366V97.241c0-6.669-2.604-12.94-7.318-17.645L312.787,7.301 C308.073,2.588,301.796,0,295.149,0H77.597C54.161,0,35.103,19.066,35.103,42.494V425.68c0,23.427,19.059,42.494,42.494,42.494 h159.307h39.714c1.902,2.54,3.915,5,6.232,7.205c10.033,9.593,23.547,15.576,38.501,15.576c26.935,0-1.247,0,34.363,0 c14.936,0,28.483-5.982,38.517-15.576c11.693-11.159,17.348-25.825,17.348-40.29v-40.06c16.216-3.418,30.114-13.866,37.91-28.811 C459.151,347.704,457.731,325.554,445.767,308.42z M170.095,414.872H87.422V53.302h175.681v46.752 c0,16.655,13.547,30.209,30.209,30.209h46.76v66.377h-0.255v0.039c-17.685-0.415-35.529,7.285-46.934,23.46l-61.586,88.28 c-11.965,17.134-13.387,39.284-3.722,57.799c7.795,14.945,21.692,25.393,37.91,28.811v19.842h-10.29H170.095z M410.316,345.771 c-2.03,3.866-5.99,6.271-10.337,6.271h-0.016h-32.575v83.048c0,6.437-5.239,11.662-11.659,11.662h-0.017H321.35h-0.017 c-6.423,0-11.662-5.225-11.662-11.662v-83.048h-32.574h-0.016c-4.346,0-8.308-2.405-10.336-6.271 c-2.012-3.866-1.725-8.49,0.783-12.07l61.424-88.064c2.189-3.123,5.769-4.984,9.57-4.984h0.017c3.802,0,7.38,1.861,9.568,4.984 l61.427,88.064C412.04,337.28,412.328,341.905,410.316,345.771z"></path> </g></svg>
                                                             </a>
                                                             <a href="<%=image.imgurl%>" data-src="<%=image.imgurl%>" class="lg-item">
-                                                                <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <g clip-path="url(#clip1)">
-                                                                    <path d="M21.75 0H7.25C5.32718 0 3.48311 0.763837 2.12348 2.12348C0.763837 3.48311 0 5.32718 0 7.25L0 21.75C0 23.6728 0.763837 25.5169 2.12348 26.8765C3.48311 28.2362 5.32718 29 7.25 29H21.75C23.6728 29 25.5169 28.2362 26.8765 26.8765C28.2362 25.5169 29 23.6728 29 21.75V7.25C29 5.32718 28.2362 3.48311 26.8765 2.12348C25.5169 0.763837 23.6728 0 21.75 0V0ZM21.9766 12.4156H20.6172V9.34616L15.4611 14.5L20.6172 19.6557V16.5844H21.9766V21.9766H16.5844V20.6172H19.6543L14.5 15.4611L9.34434 20.6172H12.4156V21.9766H7.02344V16.5844H8.38281V19.6547L13.5389 14.5L8.38508 9.34434V12.4156H7.0257V7.02344H12.4156V8.38281H9.34616L14.5 13.5389L19.6557 8.38508H16.5844V7.0257H21.9766V12.4156Z" fill="white"/>
-                                                                    </g>
-                                                                    <defs>
-                                                                    <clipPath id="clip1">
-                                                                    <rect width="29" height="29" fill="white"/>
-                                                                    </clipPath>
-                                                                    </defs>
-                                                                </svg>
+                                                                <svg width="64px" height="34px" viewBox="0 0 16 16" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" version="1.1" id="svg7384" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><metadata id="metadata90"><rdf:rdf><cc:work><dc:format>image/svg+xml</dc:format><dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type><dc:title></dc:title><dc:date>2021</dc:date><dc:creator><cc:agent><dc:title>Timothée Giet</dc:title></cc:agent></dc:creator><cc:license rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/"></cc:license></cc:work><cc:license rdf:about="http://creativecommons.org/licenses/by-sa/4.0/"><cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"></cc:permits><cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"></cc:permits><cc:requires rdf:resource="http://creativecommons.org/ns#Notice"></cc:requires><cc:requires rdf:resource="http://creativecommons.org/ns#Attribution"></cc:requires><cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"></cc:permits><cc:requires rdf:resource="http://creativecommons.org/ns#ShareAlike"></cc:requires></cc:license></rdf:rdf></metadata><path id="rect4082" d="M1 1v14h14V1zm1 1h12v12H2z" style="fill:#42390b;fill-opacity:1;stroke:none;stroke-width:.875"></path><path id="path847" d="M5 3a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2zm0 1a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1z" style="opacity:1;vector-effect:none;fill:#42390b;fill-opacity:1;stroke:none;stroke-width:4;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.20000005;stroke-opacity:.55063291"></path><path id="path869" d="m3 12 1 1 3-3 1 1 2-2 2 2 1-1-3-3-2 2-1-1z" style="fill:#42390b;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path></g></svg>
                                                             </a>
                                                         </div>
                                                     </div>
@@ -819,6 +863,31 @@
 											
 											
 										</div>
+										<div class="modal fade none-border" id="uploadmore">
+											<div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h4 class="modal-title">Add more pictures</h4>
+													</div>
+													<div class="modal-body">
+														<form id="addimages">
+															<div class="column">
+																<div class="mb-3 col-lg-4 col-md-6">
+																	<label for="formFileMultiple" class="form-label">Multiple files input example</label>
+																	<input class="form-control"  type="file" id="formFileMultiple" multiple>
+																 
+																</div>
+															</div>
+														</form>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-danger light waves-effect" data-bs-dismiss="modal">Close</button>
+														<button type="button" class="btn btn-primary waves-effect waves-light save-category" data-bs-dismiss="modal" id="submitBtnupload">Save</button>
+													</div>
+												</div>
+											</div>
+										</div>
+										
 										<div>
 											<a href="javascript:void(0);" class="btn btn-primary rounded mb-4"><%=lands.type %></a>
 											<div class="d-md-flex d-block mb-sm-5 mb-3">
@@ -830,10 +899,102 @@
 															<path fill-rule="evenodd" clip-rule="evenodd" d="M10.9474 10.2632C9.81378 10.2632 8.89479 11.1822 8.89479 12.3158C8.89479 13.4494 9.81378 14.3684 10.9474 14.3684C12.0811 14.3684 13.0001 13.4494 13.0001 12.3158C13.0001 11.1822 12.0811 10.2632 10.9474 10.2632ZM7.52637 12.3158C7.52637 10.4264 9.05802 8.89474 10.9474 8.89474C12.8368 8.89474 14.3685 10.4264 14.3685 12.3158C14.3685 14.2052 12.8368 15.7368 10.9474 15.7368C9.05802 15.7368 7.52637 14.2052 7.52637 12.3158Z" fill="#666666"/>
 														</svg>
                                                         <%=lands.address %></span>
-												</div>
+														<br>
+														<span>
+															<div class="" style="color: #5b5101;">
+																isFreshLand:	<%=lands.freshLand %></span>
+															</div>
+														</span>
+													</div>
+													
 												<div class="ms-md-4 text-md-right">
 													<p class="text-black mb-1 me-1">Price range</p>
-													<h3 class="text-primary"><%= lands.amount.toLocaleString('en-NG', { minimumFractionDigits: 2 }) %></h3>
+													<form id="updateAmountForm">
+														<h3 contenteditable="true" id="amountField" class="text-primary">
+															<%= lands.amount.toLocaleString('en-NG', { minimumFractionDigits: 2 }) %>
+														</h3>
+														<button type="submit" id="updateButton" class="btn btn-primary mt-2" style="display: none;">
+															Update Amount
+														</button>
+													</form>
+													<script>
+														document.addEventListener("DOMContentLoaded", function () {
+															const amountField = document.getElementById("amountField");
+															const updateButton = document.getElementById("updateButton");
+														
+															// Function to format number with commas
+															function formatAmount(value) {
+																value = value.replace(/[^0-9.]/g, ""); // Remove non-numeric except dot
+																if (value === "") return ""; // If empty, return blank
+																let parts = value.split(".");
+																let intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Add commas
+																let decimalPart = parts.length > 1 ? "." + parts[1].substring(0, 2) : ""; // Keep only two decimal places
+																return intPart + decimalPart;
+															}
+														
+															amountField.addEventListener("input", function (e) {
+																let text = amountField.innerText.replace(/,/g, ""); // Remove commas for processing
+																let formatted = formatAmount(text);
+														
+																// Prevent unwanted extra updates
+																if (formatted !== amountField.innerText) {
+																	setTimeout(() => {
+																		amountField.innerText = formatted;
+																		moveCursorToEnd(amountField);
+																	}, 0);
+																}
+														
+																updateButton.style.display = "block"; // Show button when editing
+															});
+														
+															// Move cursor to the end of contenteditable
+															function moveCursorToEnd(el) {
+																let range = document.createRange();
+																let selection = window.getSelection();
+																range.selectNodeContents(el);
+																range.collapse(false);
+																selection.removeAllRanges();
+																selection.addRange(range);
+															}
+														
+															document.getElementById("updateAmountForm").addEventListener("submit", function (event) {
+																event.preventDefault(); // Prevent default form submission
+														
+																const amountText = amountField.innerText.trim();
+																const numericAmount = parseFloat(amountText.replace(/,/g, "")); // Convert to float
+														
+																if (isNaN(numericAmount)) {
+																	alert("Please enter a valid amount.");
+																	return;
+																}
+														
+																fetch("/property/update/amount", {
+																	method: "POST",
+																	headers: { "Content-Type": "application/json" },
+																	body: JSON.stringify({ amount: numericAmount,propertyId:'<%=lands.id%>' })
+																})
+																.then(response => response.json())
+																.then(data => {
+																	if (data.status) {
+																		alert("Amount updated successfully!");
+																		Swal.fire({
+							icon: "success",
+							title: "created",
+							text: data.message,
+						});
+						updateButton.style.display = "none"; // Hide button after update
+						window.location.reload()
+																		
+																	}
+																})
+																.catch(error => {
+																	console.error("Error:", error);
+																	alert("Failed to update amount.");
+																});
+															});
+														});
+														</script>
+														
 												</div>
 											</div>
 											<div class="mb-sm-5 mb-2">
@@ -857,6 +1018,95 @@
 													<i class="flaticon-381-blueprint"></i>
 													View analytics
 												</a>
+												<button data-bs-toggle="modal" data-bs-target="#generateroom" class="btn btn-primary  rounded mb-sm-0 mb-2">
+													<i class="flaticon-381-blueprint"></i>
+													Generate rooms
+												</button>
+												<div class="modal fade" id="generateroom">
+													<div class="modal-dialog modal-dialog-centered" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title">Generate Rooms</h5>
+																<button type="button" class="btn-close" data-bs-dismiss="modal">
+																</button>
+															</div>
+															<div class="modal-body">
+																<form id="propertyFormGen">
+																	<div class="row">
+													
+																	
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">Floors</label>
+																		<input type="number" required name="floors" class="form-control" placeholder="1" min="1">
+																	  </div>
+																  
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">Total Rooms</label>
+																		<input type="number" required name="totalroom" class="form-control" placeholder="input a number" min="0">
+																	  </div>
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">How Many 1Bed</label>
+																		<input type="number" required name="bedcount1" class="form-control" placeholder="input a number" min="0">
+																	  </div>
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">1Bed Amount</label>
+																		<input type="number" required name="bedamount1" class="form-control" placeholder="input a number" min="0">
+																	  </div>
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">How Many 2Bed</label>
+																		<input type="number" required name="bedcount2" class="form-control" placeholder="input a number" min="0">
+																	  </div>
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">2Bed Amount</label>
+																		<input type="number" required name="bedamount2" class="form-control" placeholder="input a number" min="0">
+																	  </div>
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">How Many 3Bed</label>
+																		<input type="number" required name="bedcount3" class="form-control" placeholder="input a number" min="0">
+																	  </div>
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">3Bed Amount</label>
+																		<input type="number" required name="bedamount3" class="form-control" placeholder="input a number" min="0">
+																	  </div>
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">How Many 4Bed</label>
+																		<input type="number" required name="bedcount4" class="form-control" placeholder="input a number" min="0">
+																	  </div>
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">4Bed Amount</label>
+																		<input type="number" required name="bedamount4" class="form-control" placeholder="input a number" min="0">
+																	  </div>
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">Shops?</label>
+																		<input type="number" required name="shopcount"  class="form-control" placeholder="input a number" min="0">
+																	  </div>
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">Shop Amount</label>
+																		<input type="number" required name="shopamount" class="form-control" placeholder="1" min="0">
+																	  </div>
+																  
+								
+																	  <div class="mb-3">
+																		  <button  class="btn btn-primary btn-xs" id="submitBtnGen">Submit</button>
+																	  </div>
+																	  
+																  
+																	  <!-- <div class="mb-3 col-12 text-center">
+																		<button type="submit" class="btn btn-primary">Submit</button>
+																	  </div> -->
+																	</div>
+																  </form>
+																
+																
+																
+															</div>
+															<!-- <div class="modal-footer">
+																<button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+																<button type="button" class="btn btn-primary">Save changes</button>
+															</div> -->
+														</div>
+													</div>
+												</div>
 											</div>
 											<h4>Description</h4>
 											<p>
@@ -897,27 +1147,17 @@
 							</div> -->
 							<div class="col-xl-12">
 								<div class="card property-features">
-									<!-- <div class="card-header border-0 pb-0">	
-										<h3 class="fs-20 text-black mb-0">Property Features</h3>
-									</div> -->
-									<!-- <div class="card-body">
-										<ul>
-											<li><i class="las la-check-circle"></i>Swimming pool</li>
-											<li><i class="las la-check-circle"></i>Terrace</li>
-											<li><i class="las la-check-circle"></i>Radio</li>
-											<li><i class="las la-check-circle"></i>Grill</li>
-											<li><i class="las la-check-circle"></i>Cable TV</li>
-											<li><i class="las la-check-circle"></i>Air conditioning</li>
-											<li><i class="las la-check-circle"></i>Cofee pot</li>
-											<li><i class="las la-check-circle"></i>Balcony</li>
-											<li><i class="las la-check-circle"></i>Computer</li>
-											<li><i class="las la-check-circle"></i>Parquet</li>
-											<li><i class="las la-check-circle"></i>Internet</li>
-											<li><i class="las la-check-circle"></i>Towelwes</li>
-											<li><i class="las la-check-circle"></i>Roof terrace</li>
-											<li><i class="las la-check-circle"></i>Oven</li>
-										</ul>
-									</div> -->
+									<div class="card-header border-0 pb-0">	
+										<h3 class="fs-20 text-black mb-0">Property Duration</h3>
+									</div>
+									<div class="card-body">
+										<!-- <ul> -->
+											<p><i class="las la-check-circle"></i>Acquired Date : <%=lands.start%> </p>
+											<br>
+											<p><i class="las la-clock"></i>End Date : <%=lands.end%></p>
+											
+										<!-- </ul> -->
+									</div>
 								</div>
 							</div>
 						</div>
@@ -1110,5 +1350,233 @@
 			});
 		});
 		</script>
+	  <script>
+        document.querySelector('#submitBtn').addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    this.disabled = true;
+					this.innerText = "Processing...";
+					document.getElementById('loaderOverlay').style.display = 'flex';
+
+            // const form = document.getElementById('addimages');
+            const formData = new FormData(form);
+
+            // Handle file uploads to Cloudinary
+            const files = document.getElementById('formFileMultiple').files;
+            console.log("🚀 ~ files:", files)
+            const uploadedImages = [];
+
+            if (files.length > 0) {
+            for (let file of files) {
+                const cloudinaryFormData = new FormData();
+                cloudinaryFormData.append('file', file);
+                cloudinaryFormData.append('upload_preset', 'soaro-realestate');
+                cloudinaryFormData.append("folder", "soaro");
+                cloudinaryFormData.append('api_key', 'Ilo6RYkxvGRix0UvCSGlxQwG8W0'); 
+
+            try {
+                const response = await fetch('https://api.cloudinary.com/v1_1/bada/image/upload', {
+                method: 'POST',
+                body: cloudinaryFormData
+            });
+                const data = await response.json();
+                uploadedImages.push(data.secure_url);
+                } catch (error) {
+                    console.error('Error uploading file:', error);
+                }
+            }
+            }
+
+            // Convert formData to an object
+            const jsonObject = {};
+            formData.forEach((value, key) => {
+            jsonObject[key] = value;
+            });
+
+            // Append uploaded image URLs
+			if (files.length > 0) {
+            jsonObject['images'] = uploadedImages;
+            if (!jsonObject['images']) {
+                Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: "error Uploading Image",
+                    });
+                return
+            }
+			}
+
+
+            // Send final data to the backend
+            try {
+            const response = await fetch('/property/addimage', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({images:jsonObject.images,id:'<%=lands.id%>'})
+            });
+            const result = await response.json();
+			this.disabled = false;
+            console.log('Property added successfully:', result);
+                if (!result.status) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: result.errors.toString(),
+                    });
+					document.getElementById('loaderOverlay').style.display = 'none';
+					this.innerText = "save";
+                }else{
+					Swal.fire({
+							icon: "success",
+							title: "created",
+							text: result.message,
+						});
+						window.location.reload();
+
+				}
+            } catch (error) {
+				document.getElementById('loaderOverlay').style.display = 'none';
+                Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: error.message,
+                    });
+					this.innerText = "save";
+        //         Swal.fire({
+        //   icon: "error",
+        //   title: "Validation Error",
+        //   text: "Sum of all room types should not be greater than total rooms!",
+        // });
+        return;
+		document.getElementById('loaderOverlay').style.display = 'none';
+            console.error('Error submitting form:', error);
+            }
+            });
+
+     </script>
+	  <script>
+        document.querySelector('#submitBtnGen').addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    this.disabled = true;
+            this.innerText = "Processing...";
+            document.getElementById('loaderOverlay').style.display = 'flex';
+
+                 
+                     // Get all input values
+      const totalroom = parseInt(document.querySelector("[name='totalroom']").value) || 0;
+      const bedcount1 = parseInt(document.querySelector("[name='bedcount1']").value) || 0;
+      const bedcount2 = parseInt(document.querySelector("[name='bedcount2']").value) || 0;
+      const bedcount3 = parseInt(document.querySelector("[name='bedcount3']").value) || 0;
+      const bedcount4 = parseInt(document.querySelector("[name='bedcount4']").value) || 0;
+
+      const totalBeds = bedcount1 + bedcount2 + bedcount3 + bedcount4;
+
+      if (totalBeds > totalroom) {
+        Swal.fire({
+          icon: "error",
+          title: "Validation Error",
+          text: "Sum of all room types should not be greater than total rooms!",
+        });
+        return;
+      }
+
+
+            const form = document.getElementById('propertyFormGen');
+            const formData = new FormData(form);
+
+            // Handle file uploads to Cloudinary
+            // const files = document.getElementById('formFileMultipleGen').files;
+            // console.log("🚀 ~ files:", files)
+            // const uploadedImages = [];
+
+            // if (files.length > 0) {
+            // for (let file of files) {
+            //     const cloudinaryFormData = new FormData();
+            //     cloudinaryFormData.append('file', file);
+            //     cloudinaryFormData.append('upload_preset', 'soaro-realestate');
+            //     cloudinaryFormData.append("folder", "soaro");
+            //     cloudinaryFormData.append('api_key', 'Ilo6RYkxvGRix0UvCSGlxQwG8W0'); 
+
+            // try {
+            //     const response = await fetch('https://api.cloudinary.com/v1_1/bada/image/upload', {
+            //     method: 'POST',
+            //     body: cloudinaryFormData
+            // });
+            //     const data = await response.json();
+            //     uploadedImages.push(data.secure_url);
+            //     } catch (error) {
+            //         console.error('Error uploading file:', error);
+            //     }
+            // }
+            // }
+
+            // Convert formData to an object
+            const jsonObject = {};
+            formData.forEach((value, key) => {
+            jsonObject[key] = value;
+            });
+
+            // Append uploaded image URLs
+			// if (files.length > 0) {
+            // jsonObject['images'] = uploadedImages;
+            // if (!jsonObject['images']) {
+            //     Swal.fire({
+            //             icon: "error",
+            //             title: "Validation Error",
+            //             text: "error Uploading Image",
+            //         });
+            //     return
+            // }
+			// }
+
+
+            // Send final data to the backend
+            try {
+            const response = await fetch('/property/generateroom', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({...jsonObject,propertyId:'<%=lands.id%>'})
+            });
+            const result = await response.json();
+			this.disabled = false;
+            console.log('Property added successfully:', result);
+                if (!result.status) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: result.errors.toString(),
+                    });
+					document.getElementById('loaderOverlay').style.display = 'none';
+                }else{
+					Swal.fire({
+							icon: "success",
+							title: "created",
+							text: result.message,
+						});
+						window.location.reload()
+
+				}
+            } catch (error) {
+				document.getElementById('loaderOverlay').style.display = 'none';
+                Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: error.message,
+                    });
+        //         Swal.fire({
+        //   icon: "error",
+        //   title: "Validation Error",
+        //   text: "Sum of all room types should not be greater than total rooms!",
+        // });
+        return;
+		document.getElementById('loaderOverlay').style.display = 'none';
+            console.error('Error submitting form:', error);
+            }
+            });
+
+     </script>
 </body>
 </html>

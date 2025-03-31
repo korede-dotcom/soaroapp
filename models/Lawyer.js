@@ -51,19 +51,12 @@ const Lawyers = sequelize.define('lawyer', {
     images: {
         type: DataTypes.JSON,  // Using JSON data type
         allowNull: true,  // Optional, depending on whether you want it to be nullable or not
-        // validate: {
-        //     isArray(value) {
-        //     if (!Array.isArray(value)) {
-        //         throw new Error('imageUrl must be an array');
-        //     }
-        //     },
-        //     isObjectArray(value) {
-        //     if (value && value.some(item => typeof item !== 'object')) {
-        //         throw new Error('Each item in imageUrl must be an object');
-        //     }
-        //     },
-        // },
+     
     },
+    createdBy:{
+        type: DataTypes.INTEGER,
+        allowNull:true,
+    }
    
 
 })

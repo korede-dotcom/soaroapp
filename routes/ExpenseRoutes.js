@@ -17,18 +17,18 @@ router.get('/', async (req,res) => {
       Expenses.belongsTo(Property,{foreignKey:"propertyId"})
       const id = req.query.id;
       if (req.user.user.roleId === 1) {
-        const property = await Property.findOne({where:{id:id,createdBy:req.user.user.roleId}})
-        const expenses = await Expenses.findAll({where:{propertyId:id,createdBy:req.user.user.roleId}})
+        const property = await Property.findOne({where:{id:id,createdBy:req.user.user.id}})
+        const expenses = await Expenses.findAll({where:{propertyId:id,createdBy:req.user.user.id}})
         
   
-        return res.render("expenses",{expenses,property})
+        return res.render("expenses",{expenses,property,userDetails:req.user.user})
         
       }
       const property = await Property.findOne({where:{id:id}})
       const expenses = await Expenses.findAll({where:{propertyId:id}})
       
 
-      return res.render("expenses",{expenses,property})
+      return res.render("expenses",{expenses,property,userDetails:req.user.user})
       
     } catch (error) {
       console.log("🚀 ~ router.get ~ error:", error)
@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
     }
 
     if (req.user.user.roleId === 1) {
-      const newExpense = await Expenses.create({...value,createdBy:req.user.user.roleId});
+      const newExpense = await Expenses.create({...value,createdBy:req.user.user.id});
       return res.status(201).json({ message: 'Expense created successfully', expense: newExpense });
     }
 

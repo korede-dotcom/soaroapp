@@ -688,6 +688,28 @@
 								<div class="media align-items-center">
 									<div class="media-body">
 									
+										<h3>₦<%= totalPaymentForTheYear ? totalPaymentForTheYear.toLocaleString('en-NG') : '0' %></h3>
+
+									
+										<span class="fs-14 text-black">Total Rent Paid this year </span>
+									</div>
+									<span class="bg-primary rounded p-3">
+										<svg width="28" height="28" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M15.1208 37.6042H1.97909C1.10825 37.6042 0.395752 36.8917 0.395752 36.0208V14.1708C0.395752 13.775 0.554085 13.3 0.870752 13.0625L14.0124 0.791659C14.4874 0.395825 15.1208 0.237492 15.6749 0.474992C16.3083 0.791659 16.6249 1.34583 16.6249 1.97916V36.1C16.6249 36.8917 15.9124 37.6042 15.1208 37.6042ZM3.48325 34.5167H13.5374V5.54166L3.48325 14.8833V34.5167Z" fill="white"></path>
+											<path d="M36.0208 37.6042H15.0416C14.1708 37.6042 13.4583 36.8917 13.4583 36.0208V17.4167C13.4583 16.5458 14.1708 15.8333 15.0416 15.8333H36.0208C36.8916 15.8333 37.6041 16.5458 37.6041 17.4167V36.1C37.6041 36.8917 36.8916 37.6042 36.0208 37.6042ZM16.6249 34.5167H34.5166V18.9208H16.6249V34.5167Z" fill="white"></path>
+											<path d="M28.5791 37.6042H22.4832C21.6124 37.6042 20.8999 36.8917 20.8999 36.0208V26.3625C20.8999 25.4917 21.6124 24.7792 22.4832 24.7792H28.5791C29.4499 24.7792 30.1624 25.4917 30.1624 26.3625V36.0208C30.1624 36.8917 29.4499 37.6042 28.5791 37.6042ZM24.0666 34.5167H27.0749V27.9458H24.0666V34.5167Z" fill="white"></path>
+										</svg>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-3  col-md-6">
+						<div class="card">
+							<div class="card-body">
+								<div class="media align-items-center">
+									<div class="media-body">
+									
 										<h3>₦<%= getValues.totalRent ? getValues.totalRent.toLocaleString('en-NG') : '0' %></h3>
 
 									
@@ -729,75 +751,64 @@
 					
 					
 					<div class="col-xl-12">
-						<div class="table-responsive fs-14">
-							<table class="table display mb-4 dataTablesCard overflow-hidden card-table" id="example5">
-								<h4>Payment Records</h4>
-								<thead>
-									<tr>
-										<th>
-											<div class="form-check custom-checkbox ms-2">
-												<input type="checkbox" class="form-check-input" id="checkAll" required="">
-												<label class="form-check-label" for="checkAll"></label>
-											</div>
-										</th>
-										<th>Order ID</th>
-										<th>Date</th>
-										<th>Customer</th>
-										<th>Property</th>
-										<th>Location</th>
-										<th>Price</th>
-										<th>No.Years</th>
-										<th>Next Payment Date</th>
-										<!-- <th>Type</th>
-										<th>Agent</th> -->
-										<th>Status</th>
-										<!-- <th class="text-end">Action</th> -->
-									</tr>
-								</thead>
-								<tbody>
-									<% paymentLogs.forEach(log => { %>
-										
+						<h4>Payment Records</h4>
+						<div class="">
+							<div class="table-responsive card-body" style="background-color: #fff;padding: 1em; border-radius: 4px;">
+								<table id="example3" class="display" style="min-width: 850px">
+									<thead>
 										<tr>
-											<td>
+											<th>
 												<div class="form-check custom-checkbox ms-2">
-													<input type="checkbox" class="form-check-input" id="customCheckBox5" required="">
-													<label class="form-check-label" for="customCheckBox5"></label>
+													<input type="checkbox" class="form-check-input" id="checkAll" required="">
+													<label class="form-check-label" for="checkAll"></label>
 												</div>
-											</td>
-											<td><%=log.id%></td>
-											<td><%=log.createdAt%></td>
-											<td><%=log.Tenant.firstname%></td>
-											<td class="text-ov"><%=log.property.name%></td>
-											<td class="text-ov"><%=log.property.address%></td>
-											<td>₦<%= log.amount.toLocaleString('en-NG') %></td>
-											<td><%=log.numOfYears%> years</td>
-											<td><%=log.Tenant.NextPaymentYear%></td>
-											<!-- <td>ABC356</td>
-											<td>Kevin Jr.</td> -->
-											<td><span class="text-warning">Success</span></td>
-											<!-- <td class="text-end">
-												<div class="dropdown ms-auto">
-													<div class="btn-link" data-bs-toggle="dropdown" >
-														<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-															<path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-															<path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-															<path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-														</svg>
-													</div>
-													<div class="dropdown-menu dropdown-menu-end">
-														<a class="dropdown-item text-black" href="javascript:void(0);">Accept order</a>
-														<a class="dropdown-item text-black" href="javascript:void(0);">Reject order</a>
-														<a class="dropdown-item text-black" href="javascript:void(0);">View Details</a>
-													</div>
-												</div>
-											</td> -->
+											</th>
+											<th>view records</th>
+											<th>Order ID</th>
+											<th>Date</th>
+											<th>Customer</th>
+											<th>Property</th>
+											<th>Location</th>
+											<th>Price</th>
+											<th>No.Years</th>
+											<th>Next Payment Date</th>
+											<!-- <th>Type</th>
+											<th>Agent</th> -->
+											<th>Status</th>
+											<!-- <th class="text-end">Action</th> -->
 										</tr>
-									<% }); %>
-									
-									
-								</tbody>
-							</table>
+									</thead>
+									<tbody>
+										
+										<% paymentLogs.forEach(log => { %>
+										
+											<tr>
+												<td>
+													<div class="form-check custom-checkbox ms-2">
+														<input type="checkbox" class="form-check-input" id="customCheckBox5" required="">
+														<label class="form-check-label" for="customCheckBox5"></label>
+													</div>
+												</td>
+												<td > <a style="color: #5b5101;font-weight: bolder;" href="/tenant?type=detail&id=<%=log.Tenant.id%>">records</a></td>
+												<td><%=log.id%></td>
+												<td><%=log.createdAt%></td>
+												<td><%=log.Tenant.firstname%></td>
+												<td class="text-ov"><%=log.property.name%></td>
+												<td class="text-ov"><%=log.property.address%></td>
+												<td>₦<%= log.amount.toLocaleString('en-NG') %></td>
+												<td><%=log.numOfYears%> years</td>
+												<td><%=log.Tenant.NextPaymentYear%></td>
+												
+												<td><span class="text-warning">Success</span></td>
+												
+											</tr>
+										<% }); %>
+										
+									</tbody>
+								</table>
+							</div>
 						</div>
+						
 					</div>
 				</div>
             </div>
@@ -843,6 +854,15 @@
 	<script src="vendor/datatables/js/jquery.dataTables.min.js"></script>
 	<script src="js/plugins-init/datatables.init.js"></script>
 
+    <script src="js/custom.min.js"></script>
+	<script src="js/deznav-init.js"></script>
+	<script src="vendor/global/global.min.js"></script>
+	<script src="vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+	
+    <!-- Datatable -->
+    <script src="vendor/datatables/js/jquery.dataTables.min.js"></script>
+	<script src="vendor/datatables/responsive/responsive.js"></script>
+    <script src="js/plugins-init/datatables.init.js"></script>
     <script src="js/custom.min.js"></script>
 	<script src="js/deznav-init.js"></script>
 	

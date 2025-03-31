@@ -10,11 +10,11 @@ const User = require('../models/User');
 router.get('/', async (req, res) => {
     try {
       if (req.query.type === "add") {
-        return res.render("adduser")    
+        return res.render("adduser",{userDetails:req.user.user})    
       }
       const users = await User.findAll({});
    
-      return res.render("users",{users})
+      return res.render("users",{users,userDetails:req.user.user})
       
     } catch (err) {
       console.error('Error fetching tenants:', err);

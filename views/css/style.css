@@ -324,7 +324,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
   --bs-danger: #FF6746;
   --bs-light: #d7d8d9;
   --bs-dark: #6e6e6e;
-  --bs-primary-rgb: 59, 76, 184;
+  --bs-primary-rgb: 91, 81, 1;
   --bs-secondary-rgb: 182, 85, 228;
   --bs-success-rgb: 55, 209, 89;
   --bs-info-rgb: 43, 152, 214;
@@ -27892,7 +27892,9 @@ a,
     padding: 1.875rem; }
     @media only screen and (max-width: 575px) {
       .card-body {
-        padding: 1rem; } }
+        padding: 1rem; 
+        width: 90% !important;
+      } }
   .card-link:hover {
     color: #5b5101; }
   .card-title {

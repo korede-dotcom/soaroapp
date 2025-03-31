@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
     }
 
     if (req.user.user.roleId === 1) {
-      const newLawyer = await Lawyers.create({...value,createdBy:req.user.user.roleId});
+      const newLawyer = await Lawyers.create({...value,createdBy:req.user.user.id});
       return res.status(201).json({ message: 'Lawyer created successfully', lawyer: newLawyer ,status:true});
     }
     // If data is valid, create the new lawyer
@@ -28,6 +28,19 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.post('/add/property',async (req,res) =>{
+    try {
+      const {propertyId,lawyerId} = req.body;
+      const addProperty = await Lawyers.update({propertyId:propertyId},{where:{id:lawyerId}})
+      // if (!addProperty) {
+      // }
+      return res.status(200).json({ message: 'Lawyer added successfully', lawyer: addProperty ,status:true});
+    } catch (error) {
+      return res.status(200).json({ message: error.message ,status:false});
+      
+    }
+})
+
 // Get all lawyers
 router.get('/', async (req, res) => {
   console.log("🚀 ~ router.get ~ req:", req.user.id)
@@ -37,27 +50,27 @@ router.get('/', async (req, res) => {
     const allLands = await Land.findAll();
     if (req.query.type === "add") {
         if (req.user.user.roleId === 1) {
-          const allLands = await Land.findAll({where:{createdBy:req.user.user.roleId}});
-          return res.render("addlawyer",{allLands}) 
+          const allLands = await Land.findAll({where:{createdBy:req.user.user.id}});
+          return res.render("addlawyer",{allLands,userDetails:req.user.user}) 
         }
-        return res.render("addlawyer",{allLands})    
+        return res.render("addlawyer",{allLands,userDetails:req.user.user})    
     }
     if (req.query.type === "details" && req.query.id ) {
 
         if (req.user.user.roleId === 1) {
-          const lawyers = await Lawyers.findAll({where:{createdBy:req.user.user.roleId},include:[{model:Land}]});
-          return res.render("lawyerprofile",{lawyers})
+          const lawyers = await Lawyers.findAll({where:{createdBy:req.user.user.id},include:[{model:Land}]});
+          return res.render("lawyerprofile",{lawyers,userDetails:req.user.user})
           
         }
          
-        return res.render("lawyerprofile",{lawyers})
+        return res.render("lawyerprofile",{lawyers,userDetails:req.user.user})
     }
     if (req.user.user.roleId === 1) {
-      const lawyers = await Lawyers.findAll({where:{createdBy:req.user.user.roleId},include:[{model:Land}]});
-      return res.render("lawyers",{lawyers})
+      const lawyers = await Lawyers.findAll({where:{createdBy:req.user.user.id},include:[{model:Land}]});
+      return res.render("lawyers",{lawyers,userDetails:req.user.user})
 
     }
-    return res.render("lawyers",{lawyers})
+    return res.render("lawyers",{lawyers,userDetails:req.user.user})
     return res.status(200).json(lawyers);
   } catch (err) {
     console.error('Error fetching lawyers:', err);

@@ -52,7 +52,7 @@ const Land = sequelize.define('property', {
   },
   freshLand: {
     type: DataTypes.BOOLEAN,
-    defaultValue: true,
+    defaultValue: false,
     allowNull: true,
   },
   amount:{

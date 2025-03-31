@@ -175,25 +175,25 @@ router.get('/', async (req, res) => {
     
     if (req.query.type === "add") {
         if (req.user.user.roleId === 1) {
-          let tenants = await Tenants.findAll({where:{isPrevious:false,createdBy:req.user.user.roleId},include:[{model:Room},{model:Property}]});
-          const allLands = await Property.findAll({where:{createdBy:req.user.user.roleId}});
-          return res.render("addtenant",{tenants,allLands})
+          let tenants = await Tenants.findAll({where:{isPrevious:false,createdBy:req.user.user.id},include:[{model:Room},{model:Property}]});
+          const allLands = await Property.findAll({where:{createdBy:req.user.user.id}});
+          return res.render("addtenant",{tenants,allLands,userDetails:req.user.user})
         }
        
-        return res.render("addtenant",{tenants,allLands})
+        return res.render("addtenant",{tenants,allLands,userDetails:req.user.user})
     }
     if (req.query.type === "edit" && req.query.id) {
         console.log("🚀 ~ router.get ~ req.query.id:", req.query.id)
         if (req.user.user.roleId === 1) {
           tenants  = await Tenants.findOne({
-            where: { id:req.query.id,createdBy:req.user.user.roleId },
+            where: { id:req.query.id,createdBy:req.user.user.id },
             include: [
               { model: Room },
               { model: Property }
             ]
           });
   
-          return res.render("edittenant",{tenants}) 
+          return res.render("edittenant",{tenants,userDetails:req.user.user}) 
         }
         
         tenants  = await Tenants.findOne({
@@ -204,14 +204,14 @@ router.get('/', async (req, res) => {
           ]
         });
 
-        return res.render("edittenant",{tenants}) 
+        return res.render("edittenant",{tenants,userDetails:req.user.user}) 
     }
 
     if (req.query.type === "addfromroom" && req.query.id) {
         if (req.user.user.roleId === 1) {
           Room.belongsTo(Property,{foreignKey:"propertyId"})
           tenants  = await Room.findOne({
-            where: { id:req.query.id,createdBy:req.user.user.roleId },
+            where: { id:req.query.id,createdBy:req.user.user.id },
             include: [
               // { model: Room },
               { model: Property }
@@ -219,7 +219,7 @@ router.get('/', async (req, res) => {
           });
           
   
-          return res.render("roomaddtenant",{tenants}) 
+          return res.render("roomaddtenant",{tenants,userDetails:req.user.user}) 
           
         }
         Room.belongsTo(Property,{foreignKey:"propertyId"})
@@ -232,7 +232,7 @@ router.get('/', async (req, res) => {
         });
         
 
-        return res.render("roomaddtenant",{tenants}) 
+        return res.render("roomaddtenant",{tenants,userDetails:req.user.user}) 
     }
 
     if (req.query.type === "detail" && req.query.id) {
@@ -265,7 +265,7 @@ router.get('/', async (req, res) => {
 
       if (req.user.user.roleId === 1) {
         tenants  = await Tenants.findOne({
-          where: { id:req.query.id,createdBy:req.user.user.roleId },
+          where: { id:req.query.id,createdBy:req.user.user.id },
           include: [
             { model: Room },
             { model: Property }
@@ -273,7 +273,7 @@ router.get('/', async (req, res) => {
         });
         const paymentLogs =  await TenantPaymentRecord.findAll({where:{tenantId:req.query.id}})
         console.log("🚀 ~ router.get ~ tenants:", paymentLogs)
-        return res.render("tenantpaymentlist",{tenants,paymentLogs,results:results}) 
+        return res.render("tenantpaymentlist",{tenants,paymentLogs,results:results,userDetails:req.user.user}) 
         
       }
     //   SELECT 
@@ -293,21 +293,21 @@ router.get('/', async (req, res) => {
           ]
         });
         const paymentLogs =  await TenantPaymentRecord.findAll({where:{tenantId:req.query.id}})
-        return res.render("tenantpaymentlist",{tenants,paymentLogs,results}) 
+        return res.render("tenantpaymentlist",{tenants,paymentLogs,results,userDetails:req.user.user}) 
     }
 
     if (req.query.type === "filter" && req.query.propertyId) {
 
         if (req.user.user.roleId === 1) {
           tenants = await Tenants.findAll({
-           where: { propertyId: req.query.propertyId,isPrevious:false,createdBy:req.user.user.roleId },
+           where: { propertyId: req.query.propertyId,isPrevious:false,createdBy:req.user.user.id },
            include: [
              { model: Room },
              { model: Property }
            ]
          });
          
-           return res.render("tenant",{tenants,allLands}) 
+           return res.render("tenant",{tenants,allLands,userDetails:req.user.user}) 
           
         }
        tenants = await Tenants.findAll({
@@ -318,20 +318,20 @@ router.get('/', async (req, res) => {
         ]
       });
       
-        return res.render("tenant",{tenants,allLands}) 
+        return res.render("tenant",{tenants,allLands,userDetails:req.user.user}) 
     }
 
     if (req.query.type === "pasttenant" && req.query.roomId) {
       if (req.user.user.roleId === 1) {
         tenants = await Tenants.findAll({
-         where: { roomId: req.query.roomId,isPrevious:true,createdBy:req.user.user.roleId },
+         where: { roomId: req.query.roomId,isPrevious:true,createdBy:req.user.user.id },
          include: [
            { model: Room },
            { model: Property }
          ]
        });
        
-         return res.render("pasttenant",{tenants,allLands}) 
+         return res.render("pasttenant",{tenants,allLands,userDetails:req.user.user}) 
       }
         
       
@@ -343,16 +343,16 @@ router.get('/', async (req, res) => {
         ]
       });
       
-        return res.render("pasttenant",{tenants,allLands}) 
+        return res.render("pasttenant",{tenants,allLands,userDetails:req.user.user}) 
     }
 
     if (req.user.user.roleId === 1) {
-      let tenants = await Tenants.findAll({where:{isPrevious:false,createdBy:req.user.user.roleId},include:[{model:Room},{model:Property}]});
-      const allLands = await Property.findAll({where:{createdBy:req.user.user.roleId}});
-      return res.render("tenant",{tenants,allLands})
+      let tenants = await Tenants.findAll({where:{isPrevious:false,createdBy:req.user.user.id},include:[{model:Room},{model:Property}]});
+      const allLands = await Property.findAll({where:{createdBy:req.user.user.id}});
+      return res.render("tenant",{tenants,allLands,userDetails:req.user.user})
     }
  
-    return res.render("tenant",{tenants,allLands})
+    return res.render("tenant",{tenants,allLands,userDetails:req.user.user})
     return res.status(200).json(tenants);
   } catch (err) {
     console.error('Error fetching tenants:', err);

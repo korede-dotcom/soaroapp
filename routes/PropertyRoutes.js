@@ -2,6 +2,9 @@
 const express = require('express');
 const LandService = require('../services/PropertyService');
 const validateProperty = require('../validation/PropertyValidation');
+const validatePropertyLand = require('../validation/FreshValidation');
+const validateGenerateRoom = require('../validation/GenerateRoomsValidation');
+const validateImage = require('../validation/ImageValidation');
 const router = express.Router();
 const Land = require("../models/Property");
 const Sync = require("../models/index")
@@ -13,7 +16,8 @@ const PrevRecord = require('../models/PropertPrevRecord');
 const PropertyRecord = require('../models/PropertPrevRecord');
 const PaymentRecord = require('../models/TenantPaymentRecord');
 const sequelize = require("../models")
-const {Sequelize} = require("sequelize")
+const {Sequelize,Op, where} = require("sequelize");
+const Lawyers = require('../models/Lawyer');
 
 // POST - Create new land
 router.post('/',validateProperty, async (req, res) => {
@@ -45,7 +49,7 @@ router.post('/',validateProperty, async (req, res) => {
                 prevOwnerName: data.prevOwnerName,
                 prevOwnerPhone: data.prevOwnerPhone,
                 prevOwnerEmail: data.prevOwnerEmail,
-                createdBy:req.user.user.roleId
+                createdBy:req.user.user.id
             },
             { transaction } // ✅ Ensure transaction is passed correctly
         );
@@ -71,7 +75,7 @@ router.post('/',validateProperty, async (req, res) => {
                     yearlyAmount: amount,
                     roomCategory: "rent",
                     status: "vacant",
-                    createdBy:req.user.user.roleId
+                    createdBy:req.user.user.id
                 });
                 roomIndex++;
             }
@@ -209,11 +213,196 @@ router.post('/',validateProperty, async (req, res) => {
   }
 });
 
+router.post('/generateroom',validateGenerateRoom ,async (req, res) => {
+  try {
+    //   console.log("🚀 ~ router.post ~ req.body:", req.body)
+    const data = await req.body;
+
+    try {
+      const land = await Land.findOne({where:{id:data.propertyId}})
+        // Create land entry
+        if (req.user.user.roleId === 1) {
+       
+
+       
+        // Extract room data
+        const { totalroom, bedcount1, bedcount2, bedcount3, bedcount4, bedamount1, bedamount2, bedamount3, bedamount4,shopcount,shopamount,propertyId } = data;
+
+        let roomIndex = 1;
+        let roomsToCreate = [];
+
+        // Function to add rooms dynamically
+        const addRooms = (count, type, amount) => {
+            for (let i = 0; i < count; i++) {
+                roomsToCreate.push({
+                    number: `soaro-${land.name}-${roomIndex.toString().padStart(2, "0")}`,
+                    name:`soaro-${land.name}-room-${roomIndex.toString().padStart(2, "0")}`,
+                    propertyId: land.id,
+                    roomType: type,
+                    yearlyAmount: amount,
+                    roomCategory: "rent",
+                    status: "vacant",
+                    createdBy:req.user.user.id
+                });
+                roomIndex++;
+            }
+        };
+
+        // Add rooms based on counts
+        addRooms(bedcount1, "1bedroom", bedamount1);
+        addRooms(bedcount2, "2bedroom", bedamount2);
+        addRooms(bedcount3, "3bedroom", bedamount3);
+        addRooms(bedcount4, "4bedroom", bedamount4);
+        addRooms(shopcount, "shop", shopamount);
+
+        // Validate total rooms
+        console.log("🚀 ~ router.post ~ roomsToCreate.length > totalroom:", roomsToCreate.length , totalroom)
+        if (roomsToCreate.length > totalroom) {
+            throw new Error("Total rooms exceed allowed limit!");
+        }
+
+        // Bulk insert rooms
+        const roomCreated = await Room.bulkCreate(roomsToCreate);
+        console.log("✅ Rooms created:", roomCreated.length);
+        console.log("🚀 ~ router.post ~ data.Images:", data.Images)
+
+       
+
+        await transaction.commit();
+        return res.status(201).json({
+            land,
+            status:true,
+            message:"Property created"
+        });
+        }
+
+        
+
+        // Extract room data
+        const { totalroom, bedcount1, bedcount2, bedcount3, bedcount4, bedamount1, bedamount2, bedamount3, bedamount4,shopcount,shopamount } = data;
+
+        let roomIndex = 1;
+        let roomsToCreate = [];
+
+        // Function to add rooms dynamically
+        const addRooms = (count, type, amount) => {
+            for (let i = 0; i < count; i++) {
+                roomsToCreate.push({
+                    number: `soaro-${land.name}-${roomIndex.toString().padStart(2, "0")}`,
+                    name:`soaro-${land.name}-room-${roomIndex.toString().padStart(2, "0")}`,
+                    propertyId: land.id,
+                    roomType: type,
+                    yearlyAmount: amount,
+                    roomCategory: "rent",
+                    status: "vacant",
+                });
+                roomIndex++;
+            }
+        };
+
+        // Add rooms based on counts
+        addRooms(bedcount1, "1bedroom", bedamount1);
+        addRooms(bedcount2, "2bedroom", bedamount2);
+        addRooms(bedcount3, "3bedroom", bedamount3);
+        addRooms(bedcount4, "4bedroom", bedamount4);
+        addRooms(shopcount, "shop", shopamount);
+
+        // Validate total rooms
+        console.log("🚀 ~ router.post ~ roomsToCreate.length > totalroom:", roomsToCreate.length , totalroom)
+        if (roomsToCreate.length > totalroom) {
+            throw new Error("Total rooms exceed allowed limit!");
+        }
+
+        // Bulk insert rooms
+        const roomCreated = await Room.bulkCreate(roomsToCreate);
+        console.log("✅ Rooms created:", roomCreated.length);
+        console.log("🚀 ~ router.post ~ data.Images:", data.Images)
+
+        
+
+        
+        return res.status(201).json({
+            land,
+            status:true,
+            message:"Property created"
+        });
+    } catch (error) {
+        // ✅ Ensure rollback on failure
+        console.error("❌ Error creating land:", error);
+        throw new Error(`Error creating land: ${error.message}`);
+    }
+   
+    // res.status(201).json(land);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+
+router.post('/freshland',validatePropertyLand,async(req,res) => {
+  try {
+    const data = req.body;
+    if (req.user.user.roleId === 1) {
+      const land = await Land.create(
+        {
+            name: data.name,
+            address: data.address,
+            lga: data.lga,
+            state: data.state,
+            country: data.country,
+            amount: data.amount,
+            sqm: data.sqm,
+            description:data.description,
+            freshLand: true,
+            type: data.type,
+            created_by_name: data.created_by_name,
+            start: data.start,
+            end: data.end.length > 1 ? data.end : null,
+            prevOwnerAddress: data.prevOwnerAddress,
+            prevOwnerName: data.prevOwnerName,
+            prevOwnerPhone: data.prevOwnerPhone,
+            prevOwnerEmail: data.prevOwnerEmail,
+            createdBy:req.user.user.id
+        },
+    
+    );
+    return res.status(201).json({ message: "freshland added successfully!",status:true });
+  }
+  const saveFreshland = await Land.create({
+            name: data.name,
+            address: data.address,
+            lga: data.lga,
+            state: data.state,
+            country: data.country,
+            amount: data.amount,
+            sqm: data.sqm,
+            description:data.description,
+            freshLand: true,
+            type: data.type,
+            created_by_name: data.created_by_name,
+            start: data.start,
+            end: data.end.length > 1 ? data.end : null,
+            prevOwnerAddress: data.prevOwnerAddress,
+            prevOwnerName: data.prevOwnerName,
+            prevOwnerPhone: data.prevOwnerPhone,
+            prevOwnerEmail: data.prevOwnerEmail,
+            createdBy:req.user.user.id
+  })
+  console.log("🚀 ~ router.post ~ saveFreshland:", saveFreshland)
+  return res.status(201).json({ message: "freshland added successfully!",status:true });
+
+  } catch (error) {
+     console.log("🚀 ~ router.post ~ error:", error)
+     res.status(400).json({ message: error,status:false });
+  }
+})
+
+
 router.get('/add', async (req, res) => {
     try {
       const lands = await LandService.getAllLands();
       console.log("🚀 ~ router.get ~ lands:", lands)
-      res.render("addproperty",{lands})
+      res.render("addproperty",{lands,userDetails:req.user.user})
       
       // res.status(200).json(lands);
     } catch (error) {
@@ -226,7 +415,7 @@ router.get('/detail', async (req, res) => {
     //   const lands = await LandService.getLandsById(req.params.id);
     //   console.log("🚀 ~ router.get ~ lands:", lands)
     
-      return res.render("propertydetail")
+      return res.render("propertydetail",{userDetails:req.user.user})
     //   res.render("propertydetail",{lands})
       
       // res.status(200).json(lands);
@@ -239,7 +428,7 @@ router.get('/analysis', async (req, res) => {
     try {
     //   const lands = await LandService.getAllLands();
     //   console.log("🚀 ~ router.get ~ lands:", lands)
-      res.render("propertyanalysis")
+      res.render("propertyanalysis",{userDetails:req.user.user})
       
       // res.status(200).json(lands);
     } catch (error) {
@@ -247,51 +436,76 @@ router.get('/analysis', async (req, res) => {
     }
   });
 
+router.post("/addimage",validateImage,async (req,res) => {
+    const {id,images} = req.body;
+    try {
+      const imageRecords = images.map((imgUrl) => ({
+        propertyId: id, // Assign propertyId from request
+        imgurl: imgUrl, // Image URL from request
+        type: "property", // Default value
+      }));
+  
+      // Bulk insert into Images table
+      await Images.bulkCreate(imageRecords);
+  
+      return res.status(201).json({ message: "Images added successfully!",status:true });
+    } catch (error) {
+      console.error("Error inserting images:", error);
+      return res.status(500).json({ error: error.message,status:false});
+  
+    }
+})
+
 
 // GET - Get all lands
 router.get('/', async (req, res) => {
   try {
-    console.log("🚀 ~ router.get ~ req.user.user.roleId:", req.user.user.roleId)
     let lands = await LandService.getAllLands();
     // console.log("🚀 ~ router.get ~ lands:", lands.)
     if (req.query.type === "add") {
-        return res.render("addproperty")    
-      }
-    if (req.query.type === "details" && req.query.id ) {
+        return res.render("addproperty",{userDetails:req.user.user})    
+    }
+    if (req.query.type === "addfresh") {
+        return res.render("addpropertyfresh",{userDetails:req.user.user})    
+    }
 
+    if (req.query.type === "details" && req.query.id ) {
       if (req.user.user.roleId === 1) {
-        const lands = await Land.findOne({where:{createdBy:req.user.user.roleId,id:req.query.id}});
-        const tenantCount = await Tenants.count({where:{propertyId:req.query.id,isPrevious:false,createdBy:req.user.user.roleId}})
-        const roomCount = await Room.count({where:{propertyId:req.query.id,createdBy:req.user.user.roleId}})
-        const shopCount = await Room.count({where:{propertyId:req.query.id,roomType:"shop",createdBy:req.user.user.roleId}})
-        const expensesCount = await Expenses.count({where:{propertyId:req.query.id,createdBy:req.user.user.roleId}})
+        const lawyers = await Lawyers.findAll({where:{createdBy:req.user.user.id}})
+        const lands = await Land.findOne({where:{createdBy:req.user.user.id,id:req.query.id}});
+        const tenantCount = await Tenants.count({where:{propertyId:req.query.id,isPrevious:false,createdBy:req.user.user.id}})
+        const roomCount = await Room.count({where:{propertyId:req.query.id,createdBy:req.user.user.id}})
+        const shopCount = await Room.count({where:{propertyId:req.query.id,roomType:"shop",createdBy:req.user.user.id}})
+        const expensesCount = await Expenses.count({where:{propertyId:req.query.id,createdBy:req.user.user.id}})
       //   console.log("🚀 ~ router.get ~ lands:", lands.dataValues)
-      return res.render("propertydetail",{lands,tenantCount,roomCount,expensesCount,shopCount})
+      return res.render("propertydetail",{lands,tenantCount,roomCount,expensesCount,shopCount,userDetails:req.user.user,lawyers})
         
       }
+      const lawyers = await Lawyers.findAll({where:{}})
       
+          console.log("🚀 ~ router.get ~ lawyers:", lawyers)
           const lands = await LandService.getLandsById(req.query.id);
           const tenantCount = await Tenants.count({where:{propertyId:req.query.id,isPrevious:false}})
           const roomCount = await Room.count({where:{propertyId:req.query.id}})
           const shopCount = await Room.count({where:{propertyId:req.query.id,roomType:"shop"}})
           const expensesCount = await Expenses.count({where:{propertyId:req.query.id}})
         //   console.log("🚀 ~ router.get ~ lands:", lands.dataValues)
-        return res.render("propertydetail",{lands,tenantCount,roomCount,expensesCount,shopCount})
+        return res.render("propertydetail",{lands,tenantCount,roomCount,expensesCount,shopCount,userDetails:req.user.user,lawyers})
     }
 
     if (req.query.type === "filter" && req.query.name) {
       if (req.user.user.roleId == 1) {
         console.log("🚀 ~ router.get ~ req.user.user.roleId == 1:", req.user.user.roleId == 1)
-        const lands = await Land.findAll({where:{createdBy:req.user.user.roleId,type:req.query.name}});
+        const lands = await Land.findAll({where:{createdBy:req.user.user.id,type:req.query.name}});
         console.log("🚀 ~ router.get ~ lands:", lands)
-         return res.render("property",{lands})
+         return res.render("property",{lands,userDetails:req.user.user})
          
        }
       
         
         const lands = await Land.findAll({where:{type:req.query.name}});
         console.log("🚀 ~ router.get ~ lands:", lands)
-         return res.render("property",{lands})
+         return res.render("property",{lands,userDetails:req.user.user})
          
        
     }
@@ -310,26 +524,49 @@ router.get('/', async (req, res) => {
     //         type: Sequelize.QueryTypes.SELECT
     //     }
     // );
-    const result = await sequelize.query(
-      `SELECT 
-          p.id AS propertyId, 
-          COALESCE(
-              SUM(r."yearlyAmount") * 
-              COALESCE(EXTRACT(YEAR FROM AGE(COALESCE(p.end, NOW()), p.start)), 1), 
-              0
-          ) AS expectedIncome
-      FROM property p
-      LEFT JOIN rooms r ON p.id = r."propertyId"
-      WHERE p.id = :propertyId
-      GROUP BY p.id`,
-      {
+    // if (req.user.user.roleId === 1) {
+      
+    // }
+      // const result = await sequelize.query(
+      //   `SELECT 
+      //       p.id AS propertyId, 
+      //       COALESCE(
+      //           SUM(r."yearlyAmount") * 
+      //           COALESCE(EXTRACT(YEAR FROM AGE(COALESCE(p.end, NOW()), p.start)), 1), 
+      //           0
+      //       ) AS expectedIncome
+      //   FROM property p
+      //   LEFT JOIN rooms r ON p.id = r."propertyId"
+      //   WHERE p.id = :propertyId
+      //   GROUP BY p.id`,
+      //   {
+      //       replacements: { propertyId: req.query.propertyId },
+      //       type: Sequelize.QueryTypes.SELECT
+      //   }
+      // );
+
+      const result = await sequelize.query(
+        `SELECT 
+            p.id AS propertyId, 
+            COALESCE(
+                SUM(r."yearlyAmount") * 
+                GREATEST(EXTRACT(YEAR FROM AGE(COALESCE(p.end, NOW()), p.start)), 1), 
+                0
+            ) AS expectedIncome
+        FROM property p
+        LEFT JOIN rooms r ON p.id = r."propertyId"
+        WHERE p.id = :propertyId
+        GROUP BY p.id`,
+        {
           replacements: { propertyId: req.query.propertyId },
           type: Sequelize.QueryTypes.SELECT
-      }
-  );
-  
+        }
+      );
+      
+    
     
       const expectedYearlyAmount = result[0].expectedincome ? result[0].expectedincome : 0;
+      console.log("🚀 ~ router.get ~ expectedYearlyAmount:", expectedYearlyAmount)
       // console.log(result[0].expectedIncome)
       async function getCounts(propertyId) {
         // const totalProperties = await Land.count({where:{pro}});
@@ -356,33 +593,44 @@ router.get('/', async (req, res) => {
       PaymentRecord.belongsTo(Room,{foreignKey:"roomId"})
       const paymentLogs = await PaymentRecord.findAll({where:{propertyId:req.query.propertyId},include:[{model:Tenants},{model:Room},{model:Land}]})
       const getValues = await getCounts(req.query.propertyId)
+      const totalPaymentForTheYear = await PaymentRecord.sum('amount', {
+        where: {
+          start: {
+            [Op.gte]: new Date(new Date().getFullYear(), 0, 1), // From January 1st of the current year
+            [Op.lte]: new Date(), // Up to today
+          },
+          propertyId:req.query.propertyId
+        },
+        // group: ['propertyId']
+      });
+      console.log("🚀 ~ router.get ~ totalPaymentForTheYear:", totalPaymentForTheYear)
     
-      return res.render("propertyanalytics",{getValues,paymentLogs,propertyDetails,expectedYearlyAmount})
+      return res.render("propertyanalytics",{getValues,paymentLogs,propertyDetails,expectedYearlyAmount,userDetails:req.user.user,totalPaymentForTheYear})
     }
 
     if (req.query.type === "past" && req.query.id) {
       PropertyRecord.belongsTo(Land,{foreignKey:"propertyId"})
       if (req.user.user.roleId === 1) {
-        const pastrecord = await PropertyRecord.findAll({where:{createdBy:req.user.user.roleId},include:[{model:Land}]})
-        return res.render("propertypast",{pastrecord})
+        const pastrecord = await PropertyRecord.findAll({where:{createdBy:req.user.user.id},include:[{model:Land}]})
+        return res.render("propertypast",{pastrecord,userDetails:req.user.user})
         
       }
       const pastrecord = await PropertyRecord.findAll({where:{},include:[{model:Land}]})
-      return res.render("propertypast",{pastrecord})
+      return res.render("propertypast",{pastrecord,userDetails:req.user.user})
       
     }
 
    if (req.user.user.roleId == 1) {
     
-    const lands = await Land.findAll({where:{createdBy:req.user.user.roleId}});
+    const lands = await Land.findAll({where:{createdBy:req.user.user.id}});
     console.log("🚀 ~ router.get ~ lands:", lands)
-     return res.render("property",{lands})
+     return res.render("property",{lands,userDetails:req.user.user})
      
    }
 
 
     // return res.json({lands})
-    return res.render("property",{lands})
+    return res.render("property",{lands,userDetails:req.user.user})
     
     // res.status(200).json(lands);
   } catch (error) {
@@ -413,15 +661,25 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+router.post('/update/amount', async (req, res) => {
+  try {
+    const updatedAmount = await Land.update({amount:req.body.amount},{where:{id:req.body.propertyId}});
+    res.status(200).json({status:true,updatedAmount,message:"amount updated successfully"});
+  } catch (error) {
+    console.log("🚀 ~ router.post ~ error:", error)
+    res.status(400).json({ message: error.message,status:false });
+  }
+});
+
 router.patch('/:id', async (req, res) => {
   try {
       if (req.user.user.roleId === 1) {
         const {type,start,end} = req.body;
         const id = req.params.id;
         let checkEnd = end === undefined || null ? null : end
-        const getProp = await Land.findOne({where:{id:id,createdBy:req.user.user.roleId}})
+        const getProp = await Land.findOne({where:{id:id,createdBy:req.user.user.id}})
         
-        const UpdateProp = await Land.update({start:start,end:checkEnd,type:type},{where:{id:id,createdBy:req.user.user.roleId}})
+        const UpdateProp = await Land.update({start:start,end:checkEnd,type:type},{where:{id:id,createdBy:req.user.user.id}})
         const createRecord = await PrevRecord.create({start:getProp.start,end:getProp.end,type:getProp.type,propertyId:id})
     
         res.status(200).json({status:true,message:"property updated and previous record is kept",UpdateProp});

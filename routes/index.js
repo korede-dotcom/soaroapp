@@ -17,9 +17,9 @@ const PaymentRecord = require("../models/TenantPaymentRecord")
 const Tenants = require("../models/Tenants")
 const Images = require("../models/Images")
 const sequelize = require("../models")
-const {Op} = require("sequelize")
 const eventEmitter = require("../utils/events");
 const querystring = require("querystring");
+const { Op, fn, col } = require('sequelize');
 
 const bcrypt = require("bcryptjs")
 const authenticateUser = require("../middleware/Auth")
@@ -40,9 +40,52 @@ routes.use("/user",authenticateUser,userRoutes)
 
 
 routes.get("/dashboard",authenticateUser,async(req,res) => {
-    const propertyCount = await Property.count({})
+  Property.hasMany(PaymentRecord, { foreignKey: 'propertyId' });
+  PaymentRecord.belongsTo(Property, { foreignKey: 'propertyId' });
+    let count ;
+    let soldCount;
+    if (req.user.user.roleId === 1) {
+      count = await Property.count({where:{createdBy:req.user.user.id,isSold:false}})
+      soldCount = await Property.count({where:{createdBy:req.user.user.id,isSold:true}})
+    }
+    count = await Property.count({where:{isSold:false}})
+    soldCount = await Property.count({where:{isSold:true}})
+    console.log("🚀 ~ routes.get ~ req.user:", req.user.user)
+
+
+
+const rentAnalytics = await PaymentRecord.findAll({
+  include: {
+    model: Property,
+    attributes: ['name', 'type']
+  },
+  attributes: [
+    'propertyId',
+    [sequelize.fn('SUM', sequelize.col('paymentrecord.amount')), 'totalRent']
+  ],
+  group: ['propertyId', 'property.id', 'property.name', 'property.type'],
+  raw: true,
+  nest: true
+});
+
+console.log("🚀 ~ routes.get ~ rentAnalytics:", rentAnalytics);
+
+const formattedAnalytics = rentAnalytics.map(record => ({
+  propertyName: record.property?.name || 'Unknown',
+  propertyType: record.property?.type || 'Unknown',
+  totalRent: `₦${Number(record.totalRent).toLocaleString('en-NG', { minimumFractionDigits: 2 })}`
+}));
+
+
+
+console.log(formattedAnalytics);
+
+
+const totalSum = rentAnalytics.reduce((sum, record) => sum + parseFloat(record.totalRent || 0), 0);
+
+
     
-    res.render("dashboard",{propertyCount,})
+    res.render("dashboard",{count,soldCount,userDetails:req.user.user, analyticsData: formattedAnalytics,totalSum })
 })
 routes.get("/",async(req,res) => {
     res.render("login")

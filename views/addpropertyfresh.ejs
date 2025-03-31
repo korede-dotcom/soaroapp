@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-	<!-- Title -->
-	<title>Soaro - Real Estate Admin Dashboard Template</title>
+    <!-- Title -->
+	<title>Omah - Real Estate Admin Dashboard Template</title>
  
 	<!-- Meta -->
 	<meta charset="utf-8">
@@ -14,29 +14,33 @@
 	<meta name="keywords" content="admin, dashboard, admin dashboard, admin template, template, admin panel, administration, analytics, bootstrap, hospital admin, modern, property, real estate, responsive, creative, retina ready, modern Dashboard">
 	<meta name="description" content="Your Ultimate Real Estate Admin Dashboard Template. Streamline property management, analyze market trends, and boost productivity with our intuitive and feature-rich solution. Elevate your real estate business today!">
    
-	<meta property="og:title" content="Soaro - Real Estate Admin Dashboard Template">
+	<meta property="og:title" content="Omah - Real Estate Admin Dashboard Template">
 	<meta property="og:description" content="Your Ultimate Real Estate Admin Dashboard Template. Streamline property management, analyze market trends, and boost productivity with our intuitive and feature-rich solution. Elevate your real estate business today!">
-	<!-- <meta property="og:image" content="https://omah.dexignzone.com/xhtml/social-image.png"> -->
+	<meta property="og:image" content="https://omah.dexignzone.com/xhtml/social-image.png">
 	<meta name="format-detection" content="telephone=no">
    
-	<meta name="twitter:title" content="Soaro - Real Estate Admin Dashboard Template">
+	<meta name="twitter:title" content="Omah - Real Estate Admin Dashboard Template">
 	<meta name="twitter:description" content="Your Ultimate Real Estate Admin Dashboard Template. Streamline property management, analyze market trends, and boost productivity with our intuitive and feature-rich solution. Elevate your real estate business today!">
-	<!-- <meta name="twitter:image" content="https://omah.dexignzone.com/xhtml/social-image.png"> -->
+	<meta name="twitter:image" content="https://omah.dexignzone.com/xhtml/social-image.png">
 	<meta name="twitter:card" content="summary_large_image">
 
 	<!-- MOBILE SPECIFIC -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	
-	
+   
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
-	<!-- Vectormap -->
-    <link href="vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
-	<link href="vendor/owl-carousel/owl.carousel.css" rel="stylesheet">
+    <link rel="stylesheet" href="vendor/toastr/css/toastr.min.css">
+    <!-- Custom Stylesheet -->
+    <!-- Custom Stylesheet -->
     <link href="vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
+	<link href="vendor/bootstrap-datepicker-master/css/bootstrap-datepicker.min.css" rel="stylesheet">
+	<link href="vendor/dropzone/dist/dropzone.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 </head>
+
 <body>
 
     <!--*******************
@@ -53,10 +57,16 @@
         Preloader end
     ********************-->
 
+
     <!--**********************************
         Main wrapper start
     ***********************************-->
     <div id="main-wrapper">
+
+        <div id="loaderOverlay">
+            <div class="spinner"></div>
+        </div>
+    
 
         <!--**********************************
             Nav header start
@@ -86,13 +96,13 @@
 			<div class="custom-tab-1">
 				<ul class="nav nav-tabs">
 					<li class="nav-item">
-						<a class="nav-link" data-bs-toggle="tab" href="index.html#notes">Notes</a>
+						<a class="nav-link" data-bs-toggle="tab" href="add-property.html#notes">Notes</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" data-bs-toggle="tab" href="index.html#alerts">Alerts</a>
+						<a class="nav-link" data-bs-toggle="tab" href="add-property.html#alerts">Alerts</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link active" data-bs-toggle="tab" href="index.html#chat">Chat</a>
+						<a class="nav-link active" data-bs-toggle="tab" href="add-property.html#chat">Chat</a>
 					</li>
 				</ul>
 				<div class="tab-content">
@@ -306,7 +316,7 @@
 									<p class="mb-0 text-success">Online</p>
 								</div>							
 								<div class="dropdown">
-									<a href="javascript:void(0);" data-bs-toggle="dropdown" ><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="#000000" cx="5" cy="12" r="2"/><circle fill="#000000" cx="12" cy="12" r="2"/><circle fill="#000000" cx="19" cy="12" r="2"/></g></svg></a>
+									<a href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="#000000" cx="5" cy="12" r="2"/><circle fill="#000000" cx="12" cy="12" r="2"/><circle fill="#000000" cx="19" cy="12" r="2"/></g></svg></a>
 									<ul class="dropdown-menu dropdown-menu-end">
 										<li class="dropdown-item"><i class="fas fa-user-circle text-primary me-2"></i> View profile</li>
 										<li class="dropdown-item"><i class="fas fa-users text-primary me-2"></i> Add to close friends</li>
@@ -579,11 +589,14 @@
 		<!--**********************************
             Chat box End
         ***********************************-->
+
+
 		
-		<!--**********************************
+		
+        <!--**********************************
             Header start
         ***********************************-->
-        <%- include('partial/header') %>
+		<%- include('partial/header') %>
         <!--**********************************
             Header end ti-comment-alt
         ***********************************-->
@@ -595,342 +608,217 @@
         <!--**********************************
             Sidebar end
         ***********************************-->
-		
-		<!--**********************************
+
+        <!--**********************************
             Content body start
         ***********************************-->
-        <div class="content-body">
-            <!-- row -->
-			<div class="container-fluid">
-                <div class="form-head d-md-flex mb-sm-4 mb-3 align-items-start">
-					<div class="me-auto d-lg-block d-block">
-						<h2 class="text-black font-w600">Dashboard</h2>
-						<p class="mb-0">Welcome to Soaro Property Admin</p>
-					</div>
-					<a href="index.html" class="btn btn-primary rounded light">Refresh</a>
-				</div>
-				<div class="row">
-					<div class="col-xl-6 col-xxl-6">
-						<div class="row">
-							<div class="col-xl-12">
-								<div class="card bg-warning property-bx text-white">
-									<div class="card-body">
-										<div class="media d-sm-flex d-block align-items-center">
-											<span class="me-4 d-block mb-sm-0 mb-3">
-												<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M31.8333 79.1667H4.16659C2.33325 79.1667 0.833252 77.6667 0.833252 75.8333V29.8333C0.833252 29 1.16659 28 1.83325 27.5L29.4999 1.66667C30.4999 0.833332 31.8333 0.499999 32.9999 0.999999C34.3333 1.66667 34.9999 2.83333 34.9999 4.16667V76C34.9999 77.6667 33.4999 79.1667 31.8333 79.1667ZM7.33325 72.6667H28.4999V11.6667L7.33325 31.3333V72.6667Z" fill="white"/>
-													<path d="M75.8333 79.1667H31.6666C29.8333 79.1667 28.3333 77.6667 28.3333 75.8334V36.6667C28.3333 34.8334 29.8333 33.3334 31.6666 33.3334H75.8333C77.6666 33.3334 79.1666 34.8334 79.1666 36.6667V76C79.1666 77.6667 77.6666 79.1667 75.8333 79.1667ZM34.9999 72.6667H72.6666V39.8334H34.9999V72.6667Z" fill="white"/>
-													<path d="M60.1665 79.1667H47.3332C45.4999 79.1667 43.9999 77.6667 43.9999 75.8334V55.5C43.9999 53.6667 45.4999 52.1667 47.3332 52.1667H60.1665C61.9999 52.1667 63.4999 53.6667 63.4999 55.5V75.8334C63.4999 77.6667 61.9999 79.1667 60.1665 79.1667ZM50.6665 72.6667H56.9999V58.8334H50.6665V72.6667Z" fill="white"/>
-												</svg>
-											</span>
-											<div class="media-body mb-sm-0 mb-3 me-5">
-												<h4 class="fs-22 text-white">Total Properties</h4>
-												<div class="progress mt-3 mb-2" style="height:8px;">
-													<div class="progress-bar bg-white progress-animated" style="width: 86%; height:8px;" role="progressbar">
-														<span class="sr-only">86% Complete</span>
-													</div>
-												</div>
-												<span class="fs-14">count of all properties</span>
+         <div class="content-body">
+            <div class="container-fluid">
+                <div class="page-titles">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a href="javascript:void(0)">Property FreshLand</a></li>
+						<li class="breadcrumb-item active"><a href="javascript:void(0)">Add FreshLand Property</a></li>
+					</ol>
+                </div>
+                <!-- row -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Add Fresh Land Property</h4>
+								<!-- <button class="btn-primary btn">
+									<a href="/" style="color: #fff;">create freshland</a>
+								</button> -->
+                            </div>
+                            <div class="card-body">
+								<form id="propertyForm">
+                                    <div class="row">
+										<!-- <div class="mb-3 col-lg-4 col-md-6">
+											<div class="form-check">
+												<label class="form-check-label"  for="freshLand">Fresh Land</label>
+											  <input class="form-check-input" required type="checkbox" id="freshLand" >
 											</div>
-											<span class="fs-35 font-w500"><%= count %></span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-12 col-md-6">
-								<div class="card property-card">
-									<div class="card-body">
-										<div class="media align-items-center">
-											<div class="media-body me-3">	
-												<h2 class="fs-28 text-black font-w600"><%= soldCount %></h2>
-												<p class="property-p mb-0 text-black font-w500">Sold Property</p>
-												<span class="fs-13">All property sold count</span>
-											</div>
-											<div class="d-inline-block position-relative donut-chart-sale">
-												<span class="donut1" data-peity='{ "fill": ["rgb(60, 76, 184)", "rgba(236, 236, 236, 1)"],   "innerRadius": 38, "radius": 10}'><%= soldCount %> / 100</span>
-												<small class="text-primary"><%= soldCount %>%</small>
-												<span class="circle bgl-primary"></span>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-12 col-md-6">
-								<div class="card property-card">
-									<div class="card-body">
-										<div class="media align-items-center">
-											<div class="media-body me-3">	
-												<h2 class="fs-28 text-black font-w600">2,206</h2>
-												<p class="property-p mb-0 text-black font-w500">Properties for Rent</p>
-												<span class="fs-13">Target 3k/month</span>
-											</div>
-											<div class="d-inline-block position-relative donut-chart-sale">
-												<span class="donut1" data-peity='{ "fill": ["rgb(55, 209, 90)", "rgba(236, 236, 236, 1)"],   "innerRadius": 38, "radius": 10}'>7/8</span>
-												<small class="text-success">90%</small>
-												<span class="circle bgl-success"></span>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-6 col-xxl-6">
-						<div class="card">
-							<div class="card-header border-0 pb-0">
-								<h3 class="fs-18 text-black">Total Revenue</h3>
-								<div class="dropdown ms-auto">
-									<div class="btn-link" data-bs-toggle="dropdown" >
-										<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg>
-									</div>
-									<div class="dropdown-menu dropdown-menu-end" >
-										<a class="dropdown-item" href="javascript:void(0);">Edit</a>
-										<a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
-									</div>
-								</div>
-							</div>
-							<div class="card-body pt-2 pb-0">
-								<div class="d-flex flex-wrap align-items-center">
-									<span class="fs-28 text-black font-w600 me-3">
-										<p><span>₦<%= totalSum.toLocaleString('en-NG', { minimumFractionDigits: 2 }) %></span></p>
+										</div> -->
+                                      <div class="mb-3 col-lg-4 col-md-6">
+                                        <label class="form-label">Property Name</label>
+                                        <input required type="text" name="name" class="form-control" placeholder="Property Name" required>
+                                      </div>
+                                      
+                                      <div class="mb-3 col-lg-4 col-md-6">
+                                        <label class="form-label">Property Type</label>
+                                        <select name="type" required class="form-control">
+                                          <option value="Lease">Lease</option>
+                                          <option value="BOT">BOT</option>
+                                          <option value="JV">Joint Ventures (JV)</option>
+                                          <option value="PERSONAL">Personal (Owned)</option>
+                                        </select>
+                                      </div>
+                                  
+                                      <div class="mb-3 col-lg-4 col-md-6">
+                                        <label class="form-label">Address</label>
+                                        <input type="text" required name="address" class="form-control" placeholder="Address of your property">
+                                      </div>
+                                  
+                                      <div class="mb-3 col-lg-4 col-md-6">
+                                        <label class="form-label">LGA</label>
+                                        <input type="text" required name="lga" class="form-control" placeholder="Local Government Area">
+                                      </div>
+                                  
+                                      <div class="mb-3 col-lg-4 col-md-6">
+                                        <label class="form-label">State</label>
+                                        <input type="text" required name="state" class="form-control" placeholder="State">
+                                      </div>
+                                  
+                                      <div class="mb-3 col-lg-4 col-md-6">
+                                        <label class="form-label">Country</label>
+                                        <select required name="country" class="default-select form-control wide">
+                                            <option value="">Select Country</option>
+                                            <option value="Nigeria">Nigeria</option>
+                                            <option value="United States">United States</option>
+                                            <option value="United Kingdom">United Kingdom</option>
+                                            <option value="Canada">Canada</option>
+                                            <option value="Germany">Germany</option>
+                                            <option value="France">France</option>
+                                            <option value="India">India</option>
+                                            <option value="China">China</option>
+                                            <option value="South Africa">South Africa</option>
+                                            <option value="Australia">Australia</option>
+                                        </select>
+                                    </div>
+                                    
+                                      
+                                  
+                                    
+                                      <div class="mb-3 col-lg-4 col-md-6">
+                                        <label class="form-label">Area (sqm)</label>
+                                        <input type="number" required name="sqm" class="form-control" placeholder="85" step="0.01">
+                                      </div>
+                                  
+                                      <div class="mb-3 col-lg-4 col-md-6">
+                                        <label class="form-label">Property Worth / Price</label>
+                                        <input type="number" required name="amount" class="form-control" placeholder="3000" step="0.01">
+                                      </div>
+                                  
+                                  
+                                      <div class="mb-3 col-12">
+                                        <label class="form-label">Description</label>
+                                        <textarea name="description" required class="form-control" rows="4"></textarea>
+                                      </div>
+                                  
+                                      <div class="mb-3 col-sm-6">
+                                        <label class="form-label">Acquired Date</label>
+                                        <input type="date" required name="start" class="form-control">
+                                      </div>
+                                  
+                                      <div class="mb-3 col-sm-6">
+                                        <label class="form-label">Return Date</label>
+                                        <input type="date"  name="end" class="form-control">
+                                      </div>
+                                  
+                                
+                                  
+                                    
 
-									</span>
-									<p class="me-sm-auto me-3 mb-sm-0 mb-3">total money received for rents</p>
-									<div class="d-flex align-items-center">
-									
-									
-										</svg>
-									</div>
-								</div>
-								<div id="chartTimelines"></div>
+                                      <div class="mb-3 col-lg-4 col-md-6">
+                                        <label class="form-label">Previous Owner fullName</label>
+                                        <input type="text" required name="prevOwnerName" class="form-control" placeholder="Previous Owner Name">
+                                      </div>
+                                      <div class="mb-3 col-lg-4 col-md-6">
+                                        <label class="form-label">Previous Owner Phonenumber</label>
+                                        <input type="text" required name="prevOwnerPhone" class="form-control" placeholder="Previous Owner Phonenumber">
+                                      </div>
+                                      <div class="mb-3 col-lg-4 col-md-6">
+                                        <label class="form-label">Previous Owner Email</label>
+                                        <input type="text" required name="prevOwnerEmail" class="form-control" placeholder="Previous Owner Phonenumber">
+                                      </div>
+                                      <div class="mb-3 col-lg-4 col-md-6">
+                                        <label class="form-label">Previous Owner address</label>
+                                        <input type="text" required name="prevOwnerAddress" class="form-control" placeholder="Previous Owner address">
+                                      </div>
+                                      <div class="mb-3 col-lg-4 col-md-6">
+                                          <label for="formFileMultiple" class="form-label">Multiple files input example</label>
+                                          <input class="form-control"  type="file" id="formFileMultiple" multiple>
+                                       
+                                      </div>
+
+                                      <div class="mb-3">
+                                          <button  class="btn btn-primary btn-xs" id="submitBtn">Submit</button>
+                                      </div>
+                                      
+                                  
+                                      <!-- <div class="mb-3 col-12 text-center">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                      </div> -->
+                                    </div>
+                                  </form>
+                                  
+								<!-- <div class="dropzone-admin mb-3">
+									<label class="form-label">Media</label>
+									<form class="dropzone" id="multiFileUpload">
+										<div class="dz-message needsclick"><i class="fas fa-cloud-upload-alt"></i>
+										<h6>Drop files here or click to upload.</h6>
+										</div>
+									</form>
+								</div>   -->
+
+                               
+								<!-- <form>
+									<div class="row">
+										<div class="mb-3 col-12">
+											<label class="form-label">video (mp4)</label>
+											<input type="text" class="form-control" placeholder="mp4 video link">
+										</div>
+										<div class="mb-3 col-12">
+											<label class="form-label d-block">Additional features</label>
+											<div class="form-check form-check-inline">
+												<input type="checkbox" class="form-check-input" value="" id="flexRadioDefault4">
+                                                <label class="form-check-label" for="flexRadioDefault4"> Emergency Exit</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+												<input type="checkbox" class="form-check-input" value="" id="flexRadioDefault5">
+                                                <label class="form-check-label" for="flexRadioDefault5"> CCTV</label>
+                                            </div>
+											<div class="form-check form-check-inline">
+												<input type="checkbox" class="form-check-input" value="" id="flexRadioDefault6">
+                                                <label class="form-check-label" for="flexRadioDefault6"> Free Wi-Fi</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+												<input type="checkbox" class="form-check-input" value="" id="flexRadioDefault7">
+                                                <label class="form-check-label" for="flexRadioDefault7"> Free Parking In The Area</label>
+                                            </div>
+											<div class="form-check form-check-inline">
+												<input type="checkbox" class="form-check-input" value="" id="flexRadioDefault8">
+                                                <label class="form-check-label" for="flexRadioDefault8"> Air Conditioning</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+												<input type="checkbox" class="form-check-input" value="" id="flexRadioDefault9">
+                                                <label class="form-check-label" for="flexRadioDefault9"> Security Guard</label>
+                                            </div>
+											<div class="form-check form-check-inline">
+												<input type="checkbox" class="form-check-input" value="" id="flexRadioDefault10">
+                                                <label class="form-check-label" for="flexRadioDefault10"> Terrace</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+												<input type="checkbox" class="form-check-input" value="" id="flexRadioDefault11">
+                                                <label class="form-check-label" for="flexRadioDefault11"> Laundry Service</label>
+                                            </div>
+											<div class="form-check form-check-inline">
+												<input type="checkbox" class="form-check-input" value="" id="flexRadioDefault12">
+                                                <label class="form-check-label" for="flexRadioDefault12"> Elevator Lift</label>
+                                            </div>
+											<div class="form-check form-check-inline">
+												<input type="checkbox" class="form-check-input" value="" id="flexRadioDefault13">
+                                                <label class="form-check-label" for="flexRadioDefault13"> Balcony</label>
+                                            </div>
+                                        </div>
+										<div class="col-sm-12 pt-3">
+											<button type="button" class="btn btn-sm btn-primary me-2">Submit</button>
+											<button type="button" class="btn btn-sm btn-danger light">Cancel</button>
+										</div>									
+									</div>	
+								</form> -->
 							</div>
-						</div>
-					</div>
-					<div class="col-xl-9 col-xxl-9">
-						<div class="row">
-							<div class="col-xl-8 col-xxl-8">
-								<div class="card">
-									<div class="card-header border-0 pb-0">
-										<h3 class="fs-18 text-black">Overview</h3>
-										<div class="dropdown ms-auto">
-											<div class="btn-link" data-bs-toggle="dropdown" >
-												<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg>
-											</div>
-											<div class="dropdown-menu dropdown-menu-end" >
-												<a class="dropdown-item" href="javascript:void(0);">Edit</a>
-												<a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
-											</div>
-										</div>
-									</div>
-									<div class="card-body">
-										<div class="d-sm-flex flex-wrap  justify-content-around">
-											<div class="d-flex mb-4 align-items-center">
-												<span class="rounded me-3 bg-primary p-3">
-													<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M10.3458 25.7292H1.35412C0.758283 25.7292 0.270782 25.2417 0.270782 24.6458V9.69583C0.270782 9.42499 0.379116 9.09999 0.595783 8.93749L9.58745 0.541659C9.91245 0.270825 10.3458 0.162492 10.725 0.324992C11.1583 0.541659 11.375 0.920825 11.375 1.35416V24.7C11.375 25.2417 10.8875 25.7292 10.3458 25.7292ZM2.38328 23.6167H9.26245V3.79166L2.38328 10.1833V23.6167Z" fill="white"/>
-														<path d="M24.6458 25.7292H10.2916C9.69578 25.7292 9.20828 25.2417 9.20828 24.6458V11.9167C9.20828 11.3208 9.69578 10.8333 10.2916 10.8333H24.6458C25.2416 10.8333 25.7291 11.3208 25.7291 11.9167V24.7C25.7291 25.2417 25.2416 25.7292 24.6458 25.7292ZM11.375 23.6167H23.6166V12.9458H11.375V23.6167Z" fill="white"/>
-														<path d="M19.5541 25.7292H15.3833C14.7874 25.7292 14.2999 25.2417 14.2999 24.6458V18.0375C14.2999 17.4417 14.7874 16.9542 15.3833 16.9542H19.5541C20.1499 16.9542 20.6374 17.4417 20.6374 18.0375V24.6458C20.6374 25.2417 20.1499 25.7292 19.5541 25.7292ZM16.4666 23.6167H18.5249V19.1208H16.4666V23.6167Z" fill="white"/>
-													</svg>
-												</span>
-												<div>
-													<p class="fs-14 mb-1">Total Sale</p>
-													<span class="fs-18 text-black font-w700">2,346 Unit</span>
-												</div>
-											</div>
-											<div class="d-flex mb-4 align-items-center">
-												<span class="rounded me-3 bg-success p-3">
-													<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M10.3458 25.7292H1.35412C0.758283 25.7292 0.270782 25.2417 0.270782 24.6458V9.69583C0.270782 9.42499 0.379116 9.09999 0.595783 8.93749L9.58745 0.541659C9.91245 0.270825 10.3458 0.162492 10.725 0.324992C11.1583 0.541659 11.375 0.920825 11.375 1.35416V24.7C11.375 25.2417 10.8875 25.7292 10.3458 25.7292ZM2.38328 23.6167H9.26245V3.79166L2.38328 10.1833V23.6167Z" fill="white"/>
-														<path d="M24.6458 25.7292H10.2916C9.69578 25.7292 9.20828 25.2417 9.20828 24.6458V11.9167C9.20828 11.3208 9.69578 10.8333 10.2916 10.8333H24.6458C25.2416 10.8333 25.7291 11.3208 25.7291 11.9167V24.7C25.7291 25.2417 25.2416 25.7292 24.6458 25.7292ZM11.375 23.6167H23.6166V12.9458H11.375V23.6167Z" fill="white"/>
-														<path d="M19.5541 25.7292H15.3833C14.7874 25.7292 14.2999 25.2417 14.2999 24.6458V18.0375C14.2999 17.4417 14.7874 16.9542 15.3833 16.9542H19.5541C20.1499 16.9542 20.6374 17.4417 20.6374 18.0375V24.6458C20.6374 25.2417 20.1499 25.7292 19.5541 25.7292ZM16.4666 23.6167H18.5249V19.1208H16.4666V23.6167Z" fill="white"/>
-													</svg>
-												</span>
-												<div>
-													<p class="fs-14 mb-1">Total Rent</p>
-													<span class="fs-18 text-black font-w700">1,252 Unit</span>
-												</div>
-											</div>
-										</div>
-										<div id="chartBar"></div>
-									</div>
-								</div>
-							</div>
-							<div class="col-xl-4 col-xxl-4">
-								<div class="row">
-									<div class="col-xl-12 col-xxl-12 col-md-6">
-										<div class="card">
-											<div class="card-body">
-												<div id="monocromeChart"></div>
-												<div class="d-flex flex-wrap mt-3">
-													<span class="text-black font-w600 me-5 mb-2">
-													<svg class="me-2" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<rect width="20" height="20" rx="8" fill="#FFB067"/>
-													</svg>Agent</span>
-													<span class="text-black font-w600 mb-2">
-													<svg class="me-2" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<rect width="20" height="20" rx="8" fill="#B655E4"/>
-													</svg>Customers</span>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-xl-12 col-xxl-12 col-md-6">
-										<div class="card">
-											<div class="card-body">
-												<p class="mb-2 d-flex  fs-16 text-black font-w500">Product Viewed
-													<span class="pull-right ms-auto text-dark fs-14">561/days</span>
-												</p>
-												<div class="progress mb-4" style="height:10px">
-													<div class="progress-bar bg-primary progress-animated" style="width:75%; height:10px;" role="progressbar">
-														<span class="sr-only">75% Complete</span>
-													</div>
-												</div>
-												<p class="mb-2 d-flex  fs-16 text-black font-w500">Product Listed
-													<span class="pull-right ms-auto text-dark fs-14">3,456 Unit</span>
-												</p>
-												<div class="progress mb-3" style="height:10px">
-													<div class="progress-bar bg-primary progress-animated" style="width:90%; height:10px;" role="progressbar">
-														<span class="sr-only">90% Complete</span>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-xl-12">
-								<div class="card">
-									<div class="card-header border-0 pb-0">
-										<h3 class="fs-18 text-black">Properties Map Location</h3>
-										<div class="dropdown ms-auto">
-											<div class="btn-link" data-bs-toggle="dropdown" >
-												<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg>
-											</div>
-											<div class="dropdown-menu dropdown-menu-end" >
-												<a class="dropdown-item" href="javascript:void(0);">Edit</a>
-												<a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
-											</div>
-										</div>
-									</div>
-									<div class="card-body">
-										<div class="row">
-											<div class="col-lg-3">
-												<p class="mb-2 d-flex align-items-center  fs-16 text-black font-w500">Europe
-													<span class="pull-right text-dark fs-14 ms-2">653 Unit</span>
-												</p>
-												<div class="progress mb-4" style="height:10px">
-													<div class="progress-bar bg-primary progress-animated" style="width:75%; height:10px;" role="progressbar">
-														<span class="sr-only">75% Complete</span>
-													</div>
-												</div>
-												<p class="mb-2 d-flex align-items-center  fs-16 text-black font-w500">Asia
-													<span class="pull-right text-dark fs-14 ms-2">653 Unit</span>
-												</p>
-												<div class="progress mb-4" style="height:10px">
-													<div class="progress-bar bg-primary progress-animated" style="width:100%; height:10px;" role="progressbar">
-														<span class="sr-only">100% Complete</span>
-													</div>
-												</div>
-												<p class="mb-2 d-flex align-items-center  fs-16 text-black font-w500">Africa
-													<span class="pull-right text-dark fs-14 ms-2">653 Unit</span>
-												</p>
-												<div class="progress mb-4" style="height:10px">
-													<div class="progress-bar bg-primary progress-animated" style="width:75%; height:10px;" role="progressbar">
-														<span class="sr-only">75% Complete</span>
-													</div>
-												</div>
-												<p class="mb-2 d-flex align-items-center  fs-16 text-black font-w500">Australia
-													<span class="pull-right text-dark fs-14 ms-2">653 Unit</span>
-												</p>
-												<div class="progress mb-4" style="height:10px">
-													<div class="progress-bar bg-primary progress-animated" style="width:50%; height:10px;" role="progressbar">
-														<span class="sr-only">50% Complete</span>
-													</div>
-												</div>
-												<p class="mb-2 d-flex align-items-center  fs-16 text-black font-w500">America
-													<span class="pull-right text-dark fs-14 ms-2">653 Unit</span>
-												</p>
-												<div class="progress mb-4" style="height:10px">
-													<div class="progress-bar bg-primary progress-animated" style="width:70%; height:10px;" role="progressbar">
-														<span class="sr-only">70% Complete</span>
-													</div>
-												</div>
-												<p class="mb-2 d-flex align-items-center  fs-16 text-black font-w500">USA
-													<span class="pull-right text-dark fs-14 ms-2">653 Unit</span>
-												</p>
-												<div class="progress mb-4" style="height:10px">
-													<div class="progress-bar bg-primary progress-animated" style="width:40%; height:10px;" role="progressbar">
-														<span class="sr-only">40% Complete</span>
-													</div>
-												</div>
-											</div>
-											<div class="col-lg-9">
-												<div id="world-map"></div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-3 col-xxl-3">
-						<div class="row">
-							
-							<div class="col-xl-12 col-lg-6">
-								<div class="card">
-									<div class="card-header border-0 pb-0">
-										<h3 class="fs-18 text-black">Recent Property</h3>
-										<div class="dropdown ms-auto">
-											<div class="btn-link" data-bs-toggle="dropdown" >
-												<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg>
-											</div>
-											<div class="dropdown-menu dropdown-menu-end" >
-												<a class="dropdown-item" href="javascript:void(0);">view All</a>
-												<!-- <a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a> -->
-											</div>
-										</div>
-									</div>
-									<div class="card-body">
-										<div class="testimonial-one owl-carousel">
-											<div class="items">
-												<a href="property-details.html"><img src="images/testimonial/1.png" alt="#" class="w-100 mw-100 mb-3 rounded"></a>
-												<h5 class="fs-16 font-w600 mb-0"><a href="property-details.html" class="text-black">98AB Alexander Court, London</a></h5>
-												<span class="fs-14 d-block mb-4">45 Connor St. London, 44523</span>
-												<a href="javascript:void(0);" class="bgl-primary text-black p-1 ps-2 pe-2 me-3 font-w600 rounded">
-												<svg class="me-2" width="20" height="13" viewBox="0 0 20 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-												<path d="M15.8125 5.54171C17.6264 5.54171 19.1667 7.01538 19.1667 8.89588V11.7709H17.7292V12.7292H16.7708V11.7709H2.39583V12.7292H1.4375V11.7709H0V8.89588C0 7.08201 1.48814 5.54171 3.35417 5.54171H15.8125ZM14.8542 0.270874C16.1425 0.270874 17.2504 1.30663 17.25 2.66671L17.2504 4.95601C16.8146 4.71707 16.3271 4.58337 15.8125 4.58337L14.8542 4.58289C14.8542 3.76226 14.1822 3.14587 13.4167 3.14587H10.5417C10.1735 3.14587 9.8377 3.28427 9.58338 3.51186C9.32939 3.28444 8.99338 3.14587 8.625 3.14587H5.75C4.95625 3.14587 4.31276 3.78921 4.3125 4.58289L3.35417 4.58337C2.83975 4.58337 2.35239 4.71699 1.91667 4.95579V2.66671C1.91667 1.37835 2.95002 0.270874 4.3125 0.270874H14.8542ZM8.625 4.10397C8.88503 4.10397 9.10417 4.34355 9.10417 4.58337L5.27083 4.58289C5.27083 4.28973 5.50427 4.10421 5.75 4.10421L8.625 4.10397ZM13.4167 4.10743C13.6878 4.10397 13.8956 4.33738 13.8958 4.58289H10.0625C10.0625 4.28554 10.2959 4.10421 10.5417 4.10421L13.4167 4.10743Z" fill="#5b5101"/>
-												</svg>
-												4</a>
-												<a href="javascript:void(0);" class="bgl-primary text-black p-1 ps-3 pe-3 font-w600 rounded">
-												<svg class="me-2" width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-												<path d="M12.92 7.00064L12.6744 8.22859C12.2819 10.1913 10.4996 11.6677 8.55634 11.6677H7.95079L9.11756 14.7791H1.5557V7.00064H12.92ZM3.50032 0C4.54604 0 5.44495 0.871336 5.44495 1.94462V5.05602H12.8345V5.83387H5.44495V6.22279H0.777849L0.777769 7.38965C0.327309 7.05126 0 6.47802 0 5.83387V1.94462C0 0.8989 0.851593 0 1.94462 0H3.50032Z" fill="#5b5101"/>
-												</svg>
-												2
-												</a>
-												<p class="fs-14 mt-3 mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mini</p>
-											</div>
-											<div class="items">
-												<a href="property-details.html"><img src="images/testimonial/2.png" alt="#" class="w-100 mw-100 mb-3 rounded"></a>
-												<h5 class="fs-16 font-w600 mb-0"><a href="property-details.html" class="text-black">2AB Historical landmark, Paris</a></h5>
-												<span class="fs-14 d-block mb-4">45 Connor St. London, 44523</span>
-												<a href="javascript:void(0);" class="bgl-primary text-black p-1 ps-2 pe-2 me-3 font-w600 rounded">
-												<svg class="me-2" width="20" height="13" viewBox="0 0 20 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-												<path d="M15.8125 5.54171C17.6264 5.54171 19.1667 7.01538 19.1667 8.89588V11.7709H17.7292V12.7292H16.7708V11.7709H2.39583V12.7292H1.4375V11.7709H0V8.89588C0 7.08201 1.48814 5.54171 3.35417 5.54171H15.8125ZM14.8542 0.270874C16.1425 0.270874 17.2504 1.30663 17.25 2.66671L17.2504 4.95601C16.8146 4.71707 16.3271 4.58337 15.8125 4.58337L14.8542 4.58289C14.8542 3.76226 14.1822 3.14587 13.4167 3.14587H10.5417C10.1735 3.14587 9.8377 3.28427 9.58338 3.51186C9.32939 3.28444 8.99338 3.14587 8.625 3.14587H5.75C4.95625 3.14587 4.31276 3.78921 4.3125 4.58289L3.35417 4.58337C2.83975 4.58337 2.35239 4.71699 1.91667 4.95579V2.66671C1.91667 1.37835 2.95002 0.270874 4.3125 0.270874H14.8542ZM8.625 4.10397C8.88503 4.10397 9.10417 4.34355 9.10417 4.58337L5.27083 4.58289C5.27083 4.28973 5.50427 4.10421 5.75 4.10421L8.625 4.10397ZM13.4167 4.10743C13.6878 4.10397 13.8956 4.33738 13.8958 4.58289H10.0625C10.0625 4.28554 10.2959 4.10421 10.5417 4.10421L13.4167 4.10743Z" fill="#5b5101"/>
-												</svg>
-												4</a>
-												<a href="javascript:void(0);" class="bgl-primary text-black p-1 ps-3 pe-3 font-w600 rounded">
-												<svg class="me-2" width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-												<path d="M12.92 7.00064L12.6744 8.22859C12.2819 10.1913 10.4996 11.6677 8.55634 11.6677H7.95079L9.11756 14.7791H1.5557V7.00064H12.92ZM3.50032 0C4.54604 0 5.44495 0.871336 5.44495 1.94462V5.05602H12.8345V5.83387H5.44495V6.22279H0.777849L0.777769 7.38965C0.327309 7.05126 0 6.47802 0 5.83387V1.94462C0 0.8989 0.851593 0 1.94462 0H3.50032Z" fill="#5b5101"/>
-												</svg>
-												2
-												</a>
-												<p class="fs-14 mt-3 mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mini</p>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
+                        </div>
 					</div>
 				</div>
             </div>
@@ -938,6 +826,7 @@
         <!--**********************************
             Content body end
         ***********************************-->
+
 
         <!--**********************************
             Footer start
@@ -951,7 +840,7 @@
             Footer end
         ***********************************-->
 
-		<!--**********************************
+        <!--**********************************
            Support ticket button start
         ***********************************-->
 
@@ -959,7 +848,7 @@
            Support ticket button end
         ***********************************-->
 
-
+        
     </div>
     <!--**********************************
         Main wrapper end
@@ -971,149 +860,123 @@
     <!-- Required vendors -->
     <script src="vendor/global/global.min.js"></script>
 	<script src="vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-	<script src="vendor/chartjs/chart.bundle.min.js"></script>
-	<script src="vendor/owl-carousel/owl.carousel.js"></script>
-		
-	<!-- Apex Chart -->
-	<script src="vendor/apexchart/apexchart.js"></script>
-	<!-- Vectormap -->
-    <script src="vendor/jqvmap/js/jquery.vmap.min.js"></script>
-    <script src="vendor/jqvmap/js/jquery.vmap.world.js"></script>
-	<script src="vendor/jqvmap/js/jquery.vmap.usa.js"></script> 
-
-	<!-- Chart piety plugin files -->
-    <script src="vendor/peity/jquery.peity.min.js"></script>
-	
-	
-	<script src="js/dashboard/dashboard-1.js"></script>
+	<script src="vendor/bootstrap-datepicker-master/js/bootstrap-datepicker.min.js"></script>
+	<script src="vendor/dropzone/dist/dropzone.js"></script>
     <script src="js/custom.min.js"></script>
 	<script src="js/deznav-init.js"></script>
-	<!-- Dashboard 1 -->
-	
-	<script>
-		function carouselReview(){
-			/*  testimonial one function by = owl.carousel.js */
-			jQuery('.testimonial-one').owlCarousel({
-				loop:true,
-				autoplay:true,
-				margin:0,
-				nav:true,
-				dots: false,
-				navText: ['<i class="las la-long-arrow-alt-left"></i>', '<i class="las la-long-arrow-alt-right"></i>'],
-				responsive:{
-					0:{
-						items:1
-					},
-					
-					480:{
-						items:1
-					},			
-					
-					767:{
-						items:1
-					},
-					1000:{
-						items:1
-					}
-				}
-			})		
-			/*Custom Navigation work*/
-			jQuery('#next-slide').on('click', function(){
-			   $('.testimonial-one').trigger('next.owl.carousel');
-			});
+    <script src="vendor/toastr/js/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-			jQuery('#prev-slide').on('click', function(){
-			   $('.testimonial-one').trigger('prev.owl.carousel');
-			});
-			/*Custom Navigation work*/
-		}
-		
-		jQuery(window).on('load',function(){
-			setTimeout(function(){
-				carouselReview();
-			}, 1000); 
-		});
-	</script>
 
-<script>
-	var chartTimeline = function () {
-		var analytics = JSON.parse('<%- JSON.stringify(analyticsData) %>');
 
-		console.log("🚀 ~ chartTimeline ~ analytics:", analytics)
+     <script>
+        document.querySelector('#submitBtn').addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    this.disabled = true;
+            this.innerText = "Processing...";
+            document.getElementById('loaderOverlay').style.display = 'flex';
 
-		var chartData = analytics.map(item => parseFloat(item.totalRent.replace(/₦|,/g, "")));
-		var categories = analytics.map(item => item.propertyName || "Unknown");
+                 
+        
 
-		var optionsTimeline = {
-			chart: {
-				type: "bar",
-				height: 160,
-				stacked: false,
-				toolbar: { show: false },
-				offsetX: 0,
-			},
-			series: [{
-				name: "Total Rent (₦)",
-				data: chartData,
-			}],
-			plotOptions: {
-				bar: {
-					borderRadius: -9,
-					columnWidth: "3%",
-					distributed: true,
-				}
-			},
-			colors: ['#5b5101', '#9e8a03', '#d4b601', '#f5e401'],
-			grid: {
-				show: false,
-				padding: {
-					left: -5,
-					right: -5,
-					// bottom: -10,
-					top: 0
-				}
-			},
-			legend: { show: false },
-			fill: { opacity: 0.9 },
-			dataLabels: { enabled: false },
-			xaxis: {
-				categories: categories,
-				labels: {
-					rotate: -30,
-					style: {
-						fontSize: '10px',
-						colors: '#666',
-						fontFamily: 'Poppins'
-					}
-				},
-				axisBorder: { show: false },
-				axisTicks: { show: false }
-			},
-			yaxis: {
-				show: false
-			},
-			tooltip: {
-				y: {
-					formatter: val => `₦${val.toLocaleString('en-NG', { minimumFractionDigits: 2 })}`
-				}
+
+            const form = document.getElementById('propertyForm');
+            const formData = new FormData(form);
+
+            // Handle file uploads to Cloudinary
+            const files = document.getElementById('formFileMultiple').files;
+            console.log("🚀 ~ files:", files)
+            const uploadedImages = [];
+
+            if (files.length > 0) {
+            for (let file of files) {
+                const cloudinaryFormData = new FormData();
+                cloudinaryFormData.append('file', file);
+                cloudinaryFormData.append('upload_preset', 'soaro-realestate');
+                cloudinaryFormData.append("folder", "soaro");
+                cloudinaryFormData.append('api_key', 'Ilo6RYkxvGRix0UvCSGlxQwG8W0'); 
+
+            try {
+                const response = await fetch('https://api.cloudinary.com/v1_1/bada/image/upload', {
+                method: 'POST',
+                body: cloudinaryFormData
+            });
+                const data = await response.json();
+                uploadedImages.push(data.secure_url);
+                } catch (error) {
+                    console.error('Error uploading file:', error);
+                }
+            }
+            }
+
+            // Convert formData to an object
+            const jsonObject = {};
+            formData.forEach((value, key) => {
+            jsonObject[key] = value;
+            });
+
+            // Append uploaded image URLs
+			if (files.length > 0) {
+            jsonObject['images'] = uploadedImages;
+            if (!jsonObject['images']) {
+                Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: "error Uploading Image",
+                    });
+                return
+            }
 			}
-		};
 
-		var chartTimelineRender = new ApexCharts(document.querySelector("#chartTimelines"), optionsTimeline);
-		chartTimelineRender.render();
-	};
 
-	chartTimeline();
-</script>
+            // Send final data to the backend
+            try {
+            const response = await fetch('/property/freshland', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonObject)
+            });
+            const result = await response.json();
+			this.disabled = false;
+            console.log('Property added successfully:', result);
+                if (!result.status) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: result.errors.toString(),
+                    });
+					document.getElementById('loaderOverlay').style.display = 'none';
+                }else{
+					Swal.fire({
+							icon: "success",
+							title: "created",
+							text: result.message,
+						});
+						window.location.href = "/property"
 
-  
-  <style>
-	#chartTimeline {
-  max-width: 100%;
-  height: auto;
-  margin: 0 auto;
-}
-  </style>
+				}
+            } catch (error) {
+				document.getElementById('loaderOverlay').style.display = 'none';
+                Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: error.message,
+                    });
+        //         Swal.fire({
+        //   icon: "error",
+        //   title: "Validation Error",
+        //   text: "Sum of all room types should not be greater than total rooms!",
+        // });
+        return;
+		document.getElementById('loaderOverlay').style.display = 'none';
+            console.error('Error submitting form:', error);
+            }
+            });
+
+     </script>
 	
 </body>
+
 </html>
