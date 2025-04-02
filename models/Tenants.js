@@ -124,19 +124,19 @@ const Tenants = sequelize.define('Tenants', {
 // Define the relationships
 
 // Many-to-One relationship: Tenants belong to one Property
-Tenants.belongsTo(Property, {
-  foreignKey: 'propertyId',  // Foreign key in the Tenants table
-  targetKey: 'id',  // Corresponds to the 'id' field in the Property model
-  as: 'property',  // Alias for the association
-});
+//Tenants.belongsTo(Property, {
+  //foreignKey: 'propertyId',  // Foreign key in the Tenants table
+  //targetKey: 'id',  // Corresponds to the 'id' field in the Property model
+  //as: 'property',  // Alias for the association
+//});
 
-Tenants.belongsTo(Room, {
-  foreignKey: 'roomId',
-  targetKey: 'id',
-  as: 'room',
-  onDelete: 'SET NULL',
-  onUpdate: 'CASCADE',
-});
+//Tenants.belongsTo(Room, {
+  //foreignKey: 'roomId',
+  //targetKey: 'id',
+  //as: 'room',
+  //onDelete: 'SET NULL',
+  //onUpdate: 'CASCADE',
+//});
 
 
 // One-to-One relationship: Tenants belong to one Room
