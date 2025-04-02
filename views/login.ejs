@@ -3,7 +3,7 @@
 
 <head>
     <!-- Title -->
-	<title>Omah - Real Estate Admin Dashboard Template</title>
+	<title>Soaro - Real Estate Admin Dashboard Template</title>
  
 	<!-- Meta -->
 	<meta charset="utf-8">
@@ -137,12 +137,18 @@
                         text: result.message,
                     });
                 }else{
-                    window.location.assign("/dashboard")
-                    Swal.fire({
-                            icon: "success",
-                            title: "created",
-                            text: result.message,
-                        });
+                   if(result.user.roleId !== 1){
+                       
+                       window.location.assign("/dashboard")
+                       Swal.fire({
+                               icon: "success",
+                               title: "created",
+                               text: result.message,
+                           });
+                }else{
+                       window.location.assign("/property")
+
+                   }
                 }
             } catch (error) {
                 Swal.fire({

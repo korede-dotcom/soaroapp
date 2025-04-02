@@ -46,7 +46,8 @@ const Lawyers = sequelize.define('lawyer', {
     },
     propertyId:{
         type: DataTypes.INTEGER,
-        allowNull:false,
+        allowNull:true,
+        defaultValue:null
     },
     images: {
         type: DataTypes.JSON,  // Using JSON data type

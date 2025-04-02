@@ -15,12 +15,18 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: error.details[0].message });  // Send validation error message
     }
 
+    let data ;
+    if (req.body.propertyId === "null") {
+      delete req.body.propertyId
+
+    }
+    console.log(req.body)
     if (req.user.user.roleId === 1) {
-      const newLawyer = await Lawyers.create({...value,createdBy:req.user.user.id});
+      const newLawyer = await Lawyers.create({...req.body,createdBy:req.user.user.id});
       return res.status(201).json({ message: 'Lawyer created successfully', lawyer: newLawyer ,status:true});
     }
     // If data is valid, create the new lawyer
-    const newLawyer = await Lawyers.create(value);
+    const newLawyer = await Lawyers.create(req.body);
     return res.status(201).json({ message: 'Lawyer created successfully', lawyer: newLawyer ,status:true});
   } catch (err) {
     console.error('Error creating lawyer:', err);

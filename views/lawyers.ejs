@@ -3,7 +3,7 @@
 
 <head>
     <!-- Title -->
-	<title>Omah - Real Estate Admin Dashboard Template</title>
+	<title>Soaro - Real Estate Admin Dashboard Template</title>
  
 	<!-- Meta -->
 	<meta charset="utf-8">
@@ -646,7 +646,8 @@
 													<td><%=lawyer.officeAddress%></td>
 													<td><a href="javascript:void(0);"><strong class="text-black"><%=lawyer.phonenumber%></strong></a></td>
 													<td><a href="javascript:void(0);"><strong class="text-black"><%=lawyer.email%></strong></a></td>
-													<td><%=lawyer.property.name%></td>
+													<td><%= lawyer.property?.name || 'N/A' %></td>
+
 													<td>
 														<div class="d-flex">
 															<a href="javascript:void(0);" class="btn btn-primary shadow btn-xs sharp me-1"><i class="fa fa-pencil"></i></a>

@@ -3,7 +3,7 @@
 
 <head>
     <!-- Title -->
-	<title>Omah - Real Estate Admin Dashboard Template</title>
+	<title>Soaro - Real Estate Admin Dashboard Template</title>
  
 	<!-- Meta -->
 	<meta charset="utf-8">
@@ -685,6 +685,10 @@
 											<span class="text-black desc-text ms-2"><%=item.Room.name%></span>
 										</li>
 										<li class="list-group-item">
+											<span class="mb-0 title">Room Type</span> :
+											<span class="text-black desc-text ms-2"><%=item.Room.roomType%></span>
+										</li>
+										<li class="list-group-item">
 											<span class="mb-0 title">Rent Amount</span> :
 											<span class="text-black desc-text ms-2"><%=item.Room.yearlyAmount%></span>
 										</li>
@@ -711,7 +715,7 @@
 								</div>
 								<div class="card-footer">
 									<li class="list-group-item">
-										<a href="/tool?type=compose&id=<%=item.id%>" class="btn btn-warning btn-xs">Write Message</a>
+										<!-- <a href="/tool?type=compose&id=<%=item.id%>" class="btn btn-warning btn-xs">Write Message</a> -->
 										<a href="/tenant?type=detail&id=<%=item.id%>" class="btn btn-info btn-xs">View More Payment Record</a>
 										<% 
     const currentYear = new Date().getFullYear();

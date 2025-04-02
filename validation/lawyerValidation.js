@@ -99,13 +99,13 @@ const lawyerValidationSchema = Joi.object({
   //   }),
   images: Joi.array().items(),
 
-  propertyId: Joi.number()
-    .integer()
-    .required()
+  propertyId: Joi.alternatives()
+    .try(Joi.number().integer(), Joi.string().trim()) // Allow integer or trimmed string
+    .optional()
     .messages({
       'number.base': 'Property ID must be a number.',
       'number.integer': 'Property ID must be an integer.',
-      'any.required': 'Property ID is required.',
+      'string.base': 'Property ID must be a string.',
     }),
 });
 

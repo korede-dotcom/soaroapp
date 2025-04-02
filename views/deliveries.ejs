@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<!-- Title -->
+    <!-- Title -->
 	<title>Soaro - Real Estate Admin Dashboard Template</title>
  
 	<!-- Meta -->
@@ -14,29 +14,30 @@
 	<meta name="keywords" content="admin, dashboard, admin dashboard, admin template, template, admin panel, administration, analytics, bootstrap, hospital admin, modern, property, real estate, responsive, creative, retina ready, modern Dashboard">
 	<meta name="description" content="Your Ultimate Real Estate Admin Dashboard Template. Streamline property management, analyze market trends, and boost productivity with our intuitive and feature-rich solution. Elevate your real estate business today!">
    
-	<meta property="og:title" content="Soaro - Real Estate Admin Dashboard Template">
+	<meta property="og:title" content="Omah - Real Estate Admin Dashboard Template">
 	<meta property="og:description" content="Your Ultimate Real Estate Admin Dashboard Template. Streamline property management, analyze market trends, and boost productivity with our intuitive and feature-rich solution. Elevate your real estate business today!">
-	<!-- <meta property="og:image" content="https://omah.dexignzone.com/xhtml/social-image.png"> -->
+	<meta property="og:image" content="https://omah.dexignzone.com/xhtml/social-image.png">
 	<meta name="format-detection" content="telephone=no">
    
-	<meta name="twitter:title" content="Soaro - Real Estate Admin Dashboard Template">
+	<meta name="twitter:title" content="Omah - Real Estate Admin Dashboard Template">
 	<meta name="twitter:description" content="Your Ultimate Real Estate Admin Dashboard Template. Streamline property management, analyze market trends, and boost productivity with our intuitive and feature-rich solution. Elevate your real estate business today!">
-	<!-- <meta name="twitter:image" content="https://omah.dexignzone.com/xhtml/social-image.png"> -->
+	<meta name="twitter:image" content="https://omah.dexignzone.com/xhtml/social-image.png">
 	<meta name="twitter:card" content="summary_large_image">
 
 	<!-- MOBILE SPECIFIC -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
-	
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
-	<!-- Vectormap -->
-    <link href="vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
-	<link href="vendor/owl-carousel/owl.carousel.css" rel="stylesheet">
+    <!-- Datatable -->
+    <link href="vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+	<link href="vendor/datatables/responsive/responsive.css" rel="stylesheet">
+    <!-- Custom Stylesheet -->
     <link href="vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 
 </head>
+
 <body>
 
     <!--*******************
@@ -52,6 +53,7 @@
     <!--*******************
         Preloader end
     ********************-->
+
 
     <!--**********************************
         Main wrapper start
@@ -86,13 +88,13 @@
 			<div class="custom-tab-1">
 				<ul class="nav nav-tabs">
 					<li class="nav-item">
-						<a class="nav-link" data-bs-toggle="tab" href="index.html#notes">Notes</a>
+						<a class="nav-link" data-bs-toggle="tab" href="table-datatable-basic.html#notes">Notes</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" data-bs-toggle="tab" href="index.html#alerts">Alerts</a>
+						<a class="nav-link" data-bs-toggle="tab" href="table-datatable-basic.html#alerts">Alerts</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link active" data-bs-toggle="tab" href="index.html#chat">Chat</a>
+						<a class="nav-link active" data-bs-toggle="tab" href="table-datatable-basic.html#chat">Chat</a>
 					</li>
 				</ul>
 				<div class="tab-content">
@@ -306,7 +308,7 @@
 									<p class="mb-0 text-success">Online</p>
 								</div>							
 								<div class="dropdown">
-									<a href="javascript:void(0);" data-bs-toggle="dropdown" ><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="#000000" cx="5" cy="12" r="2"/><circle fill="#000000" cx="12" cy="12" r="2"/><circle fill="#000000" cx="19" cy="12" r="2"/></g></svg></a>
+									<a href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/><circle fill="#000000" cx="5" cy="12" r="2"/><circle fill="#000000" cx="12" cy="12" r="2"/><circle fill="#000000" cx="19" cy="12" r="2"/></g></svg></a>
 									<ul class="dropdown-menu dropdown-menu-end">
 										<li class="dropdown-item"><i class="fas fa-user-circle text-primary me-2"></i> View profile</li>
 										<li class="dropdown-item"><i class="fas fa-users text-primary me-2"></i> Add to close friends</li>
@@ -579,8 +581,11 @@
 		<!--**********************************
             Chat box End
         ***********************************-->
+
+
 		
-		<!--**********************************
+		
+        <!--**********************************
             Header start
         ***********************************-->
         <%- include('partial/header') %>
@@ -591,390 +596,75 @@
         <!--**********************************
             Sidebar start
         ***********************************-->
-        <%- include('partial/nav',{userDetails}) %>
+        <%- include('partial/nav') %>
         <!--**********************************
             Sidebar end
         ***********************************-->
-		
-		<!--**********************************
+
+        <!--**********************************
             Content body start
         ***********************************-->
         <div class="content-body">
-            <!-- row -->
-			<div class="container-fluid">
-                <div class="form-head d-md-flex mb-sm-4 mb-3 align-items-start">
-					<div class="me-auto d-lg-block d-block">
-						<h2 class="text-black font-w600">Dashboard</h2>
-						<p class="mb-0">Welcome to Soaro Property Admin</p>
-					</div>
-					<a href="index.html" class="btn btn-primary rounded light">Refresh</a>
-				</div>
-				<div class="row">
-					<div class="col-xl-6 col-xxl-6">
-						<div class="row">
-							<div class="col-xl-12">
-								<div class="card bg-warning property-bx text-white">
-									<div class="card-body">
-										<div class="media d-sm-flex d-block align-items-center">
-											<span class="me-4 d-block mb-sm-0 mb-3">
-												<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path d="M31.8333 79.1667H4.16659C2.33325 79.1667 0.833252 77.6667 0.833252 75.8333V29.8333C0.833252 29 1.16659 28 1.83325 27.5L29.4999 1.66667C30.4999 0.833332 31.8333 0.499999 32.9999 0.999999C34.3333 1.66667 34.9999 2.83333 34.9999 4.16667V76C34.9999 77.6667 33.4999 79.1667 31.8333 79.1667ZM7.33325 72.6667H28.4999V11.6667L7.33325 31.3333V72.6667Z" fill="white"/>
-													<path d="M75.8333 79.1667H31.6666C29.8333 79.1667 28.3333 77.6667 28.3333 75.8334V36.6667C28.3333 34.8334 29.8333 33.3334 31.6666 33.3334H75.8333C77.6666 33.3334 79.1666 34.8334 79.1666 36.6667V76C79.1666 77.6667 77.6666 79.1667 75.8333 79.1667ZM34.9999 72.6667H72.6666V39.8334H34.9999V72.6667Z" fill="white"/>
-													<path d="M60.1665 79.1667H47.3332C45.4999 79.1667 43.9999 77.6667 43.9999 75.8334V55.5C43.9999 53.6667 45.4999 52.1667 47.3332 52.1667H60.1665C61.9999 52.1667 63.4999 53.6667 63.4999 55.5V75.8334C63.4999 77.6667 61.9999 79.1667 60.1665 79.1667ZM50.6665 72.6667H56.9999V58.8334H50.6665V72.6667Z" fill="white"/>
-												</svg>
-											</span>
-											<div class="media-body mb-sm-0 mb-3 me-5">
-												<h4 class="fs-22 text-white">Total Properties</h4>
-												<div class="progress mt-3 mb-2" style="height:8px;">
-													<div class="progress-bar bg-white progress-animated" style="width: 86%; height:8px;" role="progressbar">
-														<span class="sr-only">86% Complete</span>
-													</div>
-												</div>
-												<span class="fs-14">count of all properties</span>
-											</div>
-											<span class="fs-35 font-w500"><%= count %></span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-12 col-md-6">
-								<div class="card property-card">
-									<div class="card-body">
-										<div class="media align-items-center">
-											<div class="media-body me-3">	
-												<h2 class="fs-28 text-black font-w600"><%= totalUsers %></h2>
-												<p class="property-p mb-0 text-black font-w500">Total Users</p>
-												<span class="fs-13">All Users Counts</span>
-											</div>
-											<div class="d-inline-block position-relative donut-chart-sale">
-												<span class="donut1" data-peity='{ "fill": ["rgb(91, 81, 1)", "rgba(236, 236, 236, 1)"],   "innerRadius": 38, "radius": 10}'><%= totalUsers %> / 100</span>
-												<small class="text-primary"><%= totalUsers %>%</small>
-												<span class="circle bgl-primary"></span>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-12 col-md-6">
-								<div class="card property-card">
-									<div class="card-body">
-										<div class="media align-items-center">
-											<div class="media-body me-3">	
-												<h2 class="fs-28 text-black font-w600"><%= soldCount %></h2>
-												<p class="property-p mb-0 text-black font-w500">Sold Property</p>
-												<span class="fs-13">All property sold count</span>
-											</div>
-											<div class="d-inline-block position-relative donut-chart-sale">
-												<span class="donut1" data-peity='{ "fill": ["rgb(212, 189, 6)", "rgba(236, 236, 236, 1)"],   "innerRadius": 38, "radius": 10}'><%= soldCount %> / 100</span>
-												<small class="text-primary"><%= soldCount %>%</small>
-												<span class="circle bgl-primary"></span>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-12 col-md-6">
-								<div class="card property-card">
-									<div class="card-body">
-										<div class="media align-items-center">
-											<div class="media-body me-3">	
-												<h2 class="fs-28 text-black font-w600"><%= totalLawyers %></h2>
-												<p class="property-p mb-0 text-black font-w500">Lawyers Count</p>
-												<span class="fs-13">All Lawyers count</span>
-											</div>
-											<div class="d-inline-block position-relative donut-chart-sale">
-												<span class="donut1" data-peity='{ "fill": ["rgb(222, 207, 93)", "rgba(236, 236, 236, 1)"],   "innerRadius": 38, "radius": 10}'><%= totalLawyers %> / 100</span>
-												<small class="text-primary"><%= totalLawyers %>%</small>
-												<span class="circle bgl-primary"></span>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-12 col-md-6">
-								<div class="card property-card">
-									<div class="card-body">
-										<div class="media align-items-center">
-											<div class="media-body me-3">	
-												<h2 class="fs-28 text-black font-w600"><%= totalSold %></h2>
-												<p class="property-p mb-0 text-black font-w500">Properties Sales</p>
-												<span class="fs-13">Total Amount For All Sold Properties</span>
-											</div>
-											<div class="d-inline-block position-relative donut-chart-sale">
-												<span class="donut1" data-peity='{ "fill": ["rgb(55, 209, 90)", "rgba(236, 236, 236, 1)"],   "innerRadius": 38, "radius": 10}'>7/8</span>
-												<small class="text-success">
-													<%= totalSold && !isNaN(totalSold) ? (parseFloat(totalSold) / 100).toFixed(2) : "N/A" %>
-												  </small>
-												  
-												<span class="circle bgl-success"></span>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-6 col-xxl-6">
-						
-						<div class="card">
-							<div class="row">
-								<div class="col-sm-12 col-md-6">
-									<div class="card property-card">
-										<div class="card-body">
-											<div class="media align-items-center">
-												<div class="media-body me-3">	
-													<h2 class="fs-28 text-black font-w600"><%= totalTenats %></h2>
-													<p class="property-p mb-0 text-black font-w500">Total Tenants</p>
-													<span class="fs-13">All tenant count</span>
-												</div>
-												<div class="d-inline-block position-relative donut-chart-sale">
-													<span class="donut1" data-peity='{ "fill": ["rgb(84, 78, 35)", "rgba(236, 236, 236, 1)"],   "innerRadius": 38, "radius": 10}'><%= totalTenats %> / 100</span>
-													<small class="text-primary"><%= totalTenats %>%</small>
-													<span class="circle bgl-primary"></span>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-12 col-md-6">
-									<div class="card property-card">
-										<div class="card-body">
-											<div class="media align-items-center">
-												<div class="media-body me-3">	
-													<h2 class="fs-28 text-black font-w600"><%= totalRooms %></h2>
-													<p class="property-p mb-0 text-black font-w500">Total Rooms</p>
-													<span class="fs-13">All Room Counts</span>
-												</div>
-												<div class="d-inline-block position-relative donut-chart-sale">
-													<span class="donut1" data-peity='{ "fill": ["rgb(235, 225, 157)", "rgba(236, 236, 236, 1)"],   "innerRadius": 38, "radius": 10}'><%= totalRooms %> / 100</span>
-													<small class="text-primary"><%= totalRooms %>%</small>
-													<span class="circle bgl-primary"></span>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-
-							</div>
-							<div class="card-header border-0 pb-0">
-								<h3 class="fs-18 text-black">Total Revenue</h3>
-								<div class="dropdown ms-auto">
-									<div class="btn-link" data-bs-toggle="dropdown" >
-										<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg>
-									</div>
-									<div class="dropdown-menu dropdown-menu-end" >
-										<a class="dropdown-item" href="javascript:void(0);">Edit</a>
-										<a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
-									</div>
-								</div>
-							</div>
-
-							<div class="card-body pt-2 pb-0">
-								<div class="d-flex flex-wrap align-items-center">
-									<span class="fs-28 text-black font-w600 me-3">
-										<p><span>₦<%= totalSum.toLocaleString('en-NG', { minimumFractionDigits: 2 }) %></span></p>
-
-										<p class="me-sm-auto me-3 mb-sm-0 mb-3">total money received for rents</p>
-									</span>
-									
-								</div>
-								<div id="chartTimelines"></div>
-								
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-9 col-xxl-9">
-						<div class="row">
-							<div class="col-xl-8 col-xxl-8">
-								<div class="card">
-									<div class="card-header border-0 pb-0">
-										<h3 class="fs-18 text-black">Overview</h3>
-										<div class="dropdown ms-auto">
-											<div class="btn-link" data-bs-toggle="dropdown" >
-												<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg>
-											</div>
-											<div class="dropdown-menu dropdown-menu-end" >
-												<a class="dropdown-item" href="javascript:void(0);">Edit</a>
-												<a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
-											</div>
-										</div>
-									</div>
-									<div class="card-body">
-										<div class="d-sm-flex flex-wrap  justify-content-around">
-											<div class="d-flex mb-4 align-items-center">
-												<span class="rounded me-3 bg-primary p-3">
-													<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<path d="M10.3458 25.7292H1.35412C0.758283 25.7292 0.270782 25.2417 0.270782 24.6458V9.69583C0.270782 9.42499 0.379116 9.09999 0.595783 8.93749L9.58745 0.541659C9.91245 0.270825 10.3458 0.162492 10.725 0.324992C11.1583 0.541659 11.375 0.920825 11.375 1.35416V24.7C11.375 25.2417 10.8875 25.7292 10.3458 25.7292ZM2.38328 23.6167H9.26245V3.79166L2.38328 10.1833V23.6167Z" fill="white"/>
-														<path d="M24.6458 25.7292H10.2916C9.69578 25.7292 9.20828 25.2417 9.20828 24.6458V11.9167C9.20828 11.3208 9.69578 10.8333 10.2916 10.8333H24.6458C25.2416 10.8333 25.7291 11.3208 25.7291 11.9167V24.7C25.7291 25.2417 25.2416 25.7292 24.6458 25.7292ZM11.375 23.6167H23.6166V12.9458H11.375V23.6167Z" fill="white"/>
-														<path d="M19.5541 25.7292H15.3833C14.7874 25.7292 14.2999 25.2417 14.2999 24.6458V18.0375C14.2999 17.4417 14.7874 16.9542 15.3833 16.9542H19.5541C20.1499 16.9542 20.6374 17.4417 20.6374 18.0375V24.6458C20.6374 25.2417 20.1499 25.7292 19.5541 25.7292ZM16.4666 23.6167H18.5249V19.1208H16.4666V23.6167Z" fill="white"/>
-													</svg>
-												</span>
-												<div>
-													<p class="fs-14 mb-1">Total Expenses spent in Building propertys</p>
-													<span class="fs-18 text-black font-w700">
-														<%= new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(expenses) %>
-													  </span>
-													  
-												</div>
-											</div>
-											
-										</div>
-										<div id="chartBarss"></div>
-									</div>
-								</div>
-							</div>
-							<div class="col-xl-4 col-xxl-4">
-								<div class="row">
-									<div class="col-xl-12 col-xxl-12 col-md-6">
-										<div class="card">
-											<div class="card-body">
-												<div id="monocromeCharts"></div>
-												<div class="d-flex flex-wrap mt-3">
-													<span class="text-black font-w600 me-5 mb-2">
-													<svg class="me-2" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<rect width="20" height="20" rx="8" fill="#FFB067"/>
-													</svg>Vacant : <%= vancantAndNon.find(r => r.status === 'vacant')?.count || 0 %> </span>
-													<span class="text-black font-w600 mb-2">
-													<svg class="me-2" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<rect width="20" height="20" rx="8" fill="#B655E4"/>
-													</svg>Not-Vacant : <%= vancantAndNon.find(r => r.status === 'not-vacant')?.count || 0 %> </span>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="col-xl-12 col-xxl-12 col-md-6">
-										<div class="card">
-											<div class="card-body">
-												<h4 style="color: #5b5101; text-decoration: underline;">Top two highest sold properties</h4>
-												<% if (top2SoldProperties.length === 0) { %>
-													<p class="text-center fs-16 text-primary">No properties sold yet.</p>
-												  <% } else { %>
-													<% top2SoldProperties.forEach(element => { %>
-													  <p class="mb-2 d-flex fs-16 text-black font-w500">
-														<%= element.name %>
-														<span class="pull-right ms-auto text-dark fs-14" style="color: #5b5101;">
-														  <% if (element.soldAmount && element.soldAmount !== '0') { %>
-															<%= new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(element.soldAmount) %>
-														  <% } else { %>
-															<span class="text-warning">Amount not available</span>
-														  <% } %>
-														</span>
-													  </p>
-													<% }) %>
-												  <% } %>
-												  
-												
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-xl-12">
-								<div class="card">
-									<div class="card-header border-0 pb-0">
-										<h3 class="fs-18 text-black">Property that expiries from now till two years</h3>
-										<div class="dropdown ms-auto">
-											<div class="btn-link" data-bs-toggle="dropdown" >
-												<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg>
-											</div>
-											<div class="dropdown-menu dropdown-menu-end" >
-												<a class="dropdown-item" href="javascript:void(0);">Edit</a>
-												<a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a>
-											</div>
-										</div>
-									</div>
-									<div class="card-body">
-										<div class="row">
-											<div class="col-lg-3">
-												<% propertiesEndingWithinRange.forEach((element, i) => { %>
-													<p class="mb-2 d-flex align-items-center fs-16 text-black font-w500">
-														<%= element.name %>
-														<span class="pull-right text-dark fs-14 ms-2"><%= element.start %></span> 
-													</p>
-													<div class="progress mb-4" style="height:10px">
-														<div id="progress-bar-<%= i %>" class="progress-bar bg-primary progress-animated"
-															data-percentage="<%= element.percentageLeft %>" 
-															style="height:10px;" role="progressbar">
-														</div>
-													</div>
-												<% }) %>
-												
-												<script>
-												document.addEventListener("DOMContentLoaded", function () {
-													// Select all progress bars with the `data-percentage` attribute
-													const progressBars = document.querySelectorAll(".progress-bar");
-												
-													progressBars.forEach(progressBar => {
-														const percentage = progressBar.getAttribute("data-percentage"); // Get percentage from attribute
-												
-														if (percentage) {
-															progressBar.style.width = percentage + "%"; // Apply width
-															progressBar.setAttribute("aria-valuenow", percentage); // Set ARIA accessibility
-															progressBar.setAttribute("aria-valuemin", "0");
-															progressBar.setAttribute("aria-valuemax", "100");
-														}
-													});
-												});
-												</script>
-												
-												
-												
-												
-											</div>
-											<div class="col-lg-9">
-												<div id="world-map"></div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-xl-3 col-xxl-3">
-						<div class="row">
-							
-							<div class="col-xl-12 col-lg-6">
-								<div class="card">
-									<div class="card-header border-0 pb-0">
-										<h3 class="fs-18 text-black" style="color: #5b5101 !important; text-decoration: underline;">Property With Highest Worth</h3>
-										<div class="dropdown ms-auto">
-											<div class="btn-link" data-bs-toggle="dropdown" >
-												<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"></rect><circle fill="#000000" cx="5" cy="12" r="2"></circle><circle fill="#000000" cx="12" cy="12" r="2"></circle><circle fill="#000000" cx="19" cy="12" r="2"></circle></g></svg>
-											</div>
-											<div class="dropdown-menu dropdown-menu-end" >
-												<a class="dropdown-item" href="/property">view All</a>
-												<!-- <a class="dropdown-item text-danger" href="javascript:void(0);">Delete</a> -->
-											</div>
-										</div>
-									</div>
-									<div class="card-body">
-										<div class="testimonial-one owl-carousel">
-											<% top5Properties.forEach(element => { %>
-												<div class="items">
-													<!-- <a href="property-details.html"><img src="images/testimonial/1.png" alt="#" class="w-100 mw-100 mb-3 rounded"></a> -->
-													<h5 class="fs-16 font-w600 mb-0"><a href="property-details.html" class="text-black"><%= element.amount %></a></h5>
-													<h4><%= element.name %></h4>
-													<span class="fs-14 d-block mb-4"><%= element.name %></span>
-													<span class="fs-14 d-block mb-4"><%= element.description %></span>
-												
-												
-												
-												</div>
+            <div class="container-fluid">
+                <div class="page-titles">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a href="javascript:void(0)">Lawyer</a></li>
+						<li class="breadcrumb-item active"><a href="javascript:void(0)">Sms Delivery</a></li>
+					</ol>
+                </div>
+                <!-- row -->
+                <div class="row">
+                   
+					<div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Sms Delivery</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="example3" class="display" style="min-width: 850px">
+                                        <thead>
+                                            <tr>
+                                                <!-- <th></th> -->
+                                                <th>name</th>
+                                                <th>phone</th>
+                                                <th>room</th>
+                                                <th>status</th>
+                                                <!-- <th>proprty</th>
+                                                <th>status</th> -->
+                                                <!-- <th>Email</th>
+                                                <th>Property</th>
+                                                <th>Action</th> -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+											<% deliveries.forEach(sms => { %>
+												<tr>
+													
+													<td><%=sms.name %></td>
+													<td><%=sms.phoneNumber %></td>
+													<td><%=sms.propertyName%></td>
+													<td><%=sms.status%></td>
+													
+																					
+												</tr>
 											<% }) %>
-											
-											
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					
 				</div>
             </div>
         </div>
         <!--**********************************
             Content body end
         ***********************************-->
+
 
         <!--**********************************
             Footer start
@@ -988,7 +678,7 @@
             Footer end
         ***********************************-->
 
-		<!--**********************************
+        <!--**********************************
            Support ticket button start
         ***********************************-->
 
@@ -996,7 +686,7 @@
            Support ticket button end
         ***********************************-->
 
-
+        
     </div>
     <!--**********************************
         Main wrapper end
@@ -1008,253 +698,13 @@
     <!-- Required vendors -->
     <script src="vendor/global/global.min.js"></script>
 	<script src="vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-	<script src="vendor/chartjs/chart.bundle.min.js"></script>
-	<script src="vendor/owl-carousel/owl.carousel.js"></script>
-		
-	<!-- Apex Chart -->
-	<script src="vendor/apexchart/apexchart.js"></script>
-	<!-- Vectormap -->
-    <script src="vendor/jqvmap/js/jquery.vmap.min.js"></script>
-    <script src="vendor/jqvmap/js/jquery.vmap.world.js"></script>
-	<script src="vendor/jqvmap/js/jquery.vmap.usa.js"></script> 
-
-	<!-- Chart piety plugin files -->
-    <script src="vendor/peity/jquery.peity.min.js"></script>
 	
-	
-	<script src="js/dashboard/dashboard-1.js"></script>
+    <!-- Datatable -->
+    <script src="vendor/datatables/js/jquery.dataTables.min.js"></script>
+	<script src="vendor/datatables/responsive/responsive.js"></script>
+    <script src="js/plugins-init/datatables.init.js"></script>
     <script src="js/custom.min.js"></script>
 	<script src="js/deznav-init.js"></script>
-	<!-- Dashboard 1 -->
-	
-	<script>
-		function carouselReview(){
-			/*  testimonial one function by = owl.carousel.js */
-			jQuery('.testimonial-one').owlCarousel({
-				loop:true,
-				autoplay:true,
-				margin:0,
-				nav:true,
-				dots: false,
-				navText: ['<i class="las la-long-arrow-alt-left"></i>', '<i class="las la-long-arrow-alt-right"></i>'],
-				responsive:{
-					0:{
-						items:1
-					},
-					
-					480:{
-						items:1
-					},			
-					
-					767:{
-						items:1
-					},
-					1000:{
-						items:1
-					}
-				}
-			})		
-			/*Custom Navigation work*/
-			jQuery('#next-slide').on('click', function(){
-			   $('.testimonial-one').trigger('next.owl.carousel');
-			});
 
-			jQuery('#prev-slide').on('click', function(){
-			   $('.testimonial-one').trigger('prev.owl.carousel');
-			});
-			/*Custom Navigation work*/
-		}
-		
-		jQuery(window).on('load',function(){
-			setTimeout(function(){
-				carouselReview();
-			}, 1000); 
-		});
-	</script>
-
-<script>
-	var chartTimeline = function () {
-		var analytics = JSON.parse('<%- JSON.stringify(analyticsData) %>');
-
-		console.log("🚀 ~ chartTimeline ~ analytics:", analytics)
-
-		var chartData = analytics.map(item => parseFloat(item.totalRent.replace(/₦|,/g, "")));
-		var categories = analytics.map(item => item.propertyName || "Unknown");
-
-		var optionsTimeline = {
-			chart: {
-				type: "bar",
-				height: 160,
-				stacked: false,
-				toolbar: { show: false },
-				offsetX: 0,
-			},
-			series: [{
-				name: "Total Rent (₦)",
-				data: chartData,
-			}],
-			plotOptions: {
-				bar: {
-					borderRadius: -9,
-					columnWidth: "3%",
-					distributed: true,
-				}
-			},
-			colors: ['#5b5101', '#9e8a03', '#d4b601', '#f5e401'],
-			grid: {
-				show: false,
-				padding: {
-					left: -5,
-					right: -5,
-					// bottom: -10,
-					top: 0
-				}
-			},
-			legend: { show: false },
-			fill: { opacity: 0.9 },
-			dataLabels: { enabled: false },
-			xaxis: {
-				categories: categories,
-				labels: {
-					rotate: -30,
-					style: {
-						fontSize: '10px',
-						colors: '#666',
-						fontFamily: 'Poppins'
-					}
-				},
-				axisBorder: { show: false },
-				axisTicks: { show: false }
-			},
-			yaxis: {
-				show: false
-			},
-			tooltip: {
-				y: {
-					formatter: val => `₦${val.toLocaleString('en-NG', { minimumFractionDigits: 2 })}`
-				}
-			}
-		};
-
-		var chartTimelineRender = new ApexCharts(document.querySelector("#chartTimelines"), optionsTimeline);
-		chartTimelineRender.render();
-	};
-
-	chartTimeline();
-</script>
-
-  
-  <style>
-	#chartTimeline {
-  max-width: 100%;
-  height: auto;
-  margin: 0 auto;
-}
-  </style>
-<script>
-	document.addEventListener("DOMContentLoaded", function () {
-	  var rentAnalytics = JSON.parse('<%- JSON.stringify(seriesData) %>');
-  
-	  console.log("🚀 ~ rentAnalytics:", rentAnalytics);
-  
-	  // Define months to ensure order
-	  const months = [
-		"January", "February", "March", "April", "May", "June", 
-		"July", "August", "September", "October", "November", "December"
-	  ];
-  
-	  // Group data by property name
-	  const groupedData = {};
-	  rentAnalytics.forEach(({ property, totalRent, paymentMonth }) => {
-		if (!property || !property.name) return; // Ensure property data exists
-  
-		const monthIndex = paymentMonth ? months.indexOf(paymentMonth.trim()) : -1;
-		if (!groupedData[property.name]) {
-		  groupedData[property.name] = new Array(12).fill(0); // Initialize 12 months
-		}
-		if (monthIndex !== -1) {
-		  groupedData[property.name][monthIndex] = totalRent || 0;
-		}
-	  });
-  
-	  // Convert grouped data into ApexCharts format
-	  const seriesData = Object.keys(groupedData).map(name => ({
-		name,
-		data: groupedData[name]
-	  }));
-  
-	  console.log("🚀 ~ seriesData:", seriesData);
-  
-	  var options = {
-		series: seriesData,
-		chart: {
-		  height: 350,
-		  type: 'area',
-		  toolbar: { show: false },
-		},
-		xaxis: { categories: months },
-		colors: ['#5b5101', '#37D159'],
-		stroke: { curve: 'smooth', width: 5 },
-		tooltip: { x: { format: 'month' } },
-	  };
-  
-	  new ApexCharts(document.querySelector("#chartBarss"), options).render();
-	});
-  </script>
- <script>
-	document.addEventListener("DOMContentLoaded", function () {
-	  var options = {
-		series: ["<%= vancantAndNon.find(r => r.status === 'vacant')?.count || 0 %>", "<%= vancantAndNon.find(r => r.status === 'not-vacant')?.count || 0 %>"],
-		chart: {
-		  width: '100%',
-		  type: 'pie',
-		},
-		labels: ["Vacant", "Not Vacant"],
-		theme: {
-		  monochrome: {
-			enabled: true
-		  }
-		},
-		plotOptions: {
-		  pie: {
-			dataLabels: {
-			  offset: -5
-			}
-		  }
-		},
-		fill: {
-		  colors: ['#FFB067', '#B655E4']
-		},
-		dataLabels: {
-		  textAnchor: 'middle',
-		  style: {
-			colors: ["#fff"],
-			fontSize: '16px',
-			fontWeight: 'light',
-		  },
-		  dropShadow: {
-			enabled: false,
-		  },
-		  formatter(val, opts) {
-			const name = opts.w.globals.labels[opts.seriesIndex];
-			return [name, val.toFixed() + '%'];
-		  }
-		},
-		legend: {
-		  show: false
-		}
-	  };
-  
-	  var chart = new ApexCharts(document.querySelector("#monocromeCharts"), options);
-	  chart.render();
-	});
-  </script>
-  
-  
-  
-	  
-	  
-	  
-	
 </body>
 </html>

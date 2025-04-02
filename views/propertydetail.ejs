@@ -2,7 +2,7 @@
 <html lang="zxx">
 <head>
     <!-- Title -->
-	<title>Omah - Real Estate Admin Dashboard Template</title>
+	<title>Soaro - Real Estate Admin Dashboard Template</title>
  
 	<!-- Meta -->
 	<meta charset="utf-8">
@@ -42,6 +42,9 @@
             background: #5b5101;
         }
     </style>
+
+
+  
 
 </head>
 <body>
@@ -610,7 +613,7 @@
 		<!--**********************************
             Content body start
         ***********************************-->
-        <div class="content-body">
+        <div class="content-body" >
             <!-- row -->
 			<div class="container-fluid">
                 <div class="form-head page-titles d-flex  align-items-center">
@@ -840,10 +843,11 @@
 								<div class="card">
 									<div class="card-body">
 										<div id="lightgallery" class="front-view-slider mb-sm-5 mb-3 owl-carousel">
-                                            <% lands.images.forEach((image) => { %>
+											<% if (lands && lands.images && Array.isArray(lands.images) && lands.images.length > 0) { %>
+												<% lands.images.forEach((image) => { %>
                                                 <div class="items">
                                                     <div class="front-view">
-                                                        <img src="<%=image.imgurl%>" alt="/">
+                                                        <img src="<%=image?.imgurl || ""%>" alt="/">
                                                         <div class="info">
                                                             <!-- <h3 class="mb-2 text-white">Front View</h3>
                                                             <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi</p> -->
@@ -853,13 +857,17 @@
                                                             <a data-bs-toggle="modal" data-bs-target="#uploadmore" href="javascript:void(0);" class="me-4">
 																<svg fill="#42390b" height="34px" width="64px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 490.955 490.955" xml:space="preserve" stroke="#42390b"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="8.83719"></g><g id="SVGRepo_iconCarrier"> <path id="XMLID_448_" d="M445.767,308.42l-53.374-76.49v-20.656v-11.366V97.241c0-6.669-2.604-12.94-7.318-17.645L312.787,7.301 C308.073,2.588,301.796,0,295.149,0H77.597C54.161,0,35.103,19.066,35.103,42.494V425.68c0,23.427,19.059,42.494,42.494,42.494 h159.307h39.714c1.902,2.54,3.915,5,6.232,7.205c10.033,9.593,23.547,15.576,38.501,15.576c26.935,0-1.247,0,34.363,0 c14.936,0,28.483-5.982,38.517-15.576c11.693-11.159,17.348-25.825,17.348-40.29v-40.06c16.216-3.418,30.114-13.866,37.91-28.811 C459.151,347.704,457.731,325.554,445.767,308.42z M170.095,414.872H87.422V53.302h175.681v46.752 c0,16.655,13.547,30.209,30.209,30.209h46.76v66.377h-0.255v0.039c-17.685-0.415-35.529,7.285-46.934,23.46l-61.586,88.28 c-11.965,17.134-13.387,39.284-3.722,57.799c7.795,14.945,21.692,25.393,37.91,28.811v19.842h-10.29H170.095z M410.316,345.771 c-2.03,3.866-5.99,6.271-10.337,6.271h-0.016h-32.575v83.048c0,6.437-5.239,11.662-11.659,11.662h-0.017H321.35h-0.017 c-6.423,0-11.662-5.225-11.662-11.662v-83.048h-32.574h-0.016c-4.346,0-8.308-2.405-10.336-6.271 c-2.012-3.866-1.725-8.49,0.783-12.07l61.424-88.064c2.189-3.123,5.769-4.984,9.57-4.984h0.017c3.802,0,7.38,1.861,9.568,4.984 l61.427,88.064C412.04,337.28,412.328,341.905,410.316,345.771z"></path> </g></svg>
                                                             </a>
-                                                            <a href="<%=image.imgurl%>" data-src="<%=image.imgurl%>" class="lg-item">
+                                                            <a href="<%=image?.imgurl || ""%>" data-src="<%=image?.imgurl || ""%>" class="lg-item">
                                                                 <svg width="64px" height="34px" viewBox="0 0 16 16" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" version="1.1" id="svg7384" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><metadata id="metadata90"><rdf:rdf><cc:work><dc:format>image/svg+xml</dc:format><dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type><dc:title></dc:title><dc:date>2021</dc:date><dc:creator><cc:agent><dc:title>Timothée Giet</dc:title></cc:agent></dc:creator><cc:license rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/"></cc:license></cc:work><cc:license rdf:about="http://creativecommons.org/licenses/by-sa/4.0/"><cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"></cc:permits><cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"></cc:permits><cc:requires rdf:resource="http://creativecommons.org/ns#Notice"></cc:requires><cc:requires rdf:resource="http://creativecommons.org/ns#Attribution"></cc:requires><cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"></cc:permits><cc:requires rdf:resource="http://creativecommons.org/ns#ShareAlike"></cc:requires></cc:license></rdf:rdf></metadata><path id="rect4082" d="M1 1v14h14V1zm1 1h12v12H2z" style="fill:#42390b;fill-opacity:1;stroke:none;stroke-width:.875"></path><path id="path847" d="M5 3a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2zm0 1a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1z" style="opacity:1;vector-effect:none;fill:#42390b;fill-opacity:1;stroke:none;stroke-width:4;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.20000005;stroke-opacity:.55063291"></path><path id="path869" d="m3 12 1 1 3-3 1 1 2-2 2 2 1-1-3-3-2 2-1-1z" style="fill:#42390b;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path></g></svg>
                                                             </a>
                                                         </div>
                                                     </div>
                                                 </div>
-                                              <% }); %>
+												<% }) %>
+												<% } else { %>
+
+													<p>No images available</p>
+													<% } %>
 											
 											
 										</div>
@@ -976,14 +984,14 @@
 																.then(response => response.json())
 																.then(data => {
 																	if (data.status) {
-																		alert("Amount updated successfully!");
+																		
 																		Swal.fire({
-							icon: "success",
-							title: "created",
-							text: data.message,
-						});
-						updateButton.style.display = "none"; // Hide button after update
-						window.location.reload()
+																		icon: "success",
+																		title: "edited",
+																		text: data.message,
+																	});
+																	updateButton.style.display = "none"; // Hide button after update
+																	window.location.reload()
 																		
 																	}
 																})
@@ -1108,13 +1116,64 @@
 													</div>
 												</div>
 											</div>
-											<h4>Description</h4>
-											<p>
-												<%=lands.description%>
-											</p>
-											<!-- <p>
-												Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum
-											</p> -->
+											<h4 >Description</h4>
+											<br>
+											<form id="updateDescForm">
+												<p style="border: #42390b 1px solid;padding: 1em; border-radius: 8px;" contenteditable="true" id="descField" class="editable-text">
+													<%= lands.description %>
+												</p>
+												<button type="submit" id="saveDescButton" class="btn btn-primary mt-2" style="display: none;">
+													Save
+												</button>
+											</form>
+											
+											<script>
+											document.addEventListener("DOMContentLoaded", function () {
+												const descField = document.getElementById("descField");
+												const saveButton = document.getElementById("saveDescButton");
+											
+												// Show button when user starts typing
+												descField.addEventListener("input", function () {
+													saveButton.style.display = "block"; 
+												});
+											
+												// Submit updated description
+												document.getElementById("updateDescForm").addEventListener("submit", function (event) {
+													event.preventDefault(); // Prevent default form submission
+											
+													const updatedDesc = descField.innerText.trim();
+											
+													if (updatedDesc === "") {
+														alert("Description cannot be empty.");
+														return;
+													}
+											
+													fetch("/property/update/desc", {
+														method: "POST",
+														headers: { "Content-Type": "application/json" },
+														body: JSON.stringify({ description: updatedDesc,propertyId:'<%=lands.id%>' })
+													})
+													.then(response => response.json())
+													.then(data => {
+														if (data.status) {
+																		
+																		Swal.fire({
+																		icon: "success",
+																		title: "edited",
+																		text: data.message,
+																	});
+																	updateButton.style.display = "none"; // Hide button after update
+																	window.location.reload()
+																}
+														saveButton.style.display = "none"; // Hide button after update
+													})
+													.catch(error => {
+														console.error("Error:", error);
+														alert("Failed to update description.");
+													});
+												});
+											});
+											</script>
 										</div>
 									</div>
 								</div>
@@ -1148,16 +1207,205 @@
 							<div class="col-xl-12">
 								<div class="card property-features">
 									<div class="card-header border-0 pb-0">	
+										<% if (lands.isSold) { %>
+											<div class="sold-property-details-container">
+											  <div class="sold-property-details">
+												<h3>Sold Property Details</h3>
+												<p><strong>New Owner Name:</strong> <%= lands.newOwnerName || "N/A" %></p>
+												<p><strong>New Owner Email:</strong> <%= lands.newOwnerEmail || "N/A" %></p>
+												<p><strong>New Owner Address:</strong> <%= lands.newOwnerAddress || "N/A" %></p>
+												<p><strong>New Owner Phone:</strong> <%= lands.newOwnerPhone || "N/A" %></p>
+												<p><strong>Acquired Date:</strong> <%= lands.start || "N/A" %></p>
+												<p><strong>Sold Date</strong> <%= lands.soldDate || "N/A" %></p>
+												<p>
+												  <strong>Sold Amount:</strong>
+												  ₦<%= lands.soldAmount ? Number(lands.soldAmount).toLocaleString('en-NG', { minimumFractionDigits: 2 }) : "0.00" %>
+												</p>
+												<p>
+												  <strong>Sold Date:</strong>
+												  <%= lands.soldDate ? new Date(lands.soldDate).toLocaleDateString() : "N/A" %>
+												</p>
+											  </div>
+											</div>
+										  <% } %>
+										  <% if (!lands.isSold) { %>
 										<h3 class="fs-20 text-black mb-0">Property Duration</h3>
+										<% } %>
+										<% if (!lands.isSold) { %>
+											<button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#sell">
+											  Sell this Property
+											</button>
+										  <% } %>
+										  
+										  
+										  
+
+										<div class="modal fade" id="sell">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sell Property</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+				<form id="sellForm">
+					<div class="mb-3">
+						<label class="form-label">New Owner Name</label>
+						<input type="text" name="newOwnerName" id="newOwnerName" class="form-control" required>
+					</div>
+					<div class="mb-3">
+						<label class="form-label">New Owner Email</label>
+						<input type="email" name="newOwnerEmail" id="newOwnerEmail" class="form-control" required>
+					</div>
+					<div class="mb-3">
+						<label class="form-label">New Owner Address</label>
+						<input type="text" name="newOwnerAddress" id="newOwnerAddress" class="form-control" required>
+					</div>
+					<div class="mb-3">
+						<label class="form-label">New Owner Phone</label>
+						<input type="tel" name="newOwnerPhone" id="newOwnerPhone" class="form-control" required pattern="\d{10,}">
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Sold Amount (₦)</label>
+						<!-- Changed to type="text" so we can format it with the Naira symbol -->
+						<input type="text" name="soldAmount" id="soldAmount" class="form-control" required>
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Sold Date</label>
+						<input type="date" name="soldDate" id="soldDate" class="form-control" required>
+					</div>
+					<button type="submit" class="btn btn-primary" id="submitBtn">
+						Sell Now
+						<span id="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+					</button>
+				</form>
+				
+				<script>
+				document.addEventListener("DOMContentLoaded", function () {
+					const form = document.getElementById("sellForm");
+					const submitBtn = document.getElementById("submitBtn");
+					const loader = document.getElementById("loader");
+					const soldAmountInput = document.getElementById("soldAmount");
+					const soldDateInput = document.getElementById("soldDate");
+				
+					// Function to format a numeric value as Nigerian currency.
+					function formatAmount(value) {
+						// Remove non-digit and non-dot characters.
+						value = value.replace(/[^0-9.]/g, "");
+						if (value === "") return "";
+						
+						// Split into integer and decimal parts.
+						let parts = value.split(".");
+						let intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+						let decimalPart = parts.length > 1 ? "." + parts[1].substring(0, 2) : ".00"; // Default to .00 if no decimals.
+						// If decimal part is a single digit, pad with a 0.
+						if (decimalPart.length === 2) decimalPart += "0";
+						
+						return `₦${intPart}${decimalPart}`;
+					}
+				
+					// On focus, remove formatting so user sees the raw number.
+					soldAmountInput.addEventListener("focus", function () {
+						soldAmountInput.value = soldAmountInput.value.replace(/₦|,/g, "");
+					});
+				
+					// On blur, format the number.
+					soldAmountInput.addEventListener("blur", function () {
+						if (soldAmountInput.value.trim() !== "") {
+							soldAmountInput.value = formatAmount(soldAmountInput.value);
+						}
+					});
+				
+					// Prevent invalid keys on soldAmount input.
+					soldAmountInput.addEventListener("keydown", function (e) {
+						const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", "Home", "End"];
+						if (!/\d/.test(e.key) && e.key !== "." && !allowedKeys.includes(e.key)) {
+							e.preventDefault();
+						}
+					});
+				
+					// Handle form submission.
+					form.addEventListener("submit", function (event) {
+						event.preventDefault();
+						
+						// Remove formatting to get the raw numeric value.
+						const rawAmount = soldAmountInput.value.replace(/₦|,/g, "");
+						const numericAmount = parseFloat(rawAmount);
+						if (isNaN(numericAmount)) {
+							alert("Please enter a valid amount.");
+							return;
+						}
+						
+						const formData = {
+							newOwnerName: document.getElementById("newOwnerName").value.trim(),
+							newOwnerEmail: document.getElementById("newOwnerEmail").value.trim(),
+							newOwnerAddress: document.getElementById("newOwnerAddress").value.trim(),
+							newOwnerPhone: document.getElementById("newOwnerPhone").value.trim(),
+							soldAmount: numericAmount, // send as number
+							soldDate: soldDateInput.value,
+							propertyId:'<%=lands.id%>' ,
+							isSold:true,
+						};
+				
+						// Validate phone number (at least 10 digits).
+						if (!/^\d{10,}$/.test(formData.newOwnerPhone)) {
+							alert("Invalid phone number. Must be at least 10 digits.");
+							return;
+						}
+				
+						if (!formData.soldDate) {
+							alert("Please select a sold date.");
+							return;
+						}
+				
+						submitBtn.disabled = true;
+						loader.style.display = "inline-block";
+				
+						fetch("/property/update/sold", {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(formData),
+						})
+						.then(response => response.json())
+						.then(data => {
+							alert("Property sold successfully!");
+							submitBtn.disabled = false;
+							loader.style.display = "none";
+							form.reset();
+						})
+						.catch(error => {
+							console.error("Error:", error);
+							alert("Failed to sell property.");
+							submitBtn.disabled = false;
+							loader.style.display = "none";
+						});
+					});
+				});
+				</script>
+				
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+  
+
 									</div>
 									<div class="card-body">
-										<!-- <ul> -->
-											<p><i class="las la-check-circle"></i>Acquired Date : <%=lands.start%> </p>
+										<% if (!lands.isSold) { %>
+											<p><i class="las la-check-circle"></i> Acquired Date : <%= lands.start %> </p>
 											<br>
-											<p><i class="las la-clock"></i>End Date : <%=lands.end%></p>
-											
-										<!-- </ul> -->
-									</div>
+											<p><i class="las la-clock"></i> End Date : <%= lands.end %></p>
+										  <% } %>
+										
+									  
+										
+									  </div>
+									  
 								</div>
 							</div>
 						</div>
@@ -1578,5 +1826,39 @@
             });
 
      </script>
+	<script>
+		const isSold = "<%= lands.isSold %>";
+		if (isSold === "true") {
+		  const soldBadge = document.createElement("div");
+		  soldBadge.innerText = "SOLD";
+	  
+		  // Style the text to be very large, slanted, with no background.
+		  soldBadge.style.position = "absolute";
+		  soldBadge.style.top = "50%";
+		  soldBadge.style.left = "50%";
+		  soldBadge.style.transform = "translate(-50%, -50%) rotate(-45deg)";
+		  soldBadge.style.fontSize = "10rem";       // Very large text
+		  soldBadge.style.fontWeight = "bold";
+		  soldBadge.style.color = "red";            // Text color, adjust as needed
+		  soldBadge.style.opacity = "0.5";          // Optional: slightly transparent
+		  soldBadge.style.pointerEvents = "none";   // Ensure it doesn't block clicks
+		  soldBadge.style.zIndex = "1000";
+	  
+		  // Append the element to a container (first element with class "container-fluid") 
+		  // or document.body if not found.
+		  const containerElements = document.getElementsByClassName("container-fluid");
+		  if (containerElements.length > 0) {
+			containerElements[0].style.position = "relative";
+			containerElements[0].appendChild(soldBadge);
+		  } else {
+			document.body.appendChild(soldBadge);
+		  }
+		}
+	  </script>
+	  
+	  
+	  
+	  
+	  
 </body>
 </html>

@@ -686,7 +686,7 @@
 									  <div class="mb-3 col-lg-4 col-md-6">
 										<label class="form-label">Property</label>
 										<select id="propertySelect" class="default-select form-control wide" name="propertyId" required>
-											<option value="select">Select Property</option>
+											<option value="null">Select Property</option>
 											<% allLands.forEach(land => { %>
 												<option value="<%= land.id %>"><%= land.name %></option>
 											<% }) %>
@@ -898,6 +898,7 @@
                         title: "created",
                         text: result.message,
                     });
+					window.location.href = "/lawyer";
             } catch (error) {
                 Swal.fire({
                         icon: "error",

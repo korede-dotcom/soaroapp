@@ -19,12 +19,15 @@ const Images = require("../models/Images")
 const sequelize = require("../models")
 const eventEmitter = require("../utils/events");
 const querystring = require("querystring");
-const { Op, fn, col } = require('sequelize');
+const { Op, fn, col,Sequelize } = require('sequelize');
+const dotenv = require("dotenv").config()
 
 const bcrypt = require("bcryptjs")
 const authenticateUser = require("../middleware/Auth")
 const jwt = require("jsonwebtoken")
 const { message } = require("../validation/roomValidation")
+const Lawyers = require("../models/Lawyer")
+const Delivery = require("../models/Delivery")
 
 routes.use("/property",authenticateUser,PropertyRoutes)
 routes.use("/room",authenticateUser,RoomRoutes)
@@ -40,10 +43,21 @@ routes.use("/user",authenticateUser,userRoutes)
 
 
 routes.get("/dashboard",authenticateUser,async(req,res) => {
+
+
+
   Property.hasMany(PaymentRecord, { foreignKey: 'propertyId' });
   PaymentRecord.belongsTo(Property, { foreignKey: 'propertyId' });
     let count ;
     let soldCount;
+    let vacant;
+    let notvacant;
+    let totalUsers
+    let totalLawyers
+    let totalRooms
+    let totalTenats;
+    let vancantAndNon;
+    let expenses;
     if (req.user.user.roleId === 1) {
       count = await Property.count({where:{createdBy:req.user.user.id,isSold:false}})
       soldCount = await Property.count({where:{createdBy:req.user.user.id,isSold:true}})
@@ -51,7 +65,27 @@ routes.get("/dashboard",authenticateUser,async(req,res) => {
     count = await Property.count({where:{isSold:false}})
     soldCount = await Property.count({where:{isSold:true}})
     console.log("🚀 ~ routes.get ~ req.user:", req.user.user)
+    vacant = await Room.count({where:{status:'vacant'}})
+    totalRooms = await Room.count()
+    notvacant = await Room.count({where:{status:'not-vacant'}})
+    totalUsers = await User.count();
+    totalLawyers = await Lawyers.count();
+    totalTenats = await Tenants.count();
+    expenses = await Expenses.sum("amount")
+  const query = `
+    SELECT 
+      status, 
+      COUNT(*) AS count 
+    FROM "rooms" 
+    WHERE status IN ('vacant', 'not-vacant') 
+    GROUP BY status;
+  `;
 
+  const [results, metadata] = await sequelize.query(query);
+  vancantAndNon = results;
+  console.log("🚀 ~ routes.get ~ results:", results)
+
+ 
 
 
 const rentAnalytics = await PaymentRecord.findAll({
@@ -68,7 +102,22 @@ const rentAnalytics = await PaymentRecord.findAll({
   nest: true
 });
 
-console.log("🚀 ~ routes.get ~ rentAnalytics:", rentAnalytics);
+const rentAnalyticsMonth = await PaymentRecord.findAll({
+  include: {
+    model: Property,
+    attributes: ['name', 'type']
+  },
+  attributes: [
+    'propertyId',
+    [sequelize.fn('SUM', sequelize.col('paymentrecord.amount')), 'totalRent'],
+    [sequelize.fn('TRIM', sequelize.fn('TO_CHAR', sequelize.col('paymentrecord.createdAt'), 'Month')), 'paymentMonth']
+  ],
+  group: ['propertyId', 'property.id', 'property.name', 'property.type', 'paymentMonth'],
+  raw: true,
+  nest: true
+});
+
+
 
 const formattedAnalytics = rentAnalytics.map(record => ({
   propertyName: record.property?.name || 'Unknown',
@@ -77,15 +126,108 @@ const formattedAnalytics = rentAnalytics.map(record => ({
 }));
 
 
-
-console.log(formattedAnalytics);
+const totalSold = await Property.sum("soldAmount",{where:{isSold:true}})
+console.log(totalSold);
 
 
 const totalSum = rentAnalytics.reduce((sum, record) => sum + parseFloat(record.totalRent || 0), 0);
 
 
+
+// Get today's date (without time)
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+// Get the start of this year (January 1st)
+const currentYear = today.getFullYear();
+const startOfThisYear = new Date(currentYear, 0, 1).toISOString().split("T")[0];
+
+// Get the end of two years from now (December 31st)
+const endOfTwoYears = new Date(currentYear + 2, 11, 31).toISOString().split("T")[0];
+
+// Fetch properties that end within this range
+const propertiesEndingWithinRange = await Property.findAll({
+  where: {
+    end: {
+      [Op.between]: [startOfThisYear, endOfTwoYears],
+    },
+  },
+  attributes: ["type", "name", "start", "end"], // Select specific attributes
+});
+
+// Calculate the correct percentage left
+const propertiesWithPercentage = propertiesEndingWithinRange.map((property) => {
+  const startDate = new Date(property.start);
+  const endDate = new Date(property.end);
+
+  // Ensure both dates are valid
+  if (isNaN(startDate) || isNaN(endDate)) {
+    return { ...property.toJSON(), percentageLeft: "Invalid Date" };
+  }
+
+  // If today is after or equal to the end date, force 100%
+  if (today >= endDate) {
+    return { ...property.toJSON(), percentageLeft: "100.00%" };
+  }
+
+  // If today is before the start date, it's 100% left
+  if (today <= startDate) {
+    return { ...property.toJSON(), percentageLeft: "100.00%" };
+  }
+
+  // Total duration from start to end
+  const totalDuration = endDate - startDate;
+  
+  // Remaining time from today to end
+  const timeLeft = endDate - today;
+
+  // Percentage calculation
+  let percentageLeft = ((timeLeft / totalDuration) * 100).toFixed(2);
+
+  // If percentageLeft is "0.00%", force it to "100.00%"
+  if (percentageLeft === "0.00") {
+    percentageLeft = "100.00";
+  }
+
+  return {
+    ...property.toJSON(),
+    percentageLeft: `${percentageLeft}`,
+  };
+});
+
+
+const recentProperties = await Property.findAll({
+  order: [['createdAt', 'DESC']],  // Order by createdAt in descending order (most recent first)
+  limit: 3  // Limit the results to the specified number
+});
+
+console.log("🚀 ~ routes.get ~ recentProperties:", recentProperties)
+
+const top5Properties = await Property.findAll({
+  order: [['amount', 'DESC']],  // Order by 'amount' in descending order (highest amount first)
+  limit: 5  // Limit the results to the top 5
+});
+const top2SoldProperties = await Property.findAll({
+  where:{
+    isSold:true,
+  },
+  order: [['soldAmount', 'DESC']],  // Order by 'amount' in descending order (highest amount first)
+  limit: 2  // Limit the results to the top 5
+});
+
+
+
+
+
+
+
     
-    res.render("dashboard",{count,soldCount,userDetails:req.user.user, analyticsData: formattedAnalytics,totalSum })
+  res.render("dashboard",{count,soldCount,userDetails:req.user.user, analyticsData: formattedAnalytics,totalSum,totalSold:`₦${Number(totalSold).toLocaleString('en-NG', { minimumFractionDigits: 2 })}`,seriesData:rentAnalyticsMonth,vacant,notvacant,totalUsers,totalLawyers,totalRooms,totalTenats,vancantAndNon,propertiesEndingWithinRange,top5Properties,top2SoldProperties,expenses})
+})
+
+routes.get("/sms",authenticateUser,async(req,res) => {
+  const deliveries = await Delivery.findAll({})
+    res.render("deliveries",{deliveries,userDetails:req.user.user})
 })
 routes.get("/",async(req,res) => {
     res.render("login")
@@ -289,11 +431,13 @@ routes.get("/reminder", async (req,res) => {
       },
     ],
   });
+  eventEmitter.emit("AlertOwner");
   tenants.forEach((tenant) => {
     eventEmitter.emit("sendReminder", tenant);
   });
   // console.log("🚀 ~ routes.get ~ tenants:", tenants)
   return res.json({tenants})
+
   } catch (error) {
     // console.log("🚀 ~ routes.get ~ error:", error)
     
@@ -302,7 +446,9 @@ routes.get("/reminder", async (req,res) => {
 })
 
 eventEmitter.on("sendReminder", async (tenant) => {
+  console.log("🚀 ~ eventEmitter.on ~ tenant:", tenant)
   console.log(`🔔 Processing reminder for ${tenant.firstname} ${tenant.lastname}...`);
+
 
   try {
     let phoneNumber = tenant.phonenumber.replace(/^0/, "");
@@ -314,7 +460,7 @@ eventEmitter.on("sendReminder", async (tenant) => {
     },quick reminder your rent will due on ${tenant.NextPaymentYear}`;
 
     // Construct URL dynamically
-    const url = `https://1960sms.com/api/send/?user=korede&pass=Sulaimon&from=reminder&to=${phoneNumber}&msg=${encodeURIComponent(
+    const url = `https://1960sms.com/api/send/?user=${process.env.smsusername}&pass=${process.env.smspassword}&from=reminder&to=${phoneNumber}&msg=${encodeURIComponent(
       message
     )}`;
     console.log("🚀 ~ eventEmitter.on ~ url:", url)
@@ -322,6 +468,17 @@ eventEmitter.on("sendReminder", async (tenant) => {
     const response = await fetch(url);
 
     const result = await response.text();
+    console.log("🚀 ~ eventEmitter.on ~ result:", result)
+
+    const saveDelivery = await Delivery.create({
+      status:result,
+      // tenantId:tenant.id,
+      // propertyId:tenant.propertyId,
+      name:`${tenant.firstname} ${tenant.lastname}`,
+      phoneNumber:tenant.phonenumber,
+      propertyName:tenant.Room.number
+    })
+    console.log("🚀 ~ eventEmitter.on ~ saveDelivery:", saveDelivery)
 
  
 
@@ -353,6 +510,69 @@ eventEmitter.on("sendReminder", async (tenant) => {
     console.log(`✅ Reminder sent for ${tenant.firstname} ${tenant.lastname}`);
   } catch (error) {
     console.error(`❌ Failed to send reminder for ${tenant.id}:`, error);
+  }
+});
+
+eventEmitter.on("AlertOwner", async () => {
+
+
+
+  try {
+    let phoneNumber = process.env.OwnerphoneNumber.replace(/^0/, "");
+    if (!phoneNumber.startsWith("234")) {
+      phoneNumber = "234" + process.env.OwnerphoneNumber;
+    }
+    const message = `Dear Soaro Management,rent due notice has been sent out to Tenants logs can be view on the prtal`;
+
+    // Construct URL dynamically
+    const url = `https://1960sms.com/api/send/?user=${process.env.smsusername}&pass=${process.env.smspassword}&from=reminder&to=${phoneNumber}&msg=${encodeURIComponent(
+      message
+    )}`;
+    console.log("🚀 ~ eventEmitter.on ~ url:", url)
+    // Make the API request
+    const response = await fetch(url);
+
+    const result = await response.text();
+    console.log("🚀 ~ eventEmitter.on ~ result:", result)
+
+    const saveDelivery = await Delivery.create({
+      status:result,
+      name:`CEO`,
+      phoneNumber:phoneNumber,
+      propertyName:'due rent property'
+    })
+    console.log("🚀 ~ eventEmitter.on ~ saveDelivery:", saveDelivery)
+
+ 
+
+    if (!response.ok) {
+      throw new Error(`Failed to send SMS: ${result}`);
+    }
+
+  // const formData = new FormData();
+  // // DJvNdjn95RFPL7zGAl8KxcQT3UbuaOrHyfXY1gtVEoCZI6kWmqpi20eB4whsMS
+  // formData.append("token", "DJvNdjn95RFPL7zGAl8KxcQT3UbuaOrHyfXY1gtVEoCZI6kWmqpi20eB4whsMS");
+  // formData.append("senderID", "soarorealty");
+  // formData.append("recipients", `234${tenant.phonenumber.replace(/^0/, "")}`); // Format phone number
+  // formData.append(
+  //   "message",
+  //   `Dear ${tenant.firstname} ${tenant.lastname}, with room number ${
+  //     tenant.Room ? tenant.Room.roomNumber : "N/A"
+  //   }, this is a quick reminder that your rent will be due on ${tenant.NextPaymentYear}.`
+  // );
+
+  // const response = await fetch("https://my.kudisms.net/api/corporate", {
+  //   method: "POST",
+  //   body: formData, // Send as FormData
+  // });
+
+  // if (!response.ok) throw new Error("Failed to send reminder");
+
+
+
+    console.log(`✅ Reminder sent for rent ceo`);
+  } catch (error) {
+    console.error(`❌ Failed to send reminder for rent ceo`, error);
   }
 });
 

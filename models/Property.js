@@ -90,7 +90,31 @@ const Land = sequelize.define('property', {
   prevOwnerPhone:{
     type: DataTypes.STRING,
     allowNull: true,
-  }
+  },
+  newOwnerName:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  newOwnerEmail:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  newOwnerAddress:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  newOwnerPhone:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  soldAmount:{
+    type:DataTypes.DOUBLE,
+    defaultValue:"0.0"
+  },
+  soldDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: true,
+  },
 }, {
   // Additional model options
   tableName: 'property', // optional, but you can define the table name explicitly

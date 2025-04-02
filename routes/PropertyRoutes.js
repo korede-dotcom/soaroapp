@@ -511,39 +511,77 @@ router.get('/', async (req, res) => {
     }
 
     if (req.query.type === "dashboard" && req.query.propertyId) {
-    //   const result = await sequelize.query(
-    //     `SELECT 
-    //         p.id AS propertyId, 
-    //         COALESCE(SUM(r."yearlyAmount") * COALESCE(EXTRACT(YEAR FROM AGE(p.end, p.start)), 1), 0) AS expectedIncome
-    //     FROM property p
-    //     LEFT JOIN rooms r ON p.id = r."propertyId"  -- Wrap in double quotes to match Sequelize's camelCase
-    //     WHERE p.id = :propertyId
-    //     GROUP BY p.id`,
-    //     {
-    //         replacements: { propertyId: req.query.propertyId },
-    //         type: Sequelize.QueryTypes.SELECT
-    //     }
-    // );
-    // if (req.user.user.roleId === 1) {
-      
-    // }
-      // const result = await sequelize.query(
-      //   `SELECT 
-      //       p.id AS propertyId, 
-      //       COALESCE(
-      //           SUM(r."yearlyAmount") * 
-      //           COALESCE(EXTRACT(YEAR FROM AGE(COALESCE(p.end, NOW()), p.start)), 1), 
-      //           0
-      //       ) AS expectedIncome
-      //   FROM property p
-      //   LEFT JOIN rooms r ON p.id = r."propertyId"
-      //   WHERE p.id = :propertyId
-      //   GROUP BY p.id`,
-      //   {
-      //       replacements: { propertyId: req.query.propertyId },
-      //       type: Sequelize.QueryTypes.SELECT
-      //   }
-      // );
+    
+      if (req.user.user.roleId == 1) {
+        
+              const result = await sequelize.query(
+                `SELECT 
+                    p.id AS propertyId, 
+                    COALESCE(
+                        SUM(r."yearlyAmount") * 
+                        GREATEST(EXTRACT(YEAR FROM AGE(COALESCE(p.end, NOW()), p.start)), 1), 
+                        0
+                    ) AS expectedIncome
+                FROM property p
+                LEFT JOIN rooms r ON p.id = r."propertyId"
+                WHERE p.id = :propertyId
+                GROUP BY p.id`,
+                {
+                  replacements: { propertyId: req.query.propertyId },
+                  type: Sequelize.QueryTypes.SELECT
+                }
+              );
+              
+            
+            
+              const expectedYearlyAmount = result[0].expectedincome ? result[0].expectedincome : 0;
+              console.log("🚀 ~ router.get ~ expectedYearlyAmount:", expectedYearlyAmount)
+              // console.log(result[0].expectedIncome)
+              async function getCounts(propertyId) {
+                // const totalProperties = await Land.count({where:{pro}});
+                const totalTenants = await Tenants.count({ where: { propertyId:propertyId } });
+                const totalRooms = await Room.count({ where: { propertyId:propertyId } });
+                const totalExpenses = await Expenses.sum("amount", {
+                  where: { propertyId: propertyId }
+                });
+                const totalRent = await PaymentRecord.sum("amount",{
+                  where: { propertyId: propertyId }
+                })
+               const vacant = await Room.count({where:{status:'vacant',propertyId:propertyId}})
+             
+              const  notvacant = await Room.count({where:{status:'not-vacant',propertyId:propertyId}})
+                return {
+                  // totalProperties,
+                  totalTenants,
+                  totalRooms,
+                  totalExpenses,
+                  totalRent,
+                  vacant,
+                  notvacant
+                };
+              }
+              const propertyDetails = await Land.findOne({where:{id:req.query.propertyId}})
+        
+              PaymentRecord.belongsTo(Land,{foreignKey:"propertyId"})
+              PaymentRecord.belongsTo(Tenants,{foreignKey:"tenantId"})
+              PaymentRecord.belongsTo(Room,{foreignKey:"roomId"})
+              const paymentLogs = await PaymentRecord.findAll({where:{propertyId:req.query.propertyId},include:[{model:Tenants},{model:Room},{model:Land}]})
+              const getValues = await getCounts(req.query.propertyId)
+              const totalPaymentForTheYear = await PaymentRecord.sum('amount', {
+                where: {
+                  start: {
+                    [Op.gte]: new Date(new Date().getFullYear(), 0, 1), // From January 1st of the current year
+                    [Op.lte]: new Date(), // Up to today
+                  },
+                  propertyId:req.query.propertyId
+                },
+                // group: ['propertyId']
+              });
+              console.log("🚀 ~ router.get ~ totalPaymentForTheYear:", totalPaymentForTheYear)
+            
+              return res.render("propertyanalytics",{getValues,paymentLogs,propertyDetails,expectedYearlyAmount,userDetails:req.user.user,totalPaymentForTheYear})
+
+      }
 
       const result = await sequelize.query(
         `SELECT 
@@ -578,12 +616,20 @@ router.get('/', async (req, res) => {
         const totalRent = await PaymentRecord.sum("amount",{
           where: { propertyId: propertyId }
         })
+        const vacant = await Room.count({where:{status:'vacant',propertyId:propertyId}})
+        console.log("🚀 ~ getCounts ~ notvacant:", vacant)
+             
+              const  notvacant = await Room.count({where:{status:'not-vacant',propertyId:propertyId}})
+              console.log("🚀 ~ getCounts ~ notvacant:", notvacant)
+
         return {
           // totalProperties,
           totalTenants,
           totalRooms,
           totalExpenses,
-          totalRent
+          totalRent,
+          vacant,
+          notvacant
         };
       }
       const propertyDetails = await Land.findOne({where:{id:req.query.propertyId}})
@@ -665,6 +711,26 @@ router.post('/update/amount', async (req, res) => {
   try {
     const updatedAmount = await Land.update({amount:req.body.amount},{where:{id:req.body.propertyId}});
     res.status(200).json({status:true,updatedAmount,message:"amount updated successfully"});
+  } catch (error) {
+    console.log("🚀 ~ router.post ~ error:", error)
+    res.status(400).json({ message: error.message,status:false });
+  }
+});
+
+router.post('/update/sold', async (req, res) => {
+  try {
+    const updatedSold = await Land.update({...req.body},{where:{id:req.body.propertyId}});
+    res.status(200).json({status:true,updatedSold,message:"sold updated successfully"});
+  } catch (error) {
+    console.log("🚀 ~ router.post ~ error:", error)
+    res.status(400).json({ message: error.message,status:false });
+  }
+});
+
+router.post('/update/desc', async (req, res) => {
+  try {
+    const updatedDescription = await Land.update({description:req.body.description},{where:{id:req.body.propertyId}});
+    res.status(200).json({status:true,updatedDescription,message:"description updated successfully"});
   } catch (error) {
     console.log("🚀 ~ router.post ~ error:", error)
     res.status(400).json({ message: error.message,status:false });
