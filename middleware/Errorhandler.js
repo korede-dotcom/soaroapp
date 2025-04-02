@@ -10,7 +10,7 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // For programming or unknown errors, send a generic message and log the error for debugging
+  // For programming or unknown errors, send a generic message and log the error for debugging  dd
   console.error('ERROR 💥:', err);
 
   return res.status(500).json({
