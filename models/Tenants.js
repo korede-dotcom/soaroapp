@@ -130,6 +130,15 @@ Tenants.belongsTo(Property, {
   as: 'property',  // Alias for the association
 });
 
+Tenants.belongsTo(Room, {
+  foreignKey: 'roomId',
+  targetKey: 'id',
+  as: 'room',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+
 // One-to-One relationship: Tenants belong to one Room
 
 
