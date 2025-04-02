@@ -11,7 +11,7 @@ const PaymentRecord = require("./TenantPaymentRecord")
 
 function sync () {
   // Sync models with the database
-  sequelize.sync({ alter: true })  // force: true will drop the table if it already exists (use cautiously)
+  sequelize.sync({})  // force: true will drop the table if it already exists (use cautiously)
     .then(() => {
       console.log('Database synchronized');
     })
