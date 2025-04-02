@@ -49,7 +49,8 @@ const Room = sequelize.define('Room', {
   },
   status:{
     type:DataTypes.ENUM("vacant","not-vacant","sold"),
-    defaultValue:"vancant"
+
+    defaultValue:"vacant"
   },
   imageUrl: {
     type: DataTypes.JSON,  // Using JSON data type
