@@ -444,6 +444,42 @@ routes.get("/reminder", async (req,res) => {
   }
   
 })
+routes.get("/reminder/property", async (req,res) => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Get the start of this year (January 1st)
+    const currentYear = today.getFullYear();
+    const startOfThisYear = new Date(currentYear, 0, 1).toISOString().split("T")[0];
+    
+    // Get the end of two years from now (December 31st)
+    const endOfTwoYears = new Date(currentYear + 2, 11, 31).toISOString().split("T")[0];
+    
+    // Fetch properties that end within this range
+    const propertiesEndingWithinRange = await Property.findAll({
+      where: {
+        end: {
+          [Op.between]: [startOfThisYear, endOfTwoYears],
+        },
+      },
+      attributes: ["type", "name", "start", "end"], // Select specific attributes
+    });
+  // eventEmitter.emit("AlertOwner");
+  propertiesEndingWithinRange.forEach((prop) => {
+    eventEmitter.emit("sendReminderPropertyExpiry", prop);
+  });
+  // console.log("🚀 ~ routes.get ~ tenants:", tenants)
+  return res.json({propertiesEndingWithinRange})
+
+  } catch (error) {
+    // console.log("🚀 ~ routes.get ~ error:", error)
+    
+  }
+  
+})
+
+
 
 eventEmitter.on("sendReminder", async (tenant) => {
   console.log("🚀 ~ eventEmitter.on ~ tenant:", tenant)
@@ -523,6 +559,69 @@ eventEmitter.on("AlertOwner", async () => {
       phoneNumber = "234" + process.env.OwnerphoneNumber;
     }
     const message = `Dear Soaro Management,rent due notice has been sent out to Tenants logs can be view on the prtal`;
+
+    // Construct URL dynamically
+    const url = `https://1960sms.com/api/send/?user=${process.env.smsusername}&pass=${process.env.smspassword}&from=reminder&to=${phoneNumber}&msg=${encodeURIComponent(
+      message
+    )}`;
+    console.log("🚀 ~ eventEmitter.on ~ url:", url)
+    // Make the API request
+    const response = await fetch(url);
+
+    const result = await response.text();
+    console.log("🚀 ~ eventEmitter.on ~ result:", result)
+
+    const saveDelivery = await Delivery.create({
+      status:result,
+      name:`CEO`,
+      phoneNumber:phoneNumber,
+      propertyName:'due rent property'
+    })
+    console.log("🚀 ~ eventEmitter.on ~ saveDelivery:", saveDelivery)
+
+ 
+
+    if (!response.ok) {
+      throw new Error(`Failed to send SMS: ${result}`);
+    }
+
+  // const formData = new FormData();
+  // // DJvNdjn95RFPL7zGAl8KxcQT3UbuaOrHyfXY1gtVEoCZI6kWmqpi20eB4whsMS
+  // formData.append("token", "DJvNdjn95RFPL7zGAl8KxcQT3UbuaOrHyfXY1gtVEoCZI6kWmqpi20eB4whsMS");
+  // formData.append("senderID", "soarorealty");
+  // formData.append("recipients", `234${tenant.phonenumber.replace(/^0/, "")}`); // Format phone number
+  // formData.append(
+  //   "message",
+  //   `Dear ${tenant.firstname} ${tenant.lastname}, with room number ${
+  //     tenant.Room ? tenant.Room.roomNumber : "N/A"
+  //   }, this is a quick reminder that your rent will be due on ${tenant.NextPaymentYear}.`
+  // );
+
+  // const response = await fetch("https://my.kudisms.net/api/corporate", {
+  //   method: "POST",
+  //   body: formData, // Send as FormData
+  // });
+
+  // if (!response.ok) throw new Error("Failed to send reminder");
+
+
+
+    console.log(`✅ Reminder sent for rent ceo`);
+  } catch (error) {
+    console.error(`❌ Failed to send reminder for rent ceo`, error);
+  }
+});
+
+eventEmitter.on("sendReminderPropertyExpiry", async (prop) => {
+
+
+
+  try {
+    let phoneNumber = process.env.OwnerphoneNumber.replace(/^0/, "");
+    if (!phoneNumber.startsWith("234")) {
+      phoneNumber = "234" + process.env.OwnerphoneNumber;
+    }
+    const message = `Dear Soaro Management,property due notice for ${prop.name} ,type ${prop.type} will due on ${prop.end} `;
 
     // Construct URL dynamically
     const url = `https://1960sms.com/api/send/?user=${process.env.smsusername}&pass=${process.env.smspassword}&from=reminder&to=${phoneNumber}&msg=${encodeURIComponent(
