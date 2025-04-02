@@ -1,6 +1,6 @@
 const express = require('express');
 const AppError = require('./utils/AppError');
-const errorHandler = require('./middleware/errorHandler');
+const errorHandler = require('./middleware/Errorhandler');
 const catchAsync = require('./utils/catchAsync');
 const cors = require("cors")
 require("dotenv").config()
