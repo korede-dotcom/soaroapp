@@ -40,6 +40,41 @@ routes.use("/user",authenticateUser,userRoutes)
 
 
 
+routes.post("/create/ceo", async (req, res) => {
+  try {
+    // Validate request body with Joi
+    
+
+    const { name, email, password, roleName, phonenumber, address, roleId } = req.body;
+
+    // Check if the email already exists
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already in use" });
+    }
+
+
+    // Create new user
+    const newUser = await User.create({
+      name,
+      email,
+      password,
+      roleName,
+      phonenumber,
+      address,
+      roleId: roleId || 2, // Default to 2 if not provided
+    });
+
+    res.status(201).json({ message: "User created successfully", user: newUser });
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+
+
 
 
 routes.get("/dashboard",authenticateUser,async(req,res) => {
