@@ -8,7 +8,7 @@ const roomSchema = Joi.object({
   floor: Joi.string().allow('', null).max(50),
   number: Joi.string().allow('', null).max(50),
   propertyId: Joi.number().integer().required(),
-  roomType: Joi.string().valid('1bedroom', '2bedroom', '3bedroom').default('1bedroom'),
+  roomType: Joi.string().valid('1bedroom', '2bedroom', '3bedroom','shop').default('1bedroom'),
   yearlyAmount: Joi.number().precision(2).default(0),
   roomCategory: Joi.string().valid('rent', 'lease', 'sold').default('rent'),
   status: Joi.string().valid('vancant', 'not-vacant', 'sold').default('vancant'),

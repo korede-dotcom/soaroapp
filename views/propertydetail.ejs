@@ -752,6 +752,7 @@
 														});
 														window.location.reload()
 													}
+													window.location.reload()
 												})
 												.catch(error => {
 													document.getElementById('loaderOverlay').style.display = 'none';
@@ -1600,6 +1601,218 @@
 		</script>
 	  <script>
         document.querySelector('#submitBtn').addEventListener('click', async function (e) {
+                    console.log("🚀 ~ click:", 'submitBtn')
+                    e.preventDefault();
+                    this.disabled = true;
+					this.innerText = "Processing...";
+					document.getElementById('loaderOverlay').style.display = 'flex';
+
+            // const form = document.getElementById('addimages');
+            const formData = new FormData(form);
+
+            // Handle file uploads to Cloudinary
+            const files = document.getElementById('formFileMultiple').files;
+            console.log("🚀 ~ files:", files)
+            const uploadedImages = [];
+
+            if (files.length > 0) {
+            for (let file of files) {
+                const cloudinaryFormData = new FormData();
+                cloudinaryFormData.append('file', file);
+                cloudinaryFormData.append('upload_preset', 'soaro-realestate');
+                cloudinaryFormData.append("folder", "soaro");
+                cloudinaryFormData.append('api_key', 'Ilo6RYkxvGRix0UvCSGlxQwG8W0'); 
+
+            try {
+                const response = await fetch('https://api.cloudinary.com/v1_1/bada/image/upload', {
+                method: 'POST',
+                body: cloudinaryFormData
+            });
+                const data = await response.json();
+                uploadedImages.push(data.secure_url);
+                } catch (error) {
+                    console.error('Error uploading file:', error);
+                }
+            }
+            }
+
+            // Convert formData to an object
+            const jsonObject = {};
+            formData.forEach((value, key) => {
+            jsonObject[key] = value;
+            });
+
+            // Append uploaded image URLs
+			if (files.length > 0) {
+            jsonObject['images'] = uploadedImages;
+            if (!jsonObject['images']) {
+                Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: "error Uploading Image",
+                    });
+                return
+            }
+			}
+
+
+            // Send final data to the backend
+            try {
+            const response = await fetch('/property/addimage', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({images:jsonObject.images,id:'<%=lands.id%>'})
+            });
+            const result = await response.json();
+			this.disabled = false;
+            console.log('Property added successfully:', result);
+                if (!result.status) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: result.errors.toString(),
+                    });
+					document.getElementById('loaderOverlay').style.display = 'none';
+					this.innerText = "save";
+                }else{
+					Swal.fire({
+							icon: "success",
+							title: "created",
+							text: result.message,
+						});
+						window.location.reload();
+
+				}
+            } catch (error) {
+				document.getElementById('loaderOverlay').style.display = 'none';
+                Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: error.message,
+                    });
+					this.innerText = "save";
+        //         Swal.fire({
+        //   icon: "error",
+        //   title: "Validation Error",
+        //   text: "Sum of all room types should not be greater than total rooms!",
+        // });
+        return;
+		document.getElementById('loaderOverlay').style.display = 'none';
+            console.error('Error submitting form:', error);
+            }
+            });
+
+     </script>
+	  <script>
+        document.querySelector('#submitBtnupload').addEventListener('click', async function (e) {
+                    console.log("🚀 ~ click:", 'submitBtnupload')
+                    e.preventDefault();
+                    this.disabled = true;
+					this.innerText = "Processing...";
+					document.getElementById('loaderOverlay').style.display = 'flex';
+
+            const form = document.getElementById('addimages');
+            const formData = new FormData(form);
+
+            // Handle file uploads to Cloudinary
+            const files = document.getElementById('formFileMultiple').files;
+            console.log("🚀 ~ files:", files)
+            const uploadedImages = [];
+
+            if (files.length > 0) {
+            for (let file of files) {
+                const cloudinaryFormData = new FormData();
+                cloudinaryFormData.append('file', file);
+                cloudinaryFormData.append('upload_preset', 'soaro-realestate');
+                cloudinaryFormData.append("folder", "soaro");
+                cloudinaryFormData.append('api_key', 'Ilo6RYkxvGRix0UvCSGlxQwG8W0'); 
+
+            try {
+                const response = await fetch('https://api.cloudinary.com/v1_1/bada/image/upload', {
+                method: 'POST',
+                body: cloudinaryFormData
+            });
+                const data = await response.json();
+                uploadedImages.push(data.secure_url);
+                } catch (error) {
+                    console.error('Error uploading file:', error);
+                }
+            }
+            }
+
+            // Convert formData to an object
+            const jsonObject = {};
+            formData.forEach((value, key) => {
+            jsonObject[key] = value;
+            });
+
+            // Append uploaded image URLs
+			if (files.length > 0) {
+            jsonObject['images'] = uploadedImages;
+            if (!jsonObject['images']) {
+                Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: "error Uploading Image",
+                    });
+                return
+            }
+			}
+
+
+            // Send final data to the backend
+            try {
+            const response = await fetch('/property/addimage', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({images:jsonObject.images,id:'<%=lands.id%>'})
+            });
+            const result = await response.json();
+			this.disabled = false;
+            console.log('Property added successfully:', result);
+                if (!result.status) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: result.errors.toString(),
+                    });
+					document.getElementById('loaderOverlay').style.display = 'none';
+					this.innerText = "save";
+                }else{
+					Swal.fire({
+							icon: "success",
+							title: "created",
+							text: result.message,
+						});
+						window.location.reload();
+
+				}
+            } catch (error) {
+				document.getElementById('loaderOverlay').style.display = 'none';
+                Swal.fire({
+                        icon: "error",
+                        title: "Validation Error",
+                        text: error.message,
+                    });
+					this.innerText = "save";
+        //         Swal.fire({
+        //   icon: "error",
+        //   title: "Validation Error",
+        //   text: "Sum of all room types should not be greater than total rooms!",
+        // });
+        return;
+		document.getElementById('loaderOverlay').style.display = 'none';
+            console.error('Error submitting form:', error);
+            }
+            });
+
+     </script>
+	  <script>
+        document.querySelector('#submitBtnupload').addEventListener('click', async function (e) {
                     e.preventDefault();
                     this.disabled = true;
 					this.innerText = "Processing...";

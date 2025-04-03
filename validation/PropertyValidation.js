@@ -44,7 +44,8 @@ const propertySchema = Joi.object({
   prevOwnerAddress: Joi.string().trim().required(),
   images: Joi.array().items(),
 //   images: Joi.array().items(Joi.string().uri()).required(),
-})/*.custom((value, helpers) => {
+})
+/*.custom((value, helpers) => {
   const { totalroom, bedcount1, bedcount2, bedcount3, bedcount4 } = value;
   
   const totalBeds = (bedcount1 || 0) + (bedcount2 || 0) + (bedcount3 || 0) + (bedcount4 || 0);
