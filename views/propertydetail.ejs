@@ -914,13 +914,93 @@
 																isFreshLand:	<%=lands.freshLand %></span>
 															</div>
 														</span>
+														<br>
+														<span>
+															<div class="" style="color: #5b5101;" >
+																<p> This Property was created by </p>
+																<h3><%=lands.created_by_name %></h3>
+															</div>
+														</span>
+														
+														<% if (userDetails.roleId === 0) { %>
+															<div class="" style="">
+																<p>COMMISSION</p>
+																<h3 id="commissionValue" contenteditable="true" style="border: 1px dashed #ccc; padding: 5px;border-radius: 10px;">
+																<%= getPercentage?.percentage %>%
+																</h3>
+															
+																<button id="saveBtn" style="display: none;" class="btn btn-primary">Save</button>
+
+																<script>
+																	const commissionValue = document.getElementById('commissionValue');
+																	const saveBtn = document.getElementById('saveBtn');
+																	let originalValue = commissionValue.innerText.trim();
+																  
+																	commissionValue.addEventListener('input', () => {
+																	  const current = commissionValue.innerText.trim();
+																	  saveBtn.style.display = current !== originalValue ? 'inline-block' : 'none';
+																	});
+																  
+																	saveBtn.addEventListener('click', async () => {
+																	  const raw = commissionValue.innerText.trim();
+																	  const cleaned = parseFloat(raw.replace('%', ''));
+																  
+																	  if (isNaN(cleaned)) {
+																		alert('Please enter a valid number');
+																		return;
+																	  }
+																  
+																	  try {
+																		const res = await fetch('/commission/edit', {
+																		  method: 'POST',
+																		  headers: {
+																			'Content-Type': 'application/json',
+																		  },
+																		  body: JSON.stringify({
+																			percentage: cleaned,
+																			propertyId: '<%= lands.id %>' // make sure this is passed properly
+																		  }),
+																		});
+																  
+																		const data = await res.json();
+																		if (res.ok) {
+																		  alert('Commission updated!');
+																		  originalValue = `${cleaned}%`;
+																		  saveBtn.style.display = 'none';
+																		  window.location.reload()
+																		} else {
+																		  alert(data.message || 'Failed to update.');
+																		}
+																	  } catch (err) {
+																		console.error(err);
+																		alert('Something went wrong.');
+																	  }
+																	});
+																  </script>
+
+														  	</div>
+														 
+														  <% } else { %>
+														
+															<div class="" style="">
+															<p>COMMISSION</p>
+															<h3 id="commissionValue" style="border: 1px dashed #ccc; padding: 5px;border-radius: 10px;">
+															  <%= getPercentage?.percentage %>%
+															</h3>
+														  <% } %>
+														  
+															
+														  </div>
+														  
+														
+														  
 													</div>
 													
 												<div class="ms-md-4 text-md-right">
 													<p class="text-black mb-1 me-1">Price range</p>
 													<form id="updateAmountForm">
 														<h3 contenteditable="true" id="amountField" class="text-primary">
-															<%= lands.amount.toLocaleString('en-NG', { minimumFractionDigits: 2 }) %>
+															<%= lands?.amount %>
 														</h3>
 														<button type="submit" id="updateButton" class="btn btn-primary mt-2" style="display: none;">
 															Update Amount
@@ -1031,6 +1111,49 @@
 													<i class="flaticon-381-blueprint"></i>
 													Generate rooms
 												</button>
+												<% if (userDetails.roleId === 0) { %>
+													<button data-bs-toggle="modal" data-bs-target="#commssion" class="btn btn-primary  rounded mb-sm-0 mb-2">
+														<i class="flaticon-381-money"></i>
+														set Commission for manager 
+													</button>
+												  <% } else { %>
+													
+												  <% } %>
+												
+												<div class="modal fade" id="commssion">
+													<div class="modal-dialog modal-dialog-centered" role="document">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title">Set Yearly Commission</h5>
+																<button type="button" class="btn-close" data-bs-dismiss="modal">
+																</button>
+															</div>
+															<div class="modal-body">
+																<form id="commssionForm">
+																	<div class="form-group mb-4">
+																	  <label class="form-label" for="commision">Percentage</label>
+																	  <input 
+																		type="number" 
+																		name="commision" 
+																		class="form-control" 
+																		id="commision" 
+																		step="any" 
+																		min="0"
+																		placeholder="Enter percentage"
+																	  >%
+																	</div>
+																	<button type="submit" class="btn btn-primary" id="submitCommission">
+																	  Submit
+																	  <span id="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+																	</button>
+																  </form>
+																  
+		
+															</div>
+														
+														</div>
+													</div>
+												</div>
 												<div class="modal fade" id="generateroom">
 													<div class="modal-dialog modal-dialog-centered" role="document">
 														<div class="modal-content">
@@ -1054,12 +1177,20 @@
 																		<input type="number" required name="totalroom" class="form-control" placeholder="input a number" min="0">
 																	  </div>
 																	  <div class="mb-3 col-lg-4 col-md-6">
-																		<label class="form-label">How Many 1Bed</label>
-																		<input type="number" required name="bedcount1" class="form-control" placeholder="input a number" min="0">
+																		<label class="form-label">How Many MiniFlat</label>
+																		<input type="number" required name="miniflat" class="form-control" placeholder="input a number"" min="1">
 																	  </div>
 																	  <div class="mb-3 col-lg-4 col-md-6">
-																		<label class="form-label">1Bed Amount</label>
-																		<input type="number" required name="bedamount1" class="form-control" placeholder="input a number" min="0">
+																		<label class="form-label">MiniFlat Amount</label>
+																		<input type="number" required name="miniflatamount" class="form-control" placeholder="input a number"" min="1">
+																	  </div>
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">How Many A RoomSelf</label>
+																		<input type="number" required name="bedcount1" class="form-control" placeholder="input a number"" min="1">
+																	  </div>
+																	  <div class="mb-3 col-lg-4 col-md-6">
+																		<label class="form-label">A RoomSelf Amount</label>
+																		<input type="number" required name="bedamount1" class="form-control" placeholder="input a number"" min="1">
 																	  </div>
 																	  <div class="mb-3 col-lg-4 col-md-6">
 																		<label class="form-label">How Many 2Bed</label>
@@ -1373,6 +1504,7 @@
 							submitBtn.disabled = false;
 							loader.style.display = "none";
 							form.reset();
+							window.location.reload()
 						})
 						.catch(error => {
 							console.error("Error:", error);
@@ -1926,12 +2058,13 @@
                  
                      // Get all input values
       const totalroom = parseInt(document.querySelector("[name='totalroom']").value) || 0;
+      const miniflat = parseInt(document.querySelector("[name='miniflat']").value) || 0;
       const bedcount1 = parseInt(document.querySelector("[name='bedcount1']").value) || 0;
       const bedcount2 = parseInt(document.querySelector("[name='bedcount2']").value) || 0;
       const bedcount3 = parseInt(document.querySelector("[name='bedcount3']").value) || 0;
       const bedcount4 = parseInt(document.querySelector("[name='bedcount4']").value) || 0;
 
-      const totalBeds = bedcount1 + bedcount2 + bedcount3 + bedcount4;
+      const totalBeds = bedcount1 + bedcount2 + bedcount3 + bedcount4 + miniflat;
 
       if (totalBeds > totalroom) {
         Swal.fire({
@@ -2047,7 +2180,7 @@
 	  
 		  // Style the text to be very large, slanted, with no background.
 		  soldBadge.style.position = "absolute";
-		  soldBadge.style.top = "50%";
+		  soldBadge.style.top = "40%";
 		  soldBadge.style.left = "50%";
 		  soldBadge.style.transform = "translate(-50%, -50%) rotate(-45deg)";
 		  soldBadge.style.fontSize = "10rem";       // Very large text
@@ -2069,6 +2202,55 @@
 		}
 	  </script>
 	  
+	  <script>
+		document.getElementById('commssionForm').addEventListener('submit', async function(e) {
+		  e.preventDefault();
+	  
+		  const commisionInput = document.getElementById('commision');
+		  const submitBtn = document.getElementById('submitCommission');
+		  const loader = document.getElementById('loader');
+	  
+		  const commision = parseFloat(commisionInput.value);
+		  if (isNaN(commision)) {
+			alert('Please enter a valid percentage.');
+			return;
+		  }
+	  
+		  // Show loader
+		  loader.style.display = 'inline-block';
+		  submitBtn.disabled = true;
+	  
+		  try {
+			const response = await fetch('/commission', {
+			  method: 'POST',
+			  headers: {
+				'Content-Type': 'application/json'
+			  },
+			  body: JSON.stringify({ 
+				percentage: commision, 
+				propertyId: '<%= lands.id %>' 
+			  })
+			});
+	  
+			const result = await response.json();
+			console.log("🚀 Result:", result);
+	  
+			if (response.ok) {
+			  alert('Commission updated successfully!');
+			  // e.target.reset(); // Uncomment if you want to clear the form
+			} else {
+			  alert(result.message || 'Something went wrong!');
+			}
+	  
+		  } catch (error) {
+			console.error('Error:', error);
+			alert('Error occurred while submitting.');
+		  } finally {
+			loader.style.display = 'none';
+			submitBtn.disabled = false;
+		  }
+		});
+	  </script>
 	  
 	  
 	  

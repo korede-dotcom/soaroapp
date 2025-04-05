@@ -21,13 +21,13 @@ const eventEmitter = require("../utils/events");
 const querystring = require("querystring");
 const { Op, fn, col,Sequelize } = require('sequelize');
 const dotenv = require("dotenv").config()
-
 const bcrypt = require("bcryptjs")
 const authenticateUser = require("../middleware/Auth")
 const jwt = require("jsonwebtoken")
 const { message } = require("../validation/roomValidation")
 const Lawyers = require("../models/Lawyer")
 const Delivery = require("../models/Delivery")
+const Commision = require("../models/Commission")
 
 routes.use("/property",authenticateUser,PropertyRoutes)
 routes.use("/room",authenticateUser,RoomRoutes)
@@ -71,11 +71,6 @@ routes.post("/create/ceo", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
-
-
-
-
 
 routes.get("/dashboard",authenticateUser,async(req,res) => {
 
@@ -264,9 +259,11 @@ routes.get("/sms",authenticateUser,async(req,res) => {
   const deliveries = await Delivery.findAll({})
     res.render("deliveries",{deliveries,userDetails:req.user.user})
 })
+
 routes.get("/",async(req,res) => {
     res.render("login")
 })
+
 routes.get("/test",async(req,res) => {
     
 
@@ -446,6 +443,40 @@ routes.post("/logout", async (req, res) => {
     // res.json({ message: "Logged out successfully" });
 });
 
+routes.post("/commission",authenticateUser, async (req, res) => {
+    try {
+      const getPropertyUser = await Property.findOne({where:{id:req.body.propertyId}})
+        const saveCommission = await Commision.create({
+          percentage:req.body.percentage,
+          propertyId:req.body.propertyId,
+          userId:getPropertyUser.createdBy,
+        })
+        console.log("🚀 ~ routes.post ~ getPropertyUser:", saveCommission)
+        res.json({status:true, message: "Commission added successfully",saveCommission });
+      } catch (error) {
+      res.json({status:false, message: error.message});
+      
+    }
+    // res.json({ message: "Logged out successfully" });
+});
+
+routes.post("/commission/edit", authenticateUser ,async (req, res) => {
+    try {
+      // const getPropertyUser = await Property.findOne({where:{id:req.body.propertyId}})
+      const saveCommission = await Commision.update(
+        { percentage: req.body.percentage },
+        { where: { propertyId: req.body.propertyId } }
+      );
+      
+        console.log("🚀 ~ routes.post ~ getPropertyUser:", saveCommission)
+        res.json({status:true, message: "Commission added successfully",saveCommission });
+      } catch (error) {
+      res.json({status:false, message: error.message});
+      
+    }
+    // res.json({ message: "Logged out successfully" });
+});
+
 routes.get("/reminder", async (req,res) => {
   try {
     const currentDate = new Date();
@@ -479,6 +510,7 @@ routes.get("/reminder", async (req,res) => {
   }
   
 })
+
 routes.get("/reminder/property", async (req,res) => {
   try {
     const today = new Date();
@@ -513,8 +545,6 @@ routes.get("/reminder/property", async (req,res) => {
   }
   
 })
-
-
 
 eventEmitter.on("sendReminder", async (tenant) => {
   console.log("🚀 ~ eventEmitter.on ~ tenant:", tenant)
@@ -585,9 +615,6 @@ eventEmitter.on("sendReminder", async (tenant) => {
 });
 
 eventEmitter.on("AlertOwner", async () => {
-
-
-
   try {
     let phoneNumber = process.env.OwnerphoneNumber.replace(/^0/, "");
     if (!phoneNumber.startsWith("234")) {
@@ -613,8 +640,6 @@ eventEmitter.on("AlertOwner", async () => {
       propertyName:'due rent property'
     })
     console.log("🚀 ~ eventEmitter.on ~ saveDelivery:", saveDelivery)
-
- 
 
     if (!response.ok) {
       throw new Error(`Failed to send SMS: ${result}`);
@@ -648,8 +673,6 @@ eventEmitter.on("AlertOwner", async () => {
 });
 
 eventEmitter.on("sendReminderPropertyExpiry", async (prop) => {
-
-
 
   try {
     let phoneNumber = process.env.OwnerphoneNumber.replace(/^0/, "");

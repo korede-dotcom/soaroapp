@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
     // console.log("🚀 ~ router.get ~ rooms:", rooms)
     if (req.query.type === "detail" && req.query.propertyId) {
       if (req.user.user.roleId === 1) {
-        const rooms = await Room.findAll({where:{propertyId:req.query.propertyId,createdBy:req.user.user.id},include:[{model:Property},{model:Tenant}]});
+        const rooms = await Room.findAll({where:{propertyId:req.query.propertyId/*,createdBy:req.user.user.id*/},include:[{model:Property},{model:Tenant}]});
         
         return res.render("rooms",{rooms,userDetails:req.user.user})
         
@@ -46,7 +46,9 @@ router.get('/', async (req, res) => {
 
     if (req.query.type === "filter" && req.query.propertyId) {
       if (req.user.user.roleId === 1) {
-        const rooms = await Room.findAll({where:{propertyId:req.query.propertyId,createdBy:req.user.user.id},include:[{model:Property},{model:Tenant}]});
+        const rooms = await Room.findAll({where:{propertyId:req.query.propertyId},include:[{model:Property},{model:Tenant}]});
+        console.log("🚀 ~ router.get ~ rooms:", rooms)
+        
         return res.render("rooms",{rooms,property,userDetails:req.user.user})
         
       }
@@ -56,9 +58,9 @@ router.get('/', async (req, res) => {
 
     if (req.user.user.roleId === 1) {
       const rooms = await Room.findAll({where:{createdBy:req.user.user.id},include:[{model:Tenant},{model:Property}]});
-      
+      const property = await Property.findAll({where:{createdBy:req.user.user.id}})
      
-      return res.render("rooms",{rooms,property,userDetails:req.user.usery})
+      return res.render("rooms",{rooms,property,userDetails:req.user.user})
       
     }
 

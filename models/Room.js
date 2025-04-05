@@ -36,7 +36,7 @@ const Room = sequelize.define('Room', {
     allowNull:false,
   },
   roomType:{
-    type:DataTypes.ENUM("1bedroom","2bedroom","3bedroom","shop","4bedroom"),
+    type:DataTypes.ENUM("miniflat","1bedroom","2bedroom","3bedroom","shop","4bedroom"),
     defaultValue:"1bedroom",
   },
   yearlyAmount:{

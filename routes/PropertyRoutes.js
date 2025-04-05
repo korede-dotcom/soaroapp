@@ -18,6 +18,8 @@ const PaymentRecord = require('../models/TenantPaymentRecord');
 const sequelize = require("../models")
 const {Sequelize,Op, where} = require("sequelize");
 const Lawyers = require('../models/Lawyer');
+const User = require('../models/User');
+const Commision = require('../models/Commission');
 
 // POST - Create new land
 router.post('/',validateProperty, async (req, res) => {
@@ -42,7 +44,7 @@ router.post('/',validateProperty, async (req, res) => {
                 isSold: data.isSold,
                 freshLand: data.freshLand,
                 type: data.type,
-                created_by_name: data.created_by_name,
+                created_by_name: req.user.user.name,
                 start: data.start,
                 end: data.end.length > 1 ? data.end : null,
                 prevOwnerAddress: data.prevOwnerAddress,
@@ -59,7 +61,7 @@ router.post('/',validateProperty, async (req, res) => {
         }
 
         // Extract room data
-        const { totalroom, bedcount1, bedcount2, bedcount3, bedcount4, bedamount1, bedamount2, bedamount3, bedamount4,shopcount,shopamount } = data;
+        const { miniflat,miniflatamount,totalroom, bedcount1, bedcount2, bedcount3, bedcount4, bedamount1, bedamount2, bedamount3, bedamount4,shopcount,shopamount } = data;
 
         let roomIndex = 1;
         let roomsToCreate = [];
@@ -87,6 +89,7 @@ router.post('/',validateProperty, async (req, res) => {
         addRooms(bedcount3, "3bedroom", bedamount3);
         addRooms(bedcount4, "4bedroom", bedamount4);
         addRooms(shopcount, "shop", shopamount);
+        addRooms(miniflat, "miniflat", miniflatamount);
 
         // Validate total rooms
         console.log("🚀 ~ router.post ~ roomsToCreate.length > totalroom:", roomsToCreate.length , totalroom)
@@ -130,7 +133,7 @@ router.post('/',validateProperty, async (req, res) => {
                 isSold: data.isSold,
                 freshLand: data.freshLand,
                 type: data.type,
-                created_by_name: data.created_by_name,
+                created_by_name: req.user.user.name,
                 start: data.start,
                 end: data.end.length > 1 ? data.end : null,
                 prevOwnerAddress: data.prevOwnerAddress,
@@ -226,7 +229,7 @@ router.post('/generateroom',validateGenerateRoom ,async (req, res) => {
 
        
         // Extract room data
-        const { totalroom, bedcount1, bedcount2, bedcount3, bedcount4, bedamount1, bedamount2, bedamount3, bedamount4,shopcount,shopamount,propertyId } = data;
+        const {miniflat,miniflatamount, totalroom, bedcount1, bedcount2, bedcount3, bedcount4, bedamount1, bedamount2, bedamount3, bedamount4,shopcount,shopamount,propertyId } = data;
 
         let roomIndex = 1;
         let roomsToCreate = [];
@@ -254,6 +257,7 @@ router.post('/generateroom',validateGenerateRoom ,async (req, res) => {
         addRooms(bedcount3, "3bedroom", bedamount3);
         addRooms(bedcount4, "4bedroom", bedamount4);
         addRooms(shopcount, "shop", shopamount);
+        addRooms(miniflat, "miniflat", miniflatamount);
 
         // Validate total rooms
         console.log("🚀 ~ router.post ~ roomsToCreate.length > totalroom:", roomsToCreate.length , totalroom)
@@ -268,7 +272,7 @@ router.post('/generateroom',validateGenerateRoom ,async (req, res) => {
 
        
 
-        await transaction.commit();
+        // await transaction.commit();
         return res.status(201).json({
             land,
             status:true,
@@ -279,7 +283,7 @@ router.post('/generateroom',validateGenerateRoom ,async (req, res) => {
         
 
         // Extract room data
-        const { totalroom, bedcount1, bedcount2, bedcount3, bedcount4, bedamount1, bedamount2, bedamount3, bedamount4,shopcount,shopamount } = data;
+        const {miniflat,miniflatamount, totalroom, bedcount1, bedcount2, bedcount3, bedcount4, bedamount1, bedamount2, bedamount3, bedamount4,shopcount,shopamount } = data;
 
         let roomIndex = 1;
         let roomsToCreate = [];
@@ -306,6 +310,7 @@ router.post('/generateroom',validateGenerateRoom ,async (req, res) => {
         addRooms(bedcount3, "3bedroom", bedamount3);
         addRooms(bedcount4, "4bedroom", bedamount4);
         addRooms(shopcount, "shop", shopamount);
+        addRooms(miniflat, "shop", miniflatamount);
 
         // Validate total rooms
         console.log("🚀 ~ router.post ~ roomsToCreate.length > totalroom:", roomsToCreate.length , totalroom)
@@ -355,7 +360,7 @@ router.post('/freshland',validatePropertyLand,async(req,res) => {
             description:data.description,
             freshLand: true,
             type: data.type,
-            created_by_name: data.created_by_name,
+            created_by_name: req.user.user.name,
             start: data.start,
             end: data.end.length > 1 ? data.end : null,
             prevOwnerAddress: data.prevOwnerAddress,
@@ -379,7 +384,7 @@ router.post('/freshland',validatePropertyLand,async(req,res) => {
             description:data.description,
             freshLand: true,
             type: data.type,
-            created_by_name: data.created_by_name,
+            created_by_name: req.user.user.name,
             start: data.start,
             end: data.end.length > 1 ? data.end : null,
             prevOwnerAddress: data.prevOwnerAddress,
@@ -470,18 +475,41 @@ router.get('/', async (req, res) => {
     }
 
     if (req.query.type === "details" && req.query.id ) {
+      
       if (req.user.user.roleId === 1) {
         const lawyers = await Lawyers.findAll({where:{createdBy:req.user.user.id}})
-        const lands = await Land.findOne({where:{createdBy:req.user.user.id,id:req.query.id}});
-        const tenantCount = await Tenants.count({where:{propertyId:req.query.id,isPrevious:false,createdBy:req.user.user.id}})
-        const roomCount = await Room.count({where:{propertyId:req.query.id,createdBy:req.user.user.id}})
-        const shopCount = await Room.count({where:{propertyId:req.query.id,roomType:"shop",createdBy:req.user.user.id}})
-        const expensesCount = await Expenses.count({where:{propertyId:req.query.id,createdBy:req.user.user.id}})
-      //   console.log("🚀 ~ router.get ~ lands:", lands.dataValues)
-      return res.render("propertydetail",{lands,tenantCount,roomCount,expensesCount,shopCount,userDetails:req.user.user,lawyers})
+        const lands = await Land.findOne({
+          where:{createdBy:req.user.user.id,id:req.query.id},
+          include: [
+            {
+              model: Images,
+              as: "images", // Ensure this alias matches `hasMany`
+            },
+            {
+              model: Lawyers,
+              as: "lawyer", // Ensure this alias matches `belongsTo`
+            },
+             
+          ],
+        });
+
+        const getPercentage = await Commision.findOne({where:{propertyId:req.query.id}})
+        console.log("🚀 ~ router.get ~ getPercentage:", getPercentage)
+        
+
+     
+
+        const roomCount = await Room.count({where:{propertyId:req.query.id}})
+        const tenantCount = await Tenants.count({where:{propertyId:req.query.id,isPrevious:false,}})
+        const shopCount = await Room.count({where:{propertyId:req.query.id,roomType:"shop"}})
+        const expensesCount = await Expenses.count({where:{propertyId:req.query.id,}})
+     
+        return res.render("propertydetail",{getPercentage,lands,tenantCount,roomCount,expensesCount,shopCount,userDetails:req.user.user,lawyers})
         
       }
-      const lawyers = await Lawyers.findAll({where:{}})
+          const lawyers = await Lawyers.findAll({where:{}})
+          const getPercentage = await Commision.findOne({where:{propertyId:req.query.id}})
+          console.log("🚀 ~ router.get ~ getPercentage:", getPercentage)
       
           console.log("🚀 ~ router.get ~ lawyers:", lawyers)
           const lands = await LandService.getLandsById(req.query.id);
@@ -490,7 +518,7 @@ router.get('/', async (req, res) => {
           const shopCount = await Room.count({where:{propertyId:req.query.id,roomType:"shop"}})
           const expensesCount = await Expenses.count({where:{propertyId:req.query.id}})
         //   console.log("🚀 ~ router.get ~ lands:", lands.dataValues)
-        return res.render("propertydetail",{lands,tenantCount,roomCount,expensesCount,shopCount,userDetails:req.user.user,lawyers})
+        return res.render("propertydetail",{getPercentage,lands,tenantCount,roomCount,expensesCount,shopCount,userDetails:req.user.user,lawyers})
     }
 
     if (req.query.type === "filter" && req.query.name) {
@@ -512,76 +540,78 @@ router.get('/', async (req, res) => {
 
     if (req.query.type === "dashboard" && req.query.propertyId) {
     
-      if (req.user.user.roleId == 1) {
+      // if (req.user.user.roleId == 1) {
         
-              const result = await sequelize.query(
-                `SELECT 
-                    p.id AS propertyId, 
-                    COALESCE(
-                        SUM(r."yearlyAmount") * 
-                        GREATEST(EXTRACT(YEAR FROM AGE(COALESCE(p.end, NOW()), p.start)), 1), 
-                        0
-                    ) AS expectedIncome
-                FROM property p
-                LEFT JOIN rooms r ON p.id = r."propertyId"
-                WHERE p.id = :propertyId
-                GROUP BY p.id`,
-                {
-                  replacements: { propertyId: req.query.propertyId },
-                  type: Sequelize.QueryTypes.SELECT
-                }
-              );
+      //         const result = await sequelize.query(
+      //           `SELECT 
+      //               p.id AS propertyId, 
+      //               COALESCE(
+      //                   SUM(r."yearlyAmount") * 
+      //                   GREATEST(EXTRACT(YEAR FROM AGE(COALESCE(p.end, NOW()), p.start)), 1), 
+      //                   0
+      //               ) AS expectedIncome
+      //           FROM property p
+      //           LEFT JOIN rooms r ON p.id = r."propertyId"
+      //           WHERE p.id = :propertyId
+      //           GROUP BY p.id `,
+      //           {
+      //             replacements: { propertyId: req.query.propertyId },
+      //             type: Sequelize.QueryTypes.SELECT
+      //           }
+      //         );
+
+   
               
             
             
-              const expectedYearlyAmount = result[0].expectedincome ? result[0].expectedincome : 0;
-              console.log("🚀 ~ router.get ~ expectedYearlyAmount:", expectedYearlyAmount)
-              // console.log(result[0].expectedIncome)
-              async function getCounts(propertyId) {
-                // const totalProperties = await Land.count({where:{pro}});
-                const totalTenants = await Tenants.count({ where: { propertyId:propertyId } });
-                const totalRooms = await Room.count({ where: { propertyId:propertyId } });
-                const totalExpenses = await Expenses.sum("amount", {
-                  where: { propertyId: propertyId }
-                });
-                const totalRent = await PaymentRecord.sum("amount",{
-                  where: { propertyId: propertyId }
-                })
-               const vacant = await Room.count({where:{status:'vacant',propertyId:propertyId}})
+      //         const expectedYearlyAmount = result[0].expectedincome ? result[0].expectedincome : 0;
+      //         console.log("🚀 ~ router.get ~ expectedYearlyAmount:", expectedYearlyAmount)
+      //         // console.log(result[0].expectedIncome)
+      //         async function getCounts(propertyId) {
+      //           // const totalProperties = await Land.count({where:{pro}});
+      //           const totalTenants = await Tenants.count({ where: { propertyId:propertyId } });
+      //           const totalRooms = await Room.count({ where: { propertyId:propertyId } });
+      //           const totalExpenses = await Expenses.sum("amount", {
+      //             where: { propertyId: propertyId }
+      //           });
+      //           const totalRent = await PaymentRecord.sum("amount",{
+      //             where: { propertyId: propertyId }
+      //           })
+      //          const vacant = await Room.count({where:{status:'vacant',propertyId:propertyId}})
              
-              const  notvacant = await Room.count({where:{status:'not-vacant',propertyId:propertyId}})
-                return {
-                  // totalProperties,
-                  totalTenants,
-                  totalRooms,
-                  totalExpenses,
-                  totalRent,
-                  vacant,
-                  notvacant
-                };
-              }
-              const propertyDetails = await Land.findOne({where:{id:req.query.propertyId}})
+      //         const  notvacant = await Room.count({where:{status:'not-vacant',propertyId:propertyId}})
+      //           return {
+      //             // totalProperties,
+      //             totalTenants,
+      //             totalRooms,
+      //             totalExpenses,
+      //             totalRent,
+      //             vacant,
+      //             notvacant
+      //           };
+      //         }
+      //         const propertyDetails = await Land.findOne({where:{id:req.query.propertyId}})
         
-              PaymentRecord.belongsTo(Land,{foreignKey:"propertyId"})
-              PaymentRecord.belongsTo(Tenants,{foreignKey:"tenantId"})
-              PaymentRecord.belongsTo(Room,{foreignKey:"roomId"})
-              const paymentLogs = await PaymentRecord.findAll({where:{propertyId:req.query.propertyId},include:[{model:Tenants},{model:Room},{model:Land}]})
-              const getValues = await getCounts(req.query.propertyId)
-              const totalPaymentForTheYear = await PaymentRecord.sum('amount', {
-                where: {
-                  start: {
-                    [Op.gte]: new Date(new Date().getFullYear(), 0, 1), // From January 1st of the current year
-                    [Op.lte]: new Date(), // Up to today
-                  },
-                  propertyId:req.query.propertyId
-                },
-                // group: ['propertyId']
-              });
-              console.log("🚀 ~ router.get ~ totalPaymentForTheYear:", totalPaymentForTheYear)
+      //         PaymentRecord.belongsTo(Land,{foreignKey:"propertyId"})
+      //         PaymentRecord.belongsTo(Tenants,{foreignKey:"tenantId"})
+      //         PaymentRecord.belongsTo(Room,{foreignKey:"roomId"})
+      //         const paymentLogs = await PaymentRecord.findAll({where:{propertyId:req.query.propertyId},include:[{model:Tenants},{model:Room},{model:Land}]})
+      //         const getValues = await getCounts(req.query.propertyId)
+      //         const totalPaymentForTheYear = await PaymentRecord.sum('amount', {
+      //           where: {
+      //             start: {
+      //               [Op.gte]: new Date(new Date().getFullYear(), 0, 1), // From January 1st of the current year
+      //               [Op.lte]: new Date(), // Up to today
+      //             },
+      //             propertyId:req.query.propertyId
+      //           },
+      //           // group: ['propertyId']
+      //         });
+      //         console.log("🚀 ~ router.get ~ totalPaymentForTheYear:", totalPaymentForTheYear)
             
-              return res.render("propertyanalytics",{getValues,paymentLogs,propertyDetails,expectedYearlyAmount,userDetails:req.user.user,totalPaymentForTheYear})
+      //         return res.render("propertyanalytics",{getValues,paymentLogs,propertyDetails,expectedYearlyAmount,userDetails:req.user.user,totalPaymentForTheYear})
 
-      }
+      // }
 
       const result = await sequelize.query(
         `SELECT 
@@ -600,6 +630,39 @@ router.get('/', async (req, res) => {
           type: Sequelize.QueryTypes.SELECT
         }
       );
+
+      const currentYear = new Date().getFullYear();
+
+      const totalRent = await PaymentRecord.sum('amount', {
+        where: {
+          propertyId: req.query.propertyId,
+          createdAt: {
+            [Op.gte]: new Date(`${currentYear}-01-01`),
+            [Op.lte]: new Date(`${currentYear}-12-31`)
+          }
+        }
+      });
+      
+      const commissionRecord = await Commision.findOne({
+        where: { propertyId: req.query.propertyId }
+      });
+      
+      const percentage = commissionRecord?.percentage || 0;
+      const commissionAmount = (percentage / 100) * totalRent;
+
+const formattedAmountUserCommission = new Intl.NumberFormat('en-NG', {
+  style: 'currency',
+  currency: 'NGN'
+}).format(commissionAmount);
+
+
+
+      
+      console.log({
+        totalRent,
+        percentage,
+        commissionAmount
+      });
       
     
     
@@ -651,7 +714,7 @@ router.get('/', async (req, res) => {
       });
       console.log("🚀 ~ router.get ~ totalPaymentForTheYear:", totalPaymentForTheYear)
     
-      return res.render("propertyanalytics",{getValues,paymentLogs,propertyDetails,expectedYearlyAmount,userDetails:req.user.user,totalPaymentForTheYear})
+      return res.render("propertyanalytics",{formattedAmountUserCommission,getValues,paymentLogs,propertyDetails,expectedYearlyAmount,userDetails:req.user.user,totalPaymentForTheYear})
     }
 
     if (req.query.type === "past" && req.query.id) {
@@ -668,7 +731,20 @@ router.get('/', async (req, res) => {
 
    if (req.user.user.roleId == 1) {
     
-    const lands = await Land.findAll({where:{createdBy:req.user.user.id}});
+    // const lands = await /*Land.findAll({where:{createdBy:req.user.user.id}});*/
+    const lands = await Land.findAll({
+      where:{createdBy:req.user.user.id},
+      include: [
+        {
+          model: Images,
+          as: "images", // Ensure this alias matches `hasMany`
+        },
+        {
+          model: Lawyers,
+          as: "lawyer", // Ensure this alias matches `belongsTo`
+        },
+      ],
+    });
     console.log("🚀 ~ router.get ~ lands:", lands)
      return res.render("property",{lands,userDetails:req.user.user})
      

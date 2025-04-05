@@ -5,6 +5,7 @@ const Images = require('../models/Images');
 const Lawyers = require('../models/Lawyer');
 const Sync = require("../models/index");
 const Room = require('../models/Room');
+const User = require('../models/User');
 Land.belongsTo(Lawyers,{foreignKey:"id",targetKey:"propertyId"})
     Images.belongsTo(Land, { foreignKey: "propertyId" });
     Land.hasMany(Images, { foreignKey: "propertyId", as: "images" });
@@ -223,7 +224,8 @@ static async createLand(data) {
         where: { id: id },
         include: [
             { model: Images, as: "images"}, // Matches hasMany alias
-            { model: Lawyers, as: "lawyer" } // Matches belongsTo alias
+            { model: Lawyers, as: "lawyer" }, // Matches belongsTo alias
+        
         ]
     });
     

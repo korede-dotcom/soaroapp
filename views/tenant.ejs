@@ -721,7 +721,7 @@
     const currentYear = new Date().getFullYear();
     const nextPaymentYear = item.NextPaymentYear; // Keep it as is
 
-    if (nextPaymentYear === null || nextPaymentYear === undefined || parseInt(nextPaymentYear, 10) === currentYear) { 
+    if (nextPaymentYear === null || nextPaymentYear === undefined || parseInt(nextPaymentYear, 10) === currentYear || nextPaymentYear === "") { 
 %>
 
 									

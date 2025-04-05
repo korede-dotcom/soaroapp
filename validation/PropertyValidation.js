@@ -9,6 +9,8 @@ const propertySchema = Joi.object({
   country: Joi.string().trim().required(),
   floors: Joi.number().integer().min(1).required(),
   totalroom: Joi.number().integer().min(1).required(),
+  miniflat: Joi.number().integer().min(0).required(),
+  miniflatamount: Joi.number().integer().min(0).required(),
   bedcount1: Joi.number().integer().min(0).required(),
   bedamount1: Joi.number().integer().min(0).required(),
   bedcount2: Joi.number().integer().min(0).required(),

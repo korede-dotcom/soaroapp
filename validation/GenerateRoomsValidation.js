@@ -14,12 +14,14 @@ const generateRoomSchema = Joi.object({
   bedamount4: Joi.number().integer().min(0).required(),
   shopamount: Joi.number().integer().min(0).required(),
   shopcount: Joi.number().integer().min(0).required(),
-
+  propertyId: Joi.number().integer().min(0).required(),
+  miniflat: Joi.number().integer().min(0).required(),
+  miniflatamount: Joi.number().integer().min(0).required(),
   
-  prevOwnerName: Joi.string().trim().required(),
-  prevOwnerPhone: Joi.string().trim().required(),
-  prevOwnerEmail: Joi.string().trim().email().required(),
-  prevOwnerAddress: Joi.string().trim().required(),
+  // prevOwnerName: Joi.string().trim().required(),
+  // prevOwnerPhone: Joi.string().trim().required(),
+  // prevOwnerEmail: Joi.string().trim().email().required(),
+  // prevOwnerAddress: Joi.string().trim().required(),
 
 //   images: Joi.array().items(Joi.string().uri()).required(),
 })

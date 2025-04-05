@@ -36,7 +36,7 @@ router.post('/', async (req, res) => {
             const CheckPropertyEndDate = await Property.findOne({
               where: {
                 id:propertyId,
-                createdBy: req.user.user.roleId
+                // createdBy: req.user.user.roleId
               },
             });
             const inputDate = new Date(end);
@@ -265,7 +265,7 @@ router.get('/', async (req, res) => {
 
       if (req.user.user.roleId === 1) {
         tenants  = await Tenants.findOne({
-          where: { id:req.query.id,createdBy:req.user.user.id },
+          where: { id:req.query.id,},
           include: [
             { model: Room },
             { model: Property }
@@ -300,7 +300,7 @@ router.get('/', async (req, res) => {
 
         if (req.user.user.roleId === 1) {
           tenants = await Tenants.findAll({
-           where: { propertyId: req.query.propertyId,isPrevious:false,createdBy:req.user.user.id },
+           where: { propertyId: req.query.propertyId,isPrevious:false, },
            include: [
              { model: Room },
              { model: Property }
@@ -324,7 +324,7 @@ router.get('/', async (req, res) => {
     if (req.query.type === "pasttenant" && req.query.roomId) {
       if (req.user.user.roleId === 1) {
         tenants = await Tenants.findAll({
-         where: { roomId: req.query.roomId,isPrevious:true,createdBy:req.user.user.id },
+         where: { roomId: req.query.roomId,isPrevious:true, },
          include: [
            { model: Room },
            { model: Property }
