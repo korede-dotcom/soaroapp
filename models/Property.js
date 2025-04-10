@@ -38,8 +38,9 @@ const Land = sequelize.define('property', {
     allowNull: true,
   },
   sqm: {
-    type: DataTypes.DOUBLE,
+    type: DataTypes.STRING,
     allowNull: true,
+    defaultValue:"0"
   },
   isSold: {
     type: DataTypes.BOOLEAN,

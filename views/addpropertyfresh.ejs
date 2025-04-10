@@ -691,13 +691,47 @@
                                     
                                       <div class="mb-3 col-lg-4 col-md-6">
                                         <label class="form-label">Area (sqm)</label>
-                                        <input type="number" required name="sqm" class="form-control" placeholder="85" step="0.01">
+                                        <input type="text" required name="sqm" class="form-control" placeholder="85">
                                       </div>
                                   
-                                      <div class="mb-3 col-lg-4 col-md-6">
-                                        <label class="form-label">Property Worth / Price</label>
-                                        <input type="number" required name="amount" class="form-control" placeholder="3000" step="0.01">
-                                      </div>
+									  <div class="mb-3 col-lg-4 col-md-6">
+										<label class="form-label">Property Worth / Price</label>
+										<input 
+										  type="text" 
+										  required 
+										  class="form-control" 
+										  placeholder="3,000.00"
+										  oninput="formatCurrency(this)"
+										  id="displayAmount"
+										>
+										<input type="hidden" name="amount" id="rawAmount">
+									  </div>
+									  
+									  <script>
+										const formatter = new Intl.NumberFormat('en-NG', {
+										  style: 'decimal',
+										  minimumFractionDigits: 0,
+										  maximumFractionDigits: 2
+										});
+									  
+										function formatCurrency(input) {
+										  let raw = input.value.replace(/[^0-9.]/g, '');
+									  
+										  // Prevent multiple decimals
+										  const parts = raw.split('.');
+										  if (parts.length > 2) return;
+									  
+										  // Format for display
+										  let formatted = formatter.format(parts[0]);
+										  if (parts.length === 2) {
+											formatted += '.' + parts[1].slice(0, 2);
+										  }
+									  
+										  input.value = formatted;
+										  document.getElementById('rawAmount').value = raw;
+										}
+									  </script>
+									  
                                   
                                   
                                       <div class="mb-3 col-12">

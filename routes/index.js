@@ -497,6 +497,11 @@ routes.get("/reminder", async (req,res) => {
       },
     ],
   });
+  if (!tenants.length) {
+    return res.json({tenants})
+  }
+
+
   eventEmitter.emit("AlertOwner");
   tenants.forEach((tenant) => {
     eventEmitter.emit("sendReminder", tenant);
@@ -532,6 +537,9 @@ routes.get("/reminder/property", async (req,res) => {
       },
       attributes: ["type", "name", "start", "end"], // Select specific attributes
     });
+    if (!propertiesEndingWithinRange.length) {
+      return res.json({propertiesEndingWithinRange})
+    }
   // eventEmitter.emit("AlertOwner");
   propertiesEndingWithinRange.forEach((prop) => {
     eventEmitter.emit("sendReminderPropertyExpiry", prop);
@@ -583,9 +591,9 @@ eventEmitter.on("sendReminder", async (tenant) => {
 
  
 
-    if (!response.ok) {
-      throw new Error(`Failed to send SMS: ${result}`);
-    }
+    // if (!response.ok) {
+    //   throw new Error(`Failed to send SMS: ${result}`);
+    // }
 
   // const formData = new FormData();
   // // DJvNdjn95RFPL7zGAl8KxcQT3UbuaOrHyfXY1gtVEoCZI6kWmqpi20eB4whsMS
@@ -604,7 +612,11 @@ eventEmitter.on("sendReminder", async (tenant) => {
   //   body: formData, // Send as FormData
   // });
 
-  // if (!response.ok) throw new Error("Failed to send reminder");
+  // const data = await response.json();
+  // console.log("🚀 ~ eventEmitter.on ~ data: tenant", data)
+
+
+  if (!response.ok) throw new Error("Failed to send reminder");
 
 
 
@@ -645,22 +657,36 @@ eventEmitter.on("AlertOwner", async () => {
       throw new Error(`Failed to send SMS: ${result}`);
     }
 
-  // const formData = new FormData();
-  // // DJvNdjn95RFPL7zGAl8KxcQT3UbuaOrHyfXY1gtVEoCZI6kWmqpi20eB4whsMS
-  // formData.append("token", "DJvNdjn95RFPL7zGAl8KxcQT3UbuaOrHyfXY1gtVEoCZI6kWmqpi20eB4whsMS");
-  // formData.append("senderID", "soarorealty");
-  // formData.append("recipients", `234${tenant.phonenumber.replace(/^0/, "")}`); // Format phone number
-  // formData.append(
-  //   "message",
-  //   `Dear ${tenant.firstname} ${tenant.lastname}, with room number ${
-  //     tenant.Room ? tenant.Room.roomNumber : "N/A"
-  //   }, this is a quick reminder that your rent will be due on ${tenant.NextPaymentYear}.`
-  // );
-
-  // const response = await fetch("https://my.kudisms.net/api/corporate", {
-  //   method: "POST",
-  //   body: formData, // Send as FormData
-  // });
+    // const axios = require('axios');
+    // const FormData = require('form-data');
+    
+    // const data = new FormData();
+    
+    // data.append('token', 'DJvNdjn95RFPL7zGAl8KxcQT3UbuaOrHyfXY1gtVEoCZI6kWmqpi20eB4whsMS'); // your API token
+    // data.append('senderID', 'soarorelity');
+    // data.append('recipients', `234${phoneNumber.replace(/^0/, '')}`); // Format Nigerian number
+    // data.append('otp', `${message}`); // Replace with actual OTP
+    // data.append('appnamecode', '2266909571'); // Replace with actual app name code
+    // data.append('templatecode', '8996945894'); // Replace with actual template code
+    
+    // const config = {
+    //   method: 'post',
+    //   maxBodyLength: Infinity,
+    //   url: 'https://my.kudisms.net/api/otp',
+    //   headers: {
+    //     ...data.getHeaders(),
+    //   },
+    //   data: data,
+    // };
+    
+    // axios.request(config)
+    //   .then((response) => {
+    //     console.log('✅ Response:', response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error('❌ Error:', error.response ? error.response.data : error.message);
+    //   });
+    
 
   // if (!response.ok) throw new Error("Failed to send reminder");
 
