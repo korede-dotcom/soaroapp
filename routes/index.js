@@ -460,6 +460,38 @@ routes.post("/commission",authenticateUser, async (req, res) => {
     // res.json({ message: "Logged out successfully" });
 });
 
+routes.post("/edit/address", authenticateUser ,async (req, res) => {
+    try {
+      // const getPropertyUser = await Property.findOne({where:{id:req.body.propertyId}})
+      const saveCommission = await Property.update(
+        { address: req.body.address },
+        { where: { id: req.body.propertyId } }
+      );
+      
+        console.log("🚀 ~ routes.post ~ getPropertyUser:", saveCommission)
+        res.json({status:true, message: "address edited successfully",saveCommission });
+      } catch (error) {
+      res.json({status:false, message: error.message});
+      
+    }
+    // res.json({ message: "Logged out successfully" });
+});
+routes.post("/edit/name", authenticateUser ,async (req, res) => {
+    try {
+      // const getPropertyUser = await Property.findOne({where:{id:req.body.propertyId}})
+      const saveCommission = await Property.update(
+        { name: req.body.name },
+        { where: { id: req.body.propertyId} }
+      );
+      
+        console.log("🚀 ~ routes.post ~ getPropertyUser:", saveCommission)
+        res.json({status:true, message: "name edit successfully",saveCommission });
+      } catch (error) {
+      res.json({status:false, message: error.message});
+      
+    }
+    // res.json({ message: "Logged out successfully" });
+});
 routes.post("/commission/edit", authenticateUser ,async (req, res) => {
     try {
       // const getPropertyUser = await Property.findOne({where:{id:req.body.propertyId}})

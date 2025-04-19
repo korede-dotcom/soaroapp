@@ -18,10 +18,7 @@ const Commision = sequelize.define('Commision', {
       type: DataTypes.INTEGER,
      allowNull: true,
   },
-  // createdBy:{
-  //   type: DataTypes.INTEGER,
-  //   allowNull: true,
-  // },
+
   propertyId:{
     type: DataTypes.INTEGER,
     allowNull:false,
