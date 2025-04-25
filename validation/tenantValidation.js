@@ -80,7 +80,7 @@ const tenantValidationSchema = Joi.object({
     }),
 
   previousAddress: Joi.string()
-    .min(5)
+    .min(3)
     .required()
     .messages({
       'string.base': 'Previous address must be a string.',
@@ -120,7 +120,7 @@ const tenantValidationSchema = Joi.object({
     }),
 
   guarantorAddress: Joi.string()
-    .min(5)
+    .min(3)
     .required()
     .messages({
       'string.base': 'Guarantor address must be a string.',

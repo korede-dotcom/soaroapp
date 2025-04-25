@@ -19,7 +19,6 @@ Tenants.belongsTo(Property,{foreignKey:"propertyId"})
 // Create a new tenant
 // Create a new tenant
 router.post('/', async (req, res) => {
-  const transaction = await Sync.transaction();
     try {
 
       if (req.query.type === "pay") {
@@ -140,15 +139,21 @@ router.post('/', async (req, res) => {
       }
 
         console.log("🚀 ~ router.post ~ req.body:", req.body)
-      const { error, value } = tenantValidationSchema.validate(req.body);  // Validate incoming request data
+      const { error, value } = tenantValidationSchema.validate(req.body); 
+       // Validate incoming request data
+  const transaction = await Sync.transaction();
+
       if (error) {
+        transaction.rollback();
         return res.status(400).json({ message: error.details[0].message });
+
       }
     
   
       // Check if the roomId exists in the Rooms table
       const room = await Room.findByPk(value.roomId);
       if (!room) {
+        transaction.rollback();
         return res.status(400).json({ message: 'Invalid roomId, no such room exists.' });
       }
       
