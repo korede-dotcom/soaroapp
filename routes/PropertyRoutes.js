@@ -216,130 +216,80 @@ router.post('/',validateProperty, async (req, res) => {
   }
 });
 
-router.post('/generateroom',validateGenerateRoom ,async (req, res) => {
+router.post('/generateroom', validateGenerateRoom, async (req, res) => {
   try {
-    //   console.log("🚀 ~ router.post ~ req.body:", req.body)
     const data = await req.body;
-
-    try {
-      const land = await Land.findOne({where:{id:data.propertyId}})
-        // Create land entry
-        if (req.user.user.roleId === 1) {
-       
-
-       
-        // Extract room data
-        const {miniflat,miniflatamount, totalroom, bedcount1, bedcount2, bedcount3, bedcount4, bedamount1, bedamount2, bedamount3, bedamount4,shopcount,shopamount,propertyId } = data;
-
-        let roomIndex = 1;
-        let roomsToCreate = [];
-
-        // Function to add rooms dynamically
-        const addRooms = (count, type, amount) => {
-            for (let i = 0; i < count; i++) {
-                roomsToCreate.push({
-                    number: `soaro-${land.name}-${roomIndex.toString().padStart(2, "0")}`,
-                    name:`soaro-${land.name}-room-${roomIndex.toString().padStart(2, "0")}`,
-                    propertyId: land.id,
-                    roomType: type,
-                    yearlyAmount: amount,
-                    roomCategory: "rent",
-                    status: "vacant",
-                    createdBy:req.user.user.id
-                });
-                roomIndex++;
-            }
-        };
-
-        // Add rooms based on counts
-        addRooms(bedcount1, "1bedroom", bedamount1);
-        addRooms(bedcount2, "2bedroom", bedamount2);
-        addRooms(bedcount3, "3bedroom", bedamount3);
-        addRooms(bedcount4, "4bedroom", bedamount4);
-        addRooms(shopcount, "shop", shopamount);
-        addRooms(miniflat, "miniflat", miniflatamount);
-
-        // Validate total rooms
-        console.log("🚀 ~ router.post ~ roomsToCreate.length > totalroom:", roomsToCreate.length , totalroom)
-        if (roomsToCreate.length > totalroom) {
-            throw new Error("Total rooms exceed allowed limit!");
-        }
-
-        // Bulk insert rooms
-        const roomCreated = await Room.bulkCreate(roomsToCreate);
-        console.log("✅ Rooms created:", roomCreated.length);
-        console.log("🚀 ~ router.post ~ data.Images:", data.Images)
-
-       
-
-        // await transaction.commit();
-        return res.status(201).json({
-            land,
-            status:true,
-            message:"Property created"
-        });
-        }
-
-        
-
-        // Extract room data
-        const {miniflat,miniflatamount, totalroom, bedcount1, bedcount2, bedcount3, bedcount4, bedamount1, bedamount2, bedamount3, bedamount4,shopcount,shopamount } = data;
-
-        let roomIndex = 1;
-        let roomsToCreate = [];
-
-        // Function to add rooms dynamically
-        const addRooms = (count, type, amount) => {
-            for (let i = 0; i < count; i++) {
-                roomsToCreate.push({
-                    number: `soaro-${land.name}-${roomIndex.toString().padStart(2, "0")}`,
-                    name:`soaro-${land.name}-room-${roomIndex.toString().padStart(2, "0")}`,
-                    propertyId: land.id,
-                    roomType: type,
-                    yearlyAmount: amount,
-                    roomCategory: "rent",
-                    status: "vacant",
-                });
-                roomIndex++;
-            }
-        };
-
-        // Add rooms based on counts
-        addRooms(bedcount1, "1bedroom", bedamount1);
-        addRooms(bedcount2, "2bedroom", bedamount2);
-        addRooms(bedcount3, "3bedroom", bedamount3);
-        addRooms(bedcount4, "4bedroom", bedamount4);
-        addRooms(shopcount, "shop", shopamount);
-        addRooms(miniflat, "shop", miniflatamount);
-
-        // Validate total rooms
-        console.log("🚀 ~ router.post ~ roomsToCreate.length > totalroom:", roomsToCreate.length , totalroom)
-        if (roomsToCreate.length > totalroom) {
-            throw new Error("Total rooms exceed allowed limit!");
-        }
-
-        // Bulk insert rooms
-        const roomCreated = await Room.bulkCreate(roomsToCreate);
-        console.log("✅ Rooms created:", roomCreated.length);
-        console.log("🚀 ~ router.post ~ data.Images:", data.Images)
-
-        
-
-        
-        return res.status(201).json({
-            land,
-            status:true,
-            message:"Property created"
-        });
-    } catch (error) {
-        // ✅ Ensure rollback on failure
-        console.error("❌ Error creating land:", error);
-        throw new Error(`Error creating land: ${error.message}`);
+    const land = await Land.findOne({where:{id:data.propertyId}})
+    
+    if (!land) {
+      throw new Error("Property not found");
     }
-   
-    // res.status(201).json(land);
+
+    let roomIndex = 1;
+    let roomsToCreate = [];
+
+    // Function to add rooms dynamically
+    const addRooms = (count, type, amount) => {
+      if (count && amount) { // Only add if both count and amount exist
+        for (let i = 0; i < count; i++) {
+          roomsToCreate.push({
+            number: `soaro-${land.name}-${roomIndex.toString().padStart(2, "0")}`,
+            name: `soaro-${land.name}-room-${roomIndex.toString().padStart(2, "0")}`,
+            propertyId: land.id,
+            roomType: type,
+            yearlyAmount: amount,
+            roomCategory: "rent",
+            status: "vacant",
+            createdBy: req.user.user.id
+          });
+          roomIndex++;
+        }
+      }
+    };
+
+    // Only add rooms for fields that have values
+    if (data.shopcount && data.shopamount) {
+      addRooms(data.shopcount, "shop", data.shopamount);
+    }
+    if (data.miniflat && data.miniflatamount) {
+      addRooms(data.miniflat, "miniflat", data.miniflatamount);
+    }
+    if (data.bedcount1 && data.bedamount1) {
+      addRooms(data.bedcount1, "1bedroom", data.bedamount1);
+    }
+    if (data.bedcount2 && data.bedamount2) {
+      addRooms(data.bedcount2, "2bedroom", data.bedamount2);
+    }
+    if (data.bedcount3 && data.bedamount3) {
+      addRooms(data.bedcount3, "3bedroom", data.bedamount3);
+    }
+    if (data.bedcount4 && data.bedamount4) {
+      addRooms(data.bedcount4, "4bedroom", data.bedamount4);
+    }
+
+    // Bulk insert rooms
+    if (roomsToCreate.length > 0) {
+      const roomCreated = await Room.bulkCreate(roomsToCreate);
+      console.log("✅ Rooms created:", roomCreated.length);
+      
+      return res.status(201).json({
+        status: true,
+        message: "Rooms generated successfully",
+        roomsCreated: roomCreated.length
+      });
+    } else {
+      return res.status(400).json({
+        status: false,
+        message: "No valid room data provided"
+      });
+    }
+
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("❌ Error generating rooms:", error);
+    return res.status(400).json({ 
+      status: false,
+      error: error.message 
+    });
   }
 });
 

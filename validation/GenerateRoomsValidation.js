@@ -1,55 +1,48 @@
 const Joi = require('joi');
 
-const generateRoomSchema = Joi.object({
- 
-  floors: Joi.number().integer().min(1).required(),
-  totalroom: Joi.number().integer().min(1).required(),
-  bedcount1: Joi.number().integer().min(0).required(),
-  bedamount1: Joi.number().integer().min(0).required(),
-  bedcount2: Joi.number().integer().min(0).required(),
-  bedamount2: Joi.number().integer().min(0).required(),
-  bedcount3: Joi.number().integer().min(0).required(),
-  bedamount3: Joi.number().integer().min(0).required(),
-  bedcount4: Joi.number().integer().min(0).required(),
-  bedamount4: Joi.number().integer().min(0).required(),
-  shopamount: Joi.number().integer().min(0).required(),
-  shopcount: Joi.number().integer().min(0).required(),
-  propertyId: Joi.number().integer().min(0).required(),
-  miniflat: Joi.number().integer().min(0).required(),
-  miniflatamount: Joi.number().integer().min(0).required(),
-  
-  // prevOwnerName: Joi.string().trim().required(),
-  // prevOwnerPhone: Joi.string().trim().required(),
-  // prevOwnerEmail: Joi.string().trim().email().required(),
-  // prevOwnerAddress: Joi.string().trim().required(),
-
-//   images: Joi.array().items(Joi.string().uri()).required(),
-})
-/*.custom((value, helpers) => {
-  const { totalroom, bedcount1, bedcount2, bedcount3, bedcount4 } = value;
-  
-  const totalBeds = (bedcount1 || 0) + (bedcount2 || 0) + (bedcount3 || 0) + (bedcount4 || 0);
-  console.log("🚀 ~ totalBeds:", totalBeds)
-  console.log("🚀 ~ totalBeds > totalroom:", totalroom)
-  
-  if (totalBeds > totalroom) {
-    return helpers.error('any.invalid', 'Sum of all room types should not be greater than total rooms');
-  }
-
-  return value;
-}, 'Total Rooms Validation');*/
-
 const validateGenerateRoom = (req, res, next) => {
-  const { error } = generateRoomSchema.validate(req.body, { abortEarly: false });
+  // Filter out empty strings and create a new object with only non-empty values
+  const filteredBody = Object.entries(req.body).reduce((acc, [key, value]) => {
+    if (value !== '') {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
 
-  console.log("🚀 ~ validateProperty ~ eq.body:", req.body)
+  // Create a dynamic schema based on the fields present in the filtered request
+  const schema = Joi.object({
+    propertyId: Joi.number().required(),
+    floors: Joi.number().optional(),
+    totalroom: Joi.number().optional(),
+    miniflat: Joi.number().optional(),
+    miniflatamount: Joi.number().optional(),
+    bedcount1: Joi.number().optional(),
+    bedamount1: Joi.number().optional(),
+    bedcount2: Joi.number().optional(),
+    bedamount2: Joi.number().optional(),
+    bedcount3: Joi.number().optional(),
+    bedamount3: Joi.number().optional(),
+    bedcount4: Joi.number().optional(),
+    bedamount4: Joi.number().optional(),
+    shopcount: Joi.number().optional(),
+    shopamount: Joi.number().optional()
+  }).min(2); // At least propertyId and one other field must be present
+
+  const { error } = schema.validate(filteredBody, { 
+    abortEarly: false,
+    stripUnknown: true, // This will remove unknown fields
+    convert: true // This will attempt to convert string numbers to actual numbers
+  });
+
   if (error) {
     return res.status(400).json({
       status: false,
-      errors: error.details.map((err) => err.message),
+      errors: error.details.map(err => err.message)
     });
   }
-  
+
+  // Replace the original body with the filtered body
+  req.body = filteredBody;
   next();
 };
 
